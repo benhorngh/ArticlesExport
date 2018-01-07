@@ -1,0 +1,3 @@
+  def setup_headless(self):
+        self.browser = webdriver.PhantomJS(PHANTOMPATH)
+        self.random_sleep(3)
