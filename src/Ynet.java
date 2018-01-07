@@ -31,12 +31,12 @@ public class Ynet {
 
 		String text="טראמפ";
 		int numOfArticles=4;
-		int state = 1;  //0 to search only by headline
-		YnetSearcher(text, numOfArticles, state);
+		state state1 = state.body;  //0 to search only by headline
+		YnetSearcher(text, numOfArticles, state1);
 
 	}
 
-	public static void YnetSearcher(String text, int numOfArticles, int state) {
+	public static void YnetSearcher(String text, int numOfArticles, state state) {
 		
 
 		List<String> articles = findLinks( text, numOfArticles, state);
@@ -49,7 +49,7 @@ public class Ynet {
 		else System.err.println("Faild");
 	}
 
-	private static List<String> findLinks( String text, int numOfArticles, int state) {
+	private static List<String> findLinks( String text, int numOfArticles, state state) {
 
 		//open web
 		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
@@ -92,7 +92,7 @@ public class Ynet {
 		List<String> urls = new ArrayList<String>();
 
 		boolean getLink=false;
-		if(state==1) getLink=true;
+		if(state==state.body) getLink=true;
 
 
 		int found=0, i=0;
@@ -111,7 +111,7 @@ public class Ynet {
 				Funcs.sleep(2000);
 
 
-				if(state==0){
+				if(state==state.headline){
 					if((i+2)%10==0){
 						Actions actions = new Actions(driver);
 						actions.moveToElement(res).perform();

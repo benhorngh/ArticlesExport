@@ -2,10 +2,7 @@
 public class collectingThread extends Thread{
 	
 	
-	public collectingThread(){
-		
-	}
-	
+
 	
 	
 	public collectingThread(String url, String output) {

@@ -18,15 +18,15 @@ public class Main {
 	public static void main(String[] args) {
 
 
-		String textToSearch = "ביבי";
-		int state= 1;  //1 for all articles, 0 for only headlines
+		String textToSearch = "ירושלים ביבי";
+		state state1= state.body;  //1 for all articles, 0 for only headlines
 		int numOfArticles = 3;
 
 		boolean ynet = true;
 
 		startWriters();
 		if(ynet)
-			Ynet.YnetSearcher(textToSearch, numOfArticles, state);
+			Ynet.YnetSearcher(textToSearch, numOfArticles, state1);
 
 		String name = "excelFile";
 		closeWriters(name);
