@@ -7,11 +7,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * @author Ben Horn and Sefi Erlich
@@ -22,53 +29,58 @@ public class YnetPage {
 
 	static WebDriver driver;
 
-	public static void main(String[] args) {
 
-		List<String> urls=new ArrayList<String>();
-		//		urls.add("https://www.ynet.co.il/articles/0,7340,L-5066878,00.html");
-		urls.add("https://www.ynet.co.il/articles/0,7340,L-5054045,00.html");
-		//		urls.add("https://www.ynet.co.il/articles/0,7340,L-5054255,00.html");
-
-		linksToCsv(urls);
-	}
-
-	
-	
-	public void starthasthread(String url,String output){
-		collectingThread th=new collectingThread(url,output);
-		th.start();
-	}
-
-	public static void linksToCsv(List<String> urls){
+	public static List<ArticlesRow> linksToList(List<String> urls){
 
 		String url="";
-		driver = new ChromeDriver();
-		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-		driver.get("http://google.com");
+		driver = Funcs.startWebDriver("http://google.com");
+
+		List<ArticlesRow> reports = new ArrayList<ArticlesRow>();
 
 		for(int i=0; i<urls.size(); i++){
 
-			
-			url=urls.get(i);
-			driver.navigate().to(url);
 
-			urlToFile(url);
+			url=urls.get(i);
+			try{
+				driver.navigate().to(url);
+			}
+			catch(WebDriverException e){
+				System.out.println("Invaild url "+url);
+				continue;
+			}
+
+			reports.add(urlHandler(url, false));
 		}
+
 		driver.quit();
 		System.out.println("finish Ynet");
+		return reports;
 	}
 
 
-	private static void urlToFile(String url) {
+	public static ArticlesRow urlHandler(String url, boolean bodyOnly) {
 
+		ArticlesRow ar = new ArticlesRow();
 		try{
-			
+
 			Funcs.sleep(2000);
 
 			//headline
 			WebElement hl= driver.findElements(By.className("art_header_title")).get(0);
 			String headline=hl.getText();
 
+			Funcs.moveTo(driver, hl);
+
+
+			//subheadline
+			String subheadline="";
+			try{
+				WebElement shl= driver.findElement(By.className("art_header_sub_title"));
+				subheadline=shl.getText();
+			}
+			catch(NoSuchElementException e){System.out.println("no subtitle");
+
+			}
 
 			//publish date
 			WebElement pt= driver.findElements(By.className("art_header_footer")).get(0);
@@ -80,45 +92,54 @@ public class YnetPage {
 			String reporter=rpr.getText();
 
 			//body
-			WebElement body= driver.findElements(By.className("text14")).get(0);
-			String article=body.getText();
+			List<WebElement> body =  driver.findElements(By.xpath("//*[@class='text14']/span/p"));
+			ArrayList<WebElement> allPh = new ArrayList<WebElement>(body);
+			String article="";
+			for(int l=0; l <allPh.size(); l++){
+				article+=allPh.get(l).getText();
+			}
 
-			ArticlesRow ar = new ArticlesRow();
+			if(bodyOnly){
+				ar.body = article;
+				return ar;
+			}
+
+
+
+			ArrayList<CommentRow> cmmts = getComments(url, ar.num);
 
 			ar.body = article;
 			ar.site = "Ynet";
 			ar.date =publishDate;
 			ar.reporter = reporter;
 			ar.headLine = headline;
-			int an=ar.num;
-			ar.comments = getComments(url, an);
+			ar.subHeadLine = subheadline;
+			ar.comments = cmmts;
+			//			ar.WriteToFile();
+			//			CommentRow.WriteToFile(cmmts);
 
-			ar.WriteToFile();
 
-			//		System.out.println(headline);
-			//		System.out.println(reporter);
-			//		System.out.println(publishDate);
-			//		System.out.println(article);
-			//		System.out.println(ar.comments);
 		}catch (Exception e){
-			System.err.println(e);
+			e.printStackTrace();
 		}
+		return ar;
+	}
+
+	/**
+	 * this function get all the comments
+	 * @param url
+	 * @param articleNum
+	 * @return all the comments connected
+	 */
+	public static ArrayList<CommentRow> getComments(String url, int articleNum) {
+		ArrayList<CommentRow>  cmmt =  commentSecction(url, articleNum);
+		return cmmt;
+
 	}
 
 
-	private static String getComments(String url, int articleNum) {
-		ArrayList<String>  cmmt =  commentSecction(url, articleNum );
-		String allComments="";
-		for(int i=0; i<cmmt.size(); i++){
-			allComments+=cmmt.get(i)+'\n';
-		}
-		return allComments;
-	}
-
-
-
-	public  static  ArrayList<String>  commentSecction(String url, int articleNum)  {
-		ArrayList<String> linesToWire=null;
+	public  static  ArrayList<CommentRow>  commentSecction(String url, int articleNum)  {
+		ArrayList<CommentRow> linesToWire=null;
 
 		boolean IsComments=true;
 		//CLICK ON SHOW ALL COMMENTS
@@ -129,27 +150,28 @@ public class YnetPage {
 
 			WebElement we=showAllCommentsButton.get(0);  
 
-			JavascriptExecutor jse2 = (JavascriptExecutor)driver;
-			jse2.executeScript("arguments[0].scrollIntoView()", we); 
+			Funcs.moveTo2(driver, we);
 			we.click();
-
+			Funcs.sleep(3000);
+			driver.navigate().refresh();
+			Funcs.sleep(3000);
 
 		}
 		catch (Exception e){
-			System.err.println("no comments"+e);
+			System.err.println("no comments");
 			IsComments=false;
 		}
 
-
-
-		linesToWire=new ArrayList<String>();
+		linesToWire=new ArrayList<CommentRow>();
 		while(IsComments) {
+
 			readComments(linesToWire , articleNum);
+
 			try {
 				//search for "next" button
 				WebElement NextButton = driver.findElement(By.xpath("//*[@class='tkb_arrow sprite_article_tkb_arrow_next']"));
-				JavascriptExecutor jse2 = (JavascriptExecutor)driver;
-				jse2.executeScript("arguments[0].scrollIntoView()", NextButton); 
+
+				Funcs.moveTo2(driver, NextButton);
 				Funcs.sleep(1000);
 
 				NextButton.click();
@@ -164,17 +186,41 @@ public class YnetPage {
 			}
 		}
 		return linesToWire;
-
 	}
 
-
-
-	public static int readComments(ArrayList<String> linesToWire, int articleNum){
+	public static void readComments(ArrayList<CommentRow> commentsArr, int articleNum){
 		int last=1;
-		Funcs.sleep(1000);
+
 		WebElement Commentdiv= driver.findElements(By.className("art_tkb")).get(0);
-		List<WebElement> blocks=Commentdiv.findElements(By.xpath("//*[contains(@id, 'tcontentdiv')]"));
+
+
+		WebElement talkbacks= Commentdiv.findElements(By.className("art_tkb_talkbacks")).get(0);
+		//		List<WebElement> blocks=talkbacks.findElements(By.xpath("//div[@class='art_tkb_talkback art_tkb_talkback_open ']"));
+		List<WebElement> blocks=talkbacks.findElements(By.xpath("//*[contains(@id, 'tcontentdiv')]"));
+		
+
+		//		List<WebElement> blocks=Commentdiv.findElements(By.xpath("//*[contains(@id, 'tcontentdiv')]"));
+		Funcs.moveTo(driver, talkbacks);
+
+
 		for (WebElement we:blocks){ //for every comment, do:
+
+			try {
+				//				Funcs.moveTo(driver,we);
+				//				Funcs.sleep(3000);
+				we.findElement(By.className("art_tkb_talkback_details_inner"));
+			} catch(StaleElementReferenceException e) {
+				System.out.println("pass1");
+				continue;
+			}
+			catch(NoSuchElementException e) {
+				System.out.println("pass2");
+				continue;
+			}
+			catch(ElementNotVisibleException e) {
+				System.out.println("pass3");
+				continue;
+			}
 
 
 			WebElement headline=we.findElement(By.className("art_tkb_talkback_details_inner"));
@@ -183,31 +229,47 @@ public class YnetPage {
 
 			WebElement text=we.findElement(By.xpath("./div[contains(@id, 'ttextcont')]"));
 
-			linesToWire.add(new String(getHeadline(headline.getText())+" : "+text.getText()));
 
-			CommentRow cr = new CommentRow();
-			cr.site = "Ynet";
-			cr.ArticleNum = articleNum;
-			cr.comment = text.getText();
-			cr.headline = getHeadline(headline.getText());
-			cr.talkbakist = getTalkbackist(headline.getText());
 
+			String ghl = getHeadline(headline.getText());
+			String gtb = getTalkbackist(headline.getText());
 			if(!number.getText().isEmpty()){
 				last = setConvNum(number.getText());
 			}
 
-			cr.convNum = last;
-			cr.WriteToFile();
+			String date=getDate(gtb);
+			String body= text.getText();
+			ghl= fixTitle( ghl, body );
+			gtb= fixName(gtb);
 
-			//			System.err.println(headline.getText());
-			//			System.out.println(text.getText());
-			//			System.out.println(number.getText());
-			//			System.out.println();
+
+
+
+			CommentRow cr = new CommentRow("Ynet", articleNum, gtb, date, ghl, body, last);
+
+
+
+			commentsArr.add(cr);
+
+
+
 
 		}
-		return last;
 	}
 
+	private static String fixName(String gtb) {
+		return gtb.substring(0,gtb.indexOf('('));
+	}
+
+	private static String fixTitle(String ttl, String body) {
+		if(body.isEmpty()||body.equals(""))
+			ttl=ttl.substring(0,ttl.length()-4);
+		return ttl;
+	}
+
+	private static String getDate(String gtb) {
+		return gtb.substring(gtb.indexOf('(')+1, gtb.indexOf('(')+8);
+	}
 	private static int setConvNum(String text) {
 		try{
 			return Integer.parseInt(text.substring(0, text.length()-1));
@@ -217,8 +279,7 @@ public class YnetPage {
 			return -1;
 		}
 	}
-
-	public static String getHeadline(String text) {
+	private static String getHeadline(String text) {
 		String[] arr = text.split("\n");
 		String str="";
 
@@ -228,7 +289,7 @@ public class YnetPage {
 		finally{return str;}
 
 	}
-	public static String getTalkbackist(String text) {
+	private static String getTalkbackist(String text) {
 		String[] arr = text.split("\n");
 		String str="";
 
@@ -238,5 +299,8 @@ public class YnetPage {
 		}
 		finally{return str;}
 	}
+
+
+
 
 }

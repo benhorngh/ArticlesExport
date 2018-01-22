@@ -14,75 +14,64 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 
 
 /**
- * @author Ben Horn and Sefi Erlich
+ * @author Ben Horn
  * @since 1/2018
  *
  */
 public class Ynet {
 
 	static WebDriver driver;
-
 	static final String url="http://www.Ynet.co.il";
 
-	public static void main(String[] args) {
+	public static List<ArticlesRow> Main(String textToSearch,String textToCompare, int numOfArticles, state state) {
 
-		String text="טראמפ";
-		int numOfArticles=4;
-		state state1 = state.body;  //0 to search only by headline
-		YnetSearcher(text, numOfArticles, state1);
-
-	}
-
-	public static void YnetSearcher(String text, int numOfArticles, state state) {
-		
-
-		List<String> articles = findLinks( text, numOfArticles, state);
+		List<String> articles = findLinks( textToSearch, textToCompare,numOfArticles, state);
 
 		if(articles!=null){
 			System.out.println("find "+ articles.size() +" articles.");
 			driver.quit();
-			YnetPage.linksToCsv(articles);
+			return YnetPage.linksToList(articles);
 		}
 		else System.err.println("Faild");
+		return null;
+
 	}
 
-	private static List<String> findLinks( String text, int numOfArticles, state state) {
+	public static List<String> findLinks(String textToSearch,String textToCompare, int numOfArticles, state state) {
+
+		int maxSearch = 50;
+
 
 		//open web
-		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments("start-maximized");
-		driver = new ChromeDriver(options);
-		driver.get(url);
+		driver = Funcs.startWebDriver(url);
 
 
 		//find searchField section and open search window
 		try {
-			WebElement search = driver.findElements(By.cssSelector("#mainSrchBoxInput")).get(0);
-			JavascriptExecutor jse2 = (JavascriptExecutor)driver;
-			jse2.executeScript("arguments[0].scrollIntoView()", search); 
+
+			WebElement search = driver.findElement(By.cssSelector("#mainSrchBoxInput"));
+			Funcs.moveTo2(driver, search);
 			search.click();
 
 
-
-
 			//search
-
 			driver.switchTo().frame("su_iframe");
-			
-			Funcs.sleep(1000);
 
 			WebElement textField = driver.findElements(By.cssSelector("#su_w_s_search_input")).get(0);
-			textField.sendKeys(text);
+			String searchf  = Funcs.SearchField(textToSearch);
+			Funcs.moveTo(driver, textField);
+			textField.click();
+			textField.clear();
+			textField.sendKeys(searchf);
 
-		}catch (NullPointerException e) {System.err.println(e); return null;}
+		}catch (NullPointerException e) {e.printStackTrace(); return null;}
 
 
 		//get results
-
 		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		WebElement lis=null;
 		try {
@@ -91,72 +80,123 @@ public class Ynet {
 
 		List<String> urls = new ArrayList<String>();
 
-		boolean getLink=false;
-		if(state==state.body) getLink=true;
+		boolean getLink = true;
+		boolean addLink = false;
+		if(state==state.regular) {
+			addLink = true;
+		}
+		if(state==state.headline) {
+			getLink = false;
+		}
 
 
 		int found=0, i=0;
+		String link="";
 		while(found<numOfArticles){
 
-			System.out.println();
-			System.out.println(i+" /"+found);
+
 			WebElement res;
+
 			try { 
 				res=lis.findElements(By.cssSelector("#search_result_id_"+i)).get(0);
 
-				if(i>70 && i+2%10==0){
 
+				if(i>70 && i+2%10==0){
 					Funcs.sleep(5000);
 				}
-				Funcs.sleep(2000);
+				Funcs.sleep(2500);
 
 
 				if(state==state.headline){
 					if((i+2)%10==0){
-						Actions actions = new Actions(driver);
-						actions.moveToElement(res).perform();
+						Funcs.moveTo(driver, res);
 					}
 
 					String headLine= res.findElement(By.className("su_results_t_name")).getText();
-					if(contain(headLine, text)){
+					if(Funcs.contain(headLine, textToCompare)){
+						addLink=true;
 						getLink=true;
 
 					}
-					else getLink=false;
+					else {
+						addLink=false;
+						getLink=false;
+					}
 				}
+
 
 			} catch (Exception e){ System.err.println(e); break;}
+
 			try{
-				if(getLink){
-					found++;
+				if(getLink){				
 					Actions actions = new Actions(driver);
 					actions.moveToElement(res).click().perform();
-
-
 					driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 					WebElement cli = res.findElements(By.className("su_btn_link")).get(0);
-					String link=cli.getAttribute("href");
-					System.out.println(link);
-					urls.add(link);
+					link=cli.getAttribute("href");
+					System.out.println(link);					
 				}
 
-
 			} catch (Exception e){ System.err.println(e); }
+
+
+			if(state==state.comment){
+				addLink= commentState(link, textToCompare);
+			}
+
+			if(state==state.body){
+				addLink= bodyState(link, textToCompare);
+			}
+
+			if(addLink){
+				found++;
+				urls.add(link);
+			}
+
+			System.out.println((found)+" /"+numOfArticles);
+			System.out.println();
 			i++;
+			if(i==maxSearch)
+				break;
 		}
 		return urls;
+
 	}
 
-	
-	private static boolean contain(String headLine, String text) {
-		String[] words = text.split(" ");
+	public static boolean bodyState(String link, String textToCompare) {
+		boolean getLink=true;
+		YnetPage.driver=Funcs.startWebDriver(link);
+		String body="";
 
-		for(int i=0; i<words.length; i++){
-			if(!headLine.contains(words[i]))
-				return false;
+		body = YnetPage.urlHandler(link, true).body;
+
+		if(!Funcs.contain(body, textToCompare)){
+			System.err.println("not Found.");
+			getLink = false;
 		}
+		else System.err.println("okey!!");
+		YnetPage.driver.close();
+		Funcs.sleep(10000);
+		return getLink;
+	}
 
+	public static boolean headlineState(String link, String textToCompare) {
 		return true;
 	}
+
+	public static boolean commentState(String link, String textToCompare) {
+		boolean getLink=true;
+		YnetPage.driver=Funcs.startWebDriver(link);
+		String comments=CommentRow.wireAllComments(YnetPage.getComments(link, 1));
+		if(!Funcs.contain(comments, textToCompare)){
+			System.err.println("not Found.");
+			getLink = false;
+		}
+		else System.err.println("okey!!");
+		YnetPage.driver.close();
+		Funcs.sleep(10000);
+		return getLink;
+	}
+
 
 }

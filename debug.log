@@ -4,3 +4,15 @@
 [0107/120439.287:ERROR:exception_snapshot_win.cc(87)] thread ID 12540 not found in process
 [0107/120439.287:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
 [0107/120439.287:ERROR:scoped_process_suspend.cc(39)] NtResumeProcess: An attempt was made to access an exiting process.  (0xc000010a)
+[0108/165838.555:ERROR:process_info.cc(350)] VirtualQueryEx: Access is denied. (0x5)
+[0108/165838.556:ERROR:process_info.cc(571)] ReadMemoryInfo failed
+[0108/165838.562:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0108/165838.563:ERROR:exception_snapshot_win.cc(87)] thread ID 14124 not found in process
+[0108/165838.563:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
+[0108/165838.564:ERROR:scoped_process_suspend.cc(39)] NtResumeProcess: An attempt was made to access an exiting process.  (0xc000010a)
+[0121/162715.134:ERROR:process_info.cc(350)] VirtualQueryEx: Access is denied. (0x5)
+[0121/162715.149:ERROR:process_info.cc(571)] ReadMemoryInfo failed
+[0121/162715.153:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0121/162715.153:ERROR:exception_snapshot_win.cc(87)] thread ID 21028 not found in process
+[0121/162715.154:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
+[0121/162715.154:ERROR:scoped_process_suspend.cc(39)] NtResumeProcess: An attempt was made to access an exiting process.  (0xc000010a)

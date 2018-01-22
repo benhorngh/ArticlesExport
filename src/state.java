@@ -1,4 +1,4 @@
 
 public enum state {
-  headline,body,comment
+  regular,headline,body,comment
 }
