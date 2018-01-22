@@ -20,15 +20,17 @@ public class Main {
 	public static void main(String[] args) {
 
 		String textToSearch = "טראמפ מזרח התיכון";
-		String textToCompare = "טראמפ "+'"'+"נשיא אר"+'"';
-		state state1= state.body;  
+		String textToCompare = "טראמפ "+'"'+"נשיא ארצות"+'"';
+		state state1= state.regular;  
 		int numOfArticles = 7;
 		boolean ynet = true;
+		
+		Site s = new Ynet();
 		
 		startWriters();
 		List<ArticlesRow> YnetReports=null;
 		if(ynet)
-			YnetReports = Ynet.Main(textToSearch, textToCompare,  numOfArticles, state1);
+			YnetReports = s.Start(textToSearch, textToCompare,  numOfArticles, state1);
 		
 		if(YnetReports!=null)
 			ArticlesRow.WriteToFile(YnetReports);

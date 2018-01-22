@@ -25,51 +25,21 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * @since 1/2018
  *
  */
-public class YnetPage {
-
-	static WebDriver driver;
+public class YnetPage extends Page  {
 
 
-	public static List<ArticlesRow> linksToList(List<String> urls){
-
-		String url="";
-		driver = Funcs.startWebDriver("http://google.com");
-
-		List<ArticlesRow> reports = new ArrayList<ArticlesRow>();
-
-		for(int i=0; i<urls.size(); i++){
-
-
-			url=urls.get(i);
-			try{
-				driver.navigate().to(url);
-			}
-			catch(WebDriverException e){
-				System.out.println("Invaild url "+url);
-				continue;
-			}
-
-			reports.add(urlHandler(url, false));
-		}
-
-		driver.quit();
-		System.out.println("finish Ynet");
-		return reports;
-	}
-
-
-	public static ArticlesRow urlHandler(String url, boolean bodyOnly) {
+	public  ArticlesRow urlHandler(String url, boolean bodyOnly) {
 
 		ArticlesRow ar = new ArticlesRow();
 		try{
 
-			Funcs.sleep(2000);
+			sleep(2000);
 
 			//headline
 			WebElement hl= driver.findElements(By.className("art_header_title")).get(0);
 			String headline=hl.getText();
 
-			Funcs.moveTo(driver, hl);
+			moveTo(driver, hl);
 
 
 			//subheadline
@@ -131,30 +101,30 @@ public class YnetPage {
 	 * @param articleNum
 	 * @return all the comments connected
 	 */
-	public static ArrayList<CommentRow> getComments(String url, int articleNum) {
+	public  ArrayList<CommentRow> getComments(String url, int articleNum) {
 		ArrayList<CommentRow>  cmmt =  commentSecction(url, articleNum);
 		return cmmt;
 
 	}
 
 
-	public  static  ArrayList<CommentRow>  commentSecction(String url, int articleNum)  {
+	public  ArrayList<CommentRow>  commentSecction(String url, int articleNum)  {
 		ArrayList<CommentRow> linesToWire=null;
 
 		boolean IsComments=true;
 		//CLICK ON SHOW ALL COMMENTS
 		try {
-			Funcs.sleep(2000);
+			sleep(2000);
 
 			List<WebElement> showAllCommentsButton = driver.findElements(By.cssSelector("#stlkbcopenalldiv"));
 
 			WebElement we=showAllCommentsButton.get(0);  
 
-			Funcs.moveTo2(driver, we);
+			moveTo2(driver, we);
 			we.click();
-			Funcs.sleep(3000);
+			sleep(3000);
 			driver.navigate().refresh();
-			Funcs.sleep(3000);
+			sleep(3000);
 
 		}
 		catch (Exception e){
@@ -171,12 +141,12 @@ public class YnetPage {
 				//search for "next" button
 				WebElement NextButton = driver.findElement(By.xpath("//*[@class='tkb_arrow sprite_article_tkb_arrow_next']"));
 
-				Funcs.moveTo2(driver, NextButton);
-				Funcs.sleep(1000);
+				moveTo2(driver, NextButton);
+				sleep(1000);
 
 				NextButton.click();
 
-				Funcs.sleep(2000);
+				sleep(2000);
 
 
 			}
@@ -188,7 +158,7 @@ public class YnetPage {
 		return linesToWire;
 	}
 
-	public static void readComments(ArrayList<CommentRow> commentsArr, int articleNum){
+	public void readComments(ArrayList<CommentRow> commentsArr, int articleNum){
 		int last=1;
 
 		WebElement Commentdiv= driver.findElements(By.className("art_tkb")).get(0);
@@ -197,17 +167,17 @@ public class YnetPage {
 		WebElement talkbacks= Commentdiv.findElements(By.className("art_tkb_talkbacks")).get(0);
 		//		List<WebElement> blocks=talkbacks.findElements(By.xpath("//div[@class='art_tkb_talkback art_tkb_talkback_open ']"));
 		List<WebElement> blocks=talkbacks.findElements(By.xpath("//*[contains(@id, 'tcontentdiv')]"));
-		
+
 
 		//		List<WebElement> blocks=Commentdiv.findElements(By.xpath("//*[contains(@id, 'tcontentdiv')]"));
-		Funcs.moveTo(driver, talkbacks);
+		moveTo(driver, talkbacks);
 
 
 		for (WebElement we:blocks){ //for every comment, do:
 
 			try {
-				//				Funcs.moveTo(driver,we);
-				//				Funcs.sleep(3000);
+				//				 moveTo(driver,we);
+				//				 sleep(3000);
 				we.findElement(By.className("art_tkb_talkback_details_inner"));
 			} catch(StaleElementReferenceException e) {
 				System.out.println("pass1");
@@ -260,15 +230,13 @@ public class YnetPage {
 	private static String fixName(String gtb) {
 		return gtb.substring(0,gtb.indexOf('('));
 	}
-
 	private static String fixTitle(String ttl, String body) {
 		if(body.isEmpty()||body.equals(""))
 			ttl=ttl.substring(0,ttl.length()-4);
 		return ttl;
 	}
-
 	private static String getDate(String gtb) {
-		return gtb.substring(gtb.indexOf('(')+1, gtb.indexOf('(')+8);
+		return gtb.substring(gtb.indexOf('(')+1, gtb.indexOf('(')+9);
 	}
 	private static int setConvNum(String text) {
 		try{

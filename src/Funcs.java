@@ -19,24 +19,15 @@ import org.openqa.selenium.interactions.Actions;
  * @since 1/2018
  *
  */
-public class Funcs {
+public abstract class Funcs {
 	
 
-	public static void main (String[]args){
-
-		String headLine="dog cat shalom kk bla bla ac wec shabat shalom ss";
-		String gr='"'+"";
-		String text="bla cat   ac"+gr+"bla bla"+gr+" ac"+gr+"shabat shalom"+gr;
-		System.out.println(headLine);
-		System.out.println(text);
-		System.out.println(contain(headLine,text));
-	}
 	
-	public static WebDriver openNewTab(WebDriver driver, String link){
-		return driver;
-	}
-	
-	
+	/**
+	 * this function open and start new WebDriver
+	 * @param url -first url
+	 * @return new webDriver open with param url
+	 */
 	public static WebDriver startWebDriver(String url){
 		WebDriver driver;
 		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
@@ -78,53 +69,53 @@ public class Funcs {
 	}
 
 
-	/**
-	 * check if the headline contains the keys.
-	 * if there ar words surrounded by " " the finction will relate them like one word.
-	 * @param headLine
-	 * @param text
-	 * @return true if contains, false otherwise
-	 */
-	public static boolean contain(String headLine, String text) {
-		text= text.trim();
-		int index =0;
-		int count = 0;
-		String gr = '"'+"";
-		while(index!= -1){
-			count ++;
-			index = text.indexOf(gr ,index+1);
-		}
-		count = count /2;
-		String[] grs = new String[count];
-
-		for(int i=0; i<count; i++){
-			int start = text.indexOf(gr);
-			int end = text.indexOf(gr, start+1);
-			grs[i]= text.substring(start, end+1);
-			grs[i]= grs[i].replaceAll(gr, "");
-			text= text.substring(0, start)+text.substring(end+1);
-		}
-		String[] words = text.split(" ");
-
-		//		System.out.println(Arrays.toString(words));
-		//		System.out.println(Arrays.toString(grs));
-
-		String[] keys = new String[words.length+ grs.length];
-
-		for(int i=0; i<grs.length; i++){
-			keys[i]=grs[i].trim();
-		}
-		for(int i=0; i<words.length; i++){
-			keys[i+grs.length]=words[i].trim();
-		}
-
-		for(int i=0; i<keys.length; i++){
-			if(!headLine.contains(keys[i]))
-				return false;
-		}
-
-		return true;
-	}
+//	/**
+//	 * check if the headline contains the keys.
+//	 * if there ar words surrounded by " " the finction will relate them like one word.
+//	 * @param headLine
+//	 * @param text
+//	 * @return true if contains, false otherwise
+//	 */
+//	public static boolean contain(String headLine, String text) {
+//		text= text.trim();
+//		int index =0;
+//		int count = 0;
+//		String gr = '"'+"";
+//		while(index!= -1){
+//			count ++;
+//			index = text.indexOf(gr ,index+1);
+//		}
+//		count = count /2;
+//		String[] grs = new String[count];
+//
+//		for(int i=0; i<count; i++){
+//			int start = text.indexOf(gr);
+//			int end = text.indexOf(gr, start+1);
+//			grs[i]= text.substring(start, end+1);
+//			grs[i]= grs[i].replaceAll(gr, "");
+//			text= text.substring(0, start)+text.substring(end+1);
+//		}
+//		String[] words = text.split(" ");
+//
+//		//		System.out.println(Arrays.toString(words));
+//		//		System.out.println(Arrays.toString(grs));
+//
+//		String[] keys = new String[words.length+ grs.length];
+//
+//		for(int i=0; i<grs.length; i++){
+//			keys[i]=grs[i].trim();
+//		}
+//		for(int i=0; i<words.length; i++){
+//			keys[i+grs.length]=words[i].trim();
+//		}
+//
+//		for(int i=0; i<keys.length; i++){
+//			if(!headLine.contains(keys[i]))
+//				return false;
+//		}
+//
+//		return true;
+//	}
 
 	/**
 	 * this finction write a String arr to the last row in sheet
@@ -214,6 +205,11 @@ public class Funcs {
 		return str;
 	}
 
+	/**
+	 * replase " with ' ' (space)
+	 * @param text
+	 * @return
+	 */
 	public static String SearchField(String text) {
 		String newStr = text;
 		if(text.indexOf('"'+"")!=-1){
