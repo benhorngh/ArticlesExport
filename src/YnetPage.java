@@ -1,4 +1,5 @@
 import java.io.FileWriter;
+
 import java.io.IOError;
 import java.io.IOException;
 import java.text.ParseException;
@@ -26,89 +27,74 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  *
  */
 public class YnetPage extends Page  {
-
-
-	public  ArticlesRow urlHandler(String url, boolean bodyOnly) {
-
-		ArticlesRow ar = new ArticlesRow();
+	
+	
+	
+	public YnetPage(WindowState window){
+		super();
+		this.window = window;
+		this.SiteName="Ynet";
+	}
+	
+	
+	
+	
+	
+	
+	@Override
+	public String getTitle(){
+		WebElement hl= driver.findElements(By.className("art_header_title")).get(0);
+		moveTo(driver, hl);
+		return hl.getText();
+	}
+	@Override
+	public String getSubTitle(){
+		String str="";
 		try{
+			WebElement shl= driver.findElement(By.className("art_header_sub_title"));
+			str=shl.getText();
+		}
+		catch(NoSuchElementException e){System.out.println("no subtitle");
 
-			sleep(2000);
+		}
+		return str;
+	}
+	
+	@Override
+	public String getReporter(){
+		String str="";
+		WebElement rpr= driver.findElements(By.className("art_header_footer_author")).get(0);
+		str=rpr.getText();
+		return str;
 
-			//headline
-			WebElement hl= driver.findElements(By.className("art_header_title")).get(0);
-			String headline=hl.getText();
-
-			moveTo(driver, hl);
-
-
-			//subheadline
-			String subheadline="";
-			try{
-				WebElement shl= driver.findElement(By.className("art_header_sub_title"));
-				subheadline=shl.getText();
-			}
-			catch(NoSuchElementException e){System.out.println("no subtitle");
-
-			}
-
-			//publish date
+	}
+	@Override
+	public String getDate(){
+		String str="";
+		try{
 			WebElement pt= driver.findElements(By.className("art_header_footer")).get(0);
 			String[] dt =pt.getText().split(":")[1].split(",");
-			String publishDate=dt[0].trim();
-
-			//reporter
-			WebElement rpr= driver.findElements(By.className("art_header_footer_author")).get(0);
-			String reporter=rpr.getText();
-
-			//body
-			List<WebElement> body =  driver.findElements(By.xpath("//*[@class='text14']/span/p"));
-			ArrayList<WebElement> allPh = new ArrayList<WebElement>(body);
-			String article="";
-			for(int l=0; l <allPh.size(); l++){
-				article+=allPh.get(l).getText();
-			}
-
-			if(bodyOnly){
-				ar.body = article;
-				return ar;
-			}
-
-
-
-			ArrayList<CommentRow> cmmts = getComments(url, ar.num);
-
-			ar.body = article;
-			ar.site = "Ynet";
-			ar.date =publishDate;
-			ar.reporter = reporter;
-			ar.headLine = headline;
-			ar.subHeadLine = subheadline;
-			ar.comments = cmmts;
-			//			ar.WriteToFile();
-			//			CommentRow.WriteToFile(cmmts);
-
-
-		}catch (Exception e){
-			e.printStackTrace();
+			str=dt[0].trim();
 		}
-		return ar;
+		catch(Exception e){}
+		return str;
+	}
+	@Override
+	public String getBody(){
+		String str="";
+		List<WebElement> body =  driver.findElements(By.xpath("//*[@class='text14']/span/p"));
+		ArrayList<WebElement> allPh = new ArrayList<WebElement>(body);
+		for(int l=0; l <allPh.size(); l++){
+			str+=allPh.get(l).getText();
+		}
+		return str;
 	}
 
-	/**
-	 * this function get all the comments
-	 * @param url
-	 * @param articleNum
-	 * @return all the comments connected
-	 */
-	public  ArrayList<CommentRow> getComments(String url, int articleNum) {
-		ArrayList<CommentRow>  cmmt =  commentSecction(url, articleNum);
-		return cmmt;
-
-	}
+	
 
 
-	public  ArrayList<CommentRow>  commentSecction(String url, int articleNum)  {
+	@Override
+	public  ArrayList<CommentRow>  commentSecction()  {
 		ArrayList<CommentRow> linesToWire=null;
 
 		boolean IsComments=true;
@@ -135,7 +121,7 @@ public class YnetPage extends Page  {
 		linesToWire=new ArrayList<CommentRow>();
 		while(IsComments) {
 
-			readComments(linesToWire , articleNum);
+			readComments(linesToWire);
 
 			try {
 				//search for "next" button
@@ -158,7 +144,8 @@ public class YnetPage extends Page  {
 		return linesToWire;
 	}
 
-	public void readComments(ArrayList<CommentRow> commentsArr, int articleNum){
+	@Override
+	public void readComments(ArrayList<CommentRow> commentsArr){
 		int last=1;
 
 		WebElement Commentdiv= driver.findElements(By.className("art_tkb")).get(0);
@@ -172,7 +159,8 @@ public class YnetPage extends Page  {
 		//		List<WebElement> blocks=Commentdiv.findElements(By.xpath("//*[contains(@id, 'tcontentdiv')]"));
 		moveTo(driver, talkbacks);
 
-
+	
+		int prev = 0;
 		for (WebElement we:blocks){ //for every comment, do:
 
 			try {
@@ -200,12 +188,20 @@ public class YnetPage extends Page  {
 			WebElement text=we.findElement(By.xpath("./div[contains(@id, 'ttextcont')]"));
 
 
-
+			boolean org = true;
 			String ghl = getHeadline(headline.getText());
 			String gtb = getTalkbackist(headline.getText());
 			if(!number.getText().isEmpty()){
 				last = setConvNum(number.getText());
 			}
+			if(prev == last){
+				org = false;
+			}
+			else{
+				prev = last;
+				org = true;
+			}
+			
 
 			String date=getDate(gtb);
 			String body= text.getText();
@@ -215,14 +211,10 @@ public class YnetPage extends Page  {
 
 
 
-			CommentRow cr = new CommentRow("Ynet", articleNum, gtb, date, ghl, body, last);
-
+			CommentRow cr = new CommentRow("Ynet", gtb, date, ghl, body, last, org);
 
 
 			commentsArr.add(cr);
-
-
-
 
 		}
 	}
@@ -239,6 +231,7 @@ public class YnetPage extends Page  {
 		return gtb.substring(gtb.indexOf('(')+1, gtb.indexOf('(')+9);
 	}
 	private static int setConvNum(String text) {
+
 		try{
 			return Integer.parseInt(text.substring(0, text.length()-1));
 		}
@@ -260,7 +253,6 @@ public class YnetPage extends Page  {
 	private static String getTalkbackist(String text) {
 		String[] arr = text.split("\n");
 		String str="";
-
 
 		try{
 			str = arr[1];

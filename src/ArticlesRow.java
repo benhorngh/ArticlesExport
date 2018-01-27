@@ -1,21 +1,24 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import javax.sound.midi.Synthesizer;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 /**
+ * 
  * @author Ben Horn
  * @since 1/2018
+ * 
+ * This class present one article.
  *
  */
+
+
 public class ArticlesRow {
 	public int num;
 	public String headLine;
+	public String URL;
 	public String subHeadLine;
 	public String date;
 	public String reporter;
@@ -24,11 +27,9 @@ public class ArticlesRow {
 	public ArrayList<CommentRow> comments;
 	public int numOfWords;
 
-	static int counter=1;
+	public static int counter=1;
 
-	public String getCommentsString(){
-		return CommentRow.wireAllComments(this.comments);
-	}
+	
 
 	public ArticlesRow(){
 		this.num=counter;
@@ -36,22 +37,36 @@ public class ArticlesRow {
 		headLine="";
 		subHeadLine="";
 		date="";
+		URL="";
 		reporter="";
 		site="";
 		body="";
 		comments=new ArrayList<CommentRow>() ;
 		numOfWords=0;
 	}
+	
+	/**
+	 * @return all comment's title+body connected.
+	 */
+	public String getCommentsString(){
+		return CommentRow.wireAllComments(this.comments);
+	}
 
 
+	/**
+	 * write this. article
+	 */
 	public void WriteToFile() {
 		XSSFSheet sheet = Main.workbook.getSheet("Articles");
 		numOfWords=body.split(" ").length;
-		String[] row = {num+"", site, date, reporter, numOfWords+"", headLine, subHeadLine, body, getCommentsString()};
+		String[] row = {num+"", site, URL, date, reporter, numOfWords+"", headLine, subHeadLine, body,"","", getCommentsString()};
 		Funcs.StringArrToLastRow(row, sheet);
-
 	}
 	
+	/**
+	 * write list of articles to file  
+	 * @param Reports -list with ArticlesRow objects
+	 */
 	public static void WriteToFile(List<ArticlesRow> Reports) {
 		for(int i=0; i<Reports.size(); i++){
 			Reports.get(i).WriteToFile();
@@ -60,17 +75,18 @@ public class ArticlesRow {
 
 	}
 
-
-
-
-
-
-
-
-
-
-
-
+	/**
+	 * update Articlenum for each comment
+	 * @param cmmts -List of comments, belong to this article
+	 */
+	public void setComments(ArrayList<CommentRow> cmmts) {
+		if(cmmts==null) return;
+		for(int i=0; i<cmmts.size(); i++){
+			cmmts.get(i).ArticleNum = this.num;
+		}
+		this.comments = cmmts;
+		
+	}
 
 
 	/**
@@ -106,9 +122,11 @@ public class ArticlesRow {
 		headLine = Funcs.clean(headLine);
 		reporter = Funcs.clean(reporter);
 		body = Funcs.clean(body);
-		//		comments = Funcs.clean(getCommentsString);
 		date = Funcs.clean(date);
 	}
+
+		
+	
 
 	
 

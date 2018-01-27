@@ -8,6 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
  * @author Ben Horn
  * @since 1/2018
  *
+ *This class present one comment
  */
 public class CommentRow {
 
@@ -18,12 +19,13 @@ public class CommentRow {
 	public String headline;
 	public String comment;
 	public int convNum;
-
+	public boolean original;
 
 
 	public CommentRow(){
 		ArticleNum=0;
 		site="";
+		original = true;
 		talkbakist="";
 		date="";
 		headline="";
@@ -31,17 +33,12 @@ public class CommentRow {
 		convNum=0;
 	}
 
-
 	
-
-
-	
-
-	public CommentRow(String site, int artclNum, String tkbk, String date, String ttl, String cmmt, int cmmNum) {
+	public CommentRow(String site, String tkbk, String date, String ttl, String cmmt, int cmmNum, boolean org) {
 		this.site = site;
-		this.ArticleNum = artclNum;
 		this.talkbakist = tkbk;
 		this.date = date;
+		this.original = org;
 		this.headline = ttl;
 		this.comment = cmmt;
 		this.convNum = cmmNum;
@@ -50,10 +47,12 @@ public class CommentRow {
 
 
 
-
+	/**
+	 * write to file one comment
+	 */
 	public void WriteToFile() {
 		XSSFSheet sheet = Main.workbook.getSheet("comments");
-		String[] row = {ArticleNum+"", site, convNum+"" ,talkbakist,date, headline, comment};
+		String[] row = {ArticleNum+"", site, convNum+"" , ""+original,talkbakist,date, headline, comment};
 		Funcs.StringArrToLastRow(row, sheet);
 	}
 
@@ -90,13 +89,17 @@ public class CommentRow {
 	}
 
 
+	/**
+	 * 
+	 * @param cmmts List with all comments
+	 * @return
+	 */
 	public static String wireAllComments(ArrayList<CommentRow> cmmts) {
 		String allc="";
 
 		for(int i=0; i<cmmts.size(); i++){
 			allc+=cmmts.get(i).headline+" : "+cmmts.get(i).comment;
 		}
-
 		return allc;
 	}
 
@@ -104,9 +107,7 @@ public class CommentRow {
 	public static void WriteToFile(ArrayList<CommentRow> cmmts) {
 		for(int i=0; i<cmmts.size(); i++){
 			cmmts.get(i).WriteToFile();
-
 		}
-
 	}
 
 

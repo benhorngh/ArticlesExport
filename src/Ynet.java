@@ -1,20 +1,12 @@
-import java.io.IOException;
-
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
 
 
 
@@ -25,22 +17,22 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
  */
 public class Ynet extends  Site {
 	
-	static final String url="http://www.Ynet.co.il";
+	static final String url="https://www.Ynet.co.il";
 	
 	
 	
 	
 	public Ynet(){
 		super();
-		this.page = new YnetPage();
+		this.window = WindowState.Background;
+		this.page = new YnetPage(window);
 	}
 	
 	
-
+	@Override
 	public List<String> findLinks(String textToSearch,String textToCompare, int numOfArticles, state state) {
 
 		int maxSearch = 50;
-
 
 		//open web
 		driver = startWebDriver(url);
@@ -65,7 +57,9 @@ public class Ynet extends  Site {
 			textField.sendKeys(searchf);
 
 		}catch (NullPointerException e) {e.printStackTrace(); return null;}
-
+		catch (NoSuchFrameException e) {e.printStackTrace(); return null;}
+		catch (NoSuchElementException e) {e.printStackTrace(); return null;}
+		
 
 		//get results
 		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
@@ -160,41 +154,13 @@ public class Ynet extends  Site {
 	}
 
 	
-	public boolean bodyState(String link, String textToCompare) {
-		boolean getLink=true;
-		
-		this.page.driver= startWebDriver(link);
-		String body="";
 
-		body = page.urlHandler(link, true).body;
-
-		if(!contain(body, textToCompare)){
-			System.err.println("not Found.");
-			getLink = false;
-		}
-		else System.err.println("okey!!");
-		page.driver.close();
-		sleep(10000);
-		return getLink;
-	}
-
+	@Override
 	public boolean headlineState(String link, String textToCompare) {
 		return true;
 	}
 
-	public boolean commentState(String link, String textToCompare) {
-		boolean getLink=true;
-		page.driver= startWebDriver(link);
-		String comments=CommentRow.wireAllComments(page.getComments(link, 1));
-		if(!contain(comments, textToCompare)){
-			System.err.println("not Found.");
-			getLink = false;
-		}
-		else System.err.println("okey!!");
-		page.driver.close();
-		sleep(10000);
-		return getLink;
-	}
+	
 
 
 }

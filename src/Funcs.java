@@ -1,12 +1,10 @@
 import java.io.FileWriter;
-
 import java.io.IOException;
-import java.util.Arrays;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -20,25 +18,114 @@ import org.openqa.selenium.interactions.Actions;
  *
  */
 public abstract class Funcs {
-	
+
+	/**
+	 *  the visibility of the webdriver window. by WindowState enum.
+	 */
+	WindowState window = WindowState.Regular;
 
 	
+	public WebDriver startWebDriver(String url){
+		if(this.window == WindowState.Regular){
+			return startRegularWebDriver(url);
+		}
+		if(this.window == WindowState.Background){
+			return startDistanceWebDriver(url);
+		}
+		if(this.window == WindowState.Invisible){
+			return startHeadlessWebDriver(url);
+		}
+		return null;
+	}
+	
+	
 	/**
-	 * this function open and start new WebDriver
+	 * this function open and start new visable WebDriver
 	 * @param url -first url
 	 * @return new webDriver open with param url
 	 */
-	public static WebDriver startWebDriver(String url){
+	public WebDriver startRegularWebDriver(String url){
 		WebDriver driver;
 		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments("start-maximized");
+//		options.addArguments("--headless");
+		options.addArguments("--start-maximized");
 		driver = new ChromeDriver(options);
+		try{
+//			driver.manage().window().setPosition(new Point(-2000, 0));
+		}
+		catch(Exception e){System.err.println(e);}
+
+
+		if(url.isEmpty() || url.equals(""))
+			return driver;
 		driver.get(url);
 		return driver;
 	}
 	
 	
+	
+	/**
+	 * this function open and start new invisible WebDriver
+	 * @param url -first url
+	 * @return new webDriver open with param url
+	 */
+	public WebDriver startHeadlessWebDriver(String url){
+		WebDriver driver;
+		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--headless");
+		options.addArguments("--start-maximized");
+		driver = new ChromeDriver(options);
+		
+
+
+		if(url.isEmpty() || url.equals(""))
+			return driver;
+		driver.get(url);
+		return driver;
+	}
+	
+	
+	
+	
+	/**
+	 * this function open and start new WebDriver in background
+	 * @param url -first url
+	 * @return new webDriver open with param url
+	 */
+	public WebDriver startDistanceWebDriver(String url){
+		WebDriver driver;
+		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+		ChromeOptions options = new ChromeOptions();
+//		options.addArguments("--headless");
+		options.addArguments("--start-maximized");
+		driver = new ChromeDriver(options);
+		try{
+			driver.manage().window().setPosition(new Point(-2000, 0));
+		}
+		catch(Exception e){System.err.println(e);}
+
+
+		if(url.isEmpty() || url.equals(""))
+			return driver;
+		driver.get(url);
+		return driver;
+	}
+
+
+	/**
+	 * replase " with ' ' (space)
+	 * @param text
+	 * @return
+	 */
+	public String SearchField(String text) {
+		String newStr = text;
+		if(text.indexOf('"'+"")!=-1){
+			newStr=text.replace('"', ' ');
+		}
+		return newStr;
+	}
 
 
 	/**
@@ -46,7 +133,7 @@ public abstract class Funcs {
 	 * @param driver
 	 * @param web element
 	 */
-	public static boolean moveTo(WebDriver driver, WebElement we){
+	public boolean moveTo(WebDriver driver, WebElement we){
 		Actions actions = new Actions(driver);
 		try{
 			actions.moveToElement(we).perform();
@@ -56,66 +143,19 @@ public abstract class Funcs {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * move to element in page. 
 	 * @param driver
 	 * @param web element
 	 */
-	public static boolean moveTo2(WebDriver driver, WebElement we){
+	public boolean moveTo2(WebDriver driver, WebElement we){
 		JavascriptExecutor jse = (JavascriptExecutor)driver;
 		jse.executeScript("arguments[0].scrollIntoView()", we); 
 		return true;
 	}
 
 
-//	/**
-//	 * check if the headline contains the keys.
-//	 * if there ar words surrounded by " " the finction will relate them like one word.
-//	 * @param headLine
-//	 * @param text
-//	 * @return true if contains, false otherwise
-//	 */
-//	public static boolean contain(String headLine, String text) {
-//		text= text.trim();
-//		int index =0;
-//		int count = 0;
-//		String gr = '"'+"";
-//		while(index!= -1){
-//			count ++;
-//			index = text.indexOf(gr ,index+1);
-//		}
-//		count = count /2;
-//		String[] grs = new String[count];
-//
-//		for(int i=0; i<count; i++){
-//			int start = text.indexOf(gr);
-//			int end = text.indexOf(gr, start+1);
-//			grs[i]= text.substring(start, end+1);
-//			grs[i]= grs[i].replaceAll(gr, "");
-//			text= text.substring(0, start)+text.substring(end+1);
-//		}
-//		String[] words = text.split(" ");
-//
-//		//		System.out.println(Arrays.toString(words));
-//		//		System.out.println(Arrays.toString(grs));
-//
-//		String[] keys = new String[words.length+ grs.length];
-//
-//		for(int i=0; i<grs.length; i++){
-//			keys[i]=grs[i].trim();
-//		}
-//		for(int i=0; i<words.length; i++){
-//			keys[i+grs.length]=words[i].trim();
-//		}
-//
-//		for(int i=0; i<keys.length; i++){
-//			if(!headLine.contains(keys[i]))
-//				return false;
-//		}
-//
-//		return true;
-//	}
 
 	/**
 	 * this finction write a String arr to the last row in sheet
@@ -149,7 +189,7 @@ public abstract class Funcs {
 	 * thread sleep for mil milliseconds
 	 * @param mil
 	 */
-	public static void sleep(int mil){
+	public void sleep(int mil){
 		try {
 			Thread.sleep(mil);
 		} catch (InterruptedException e) {
@@ -205,18 +245,7 @@ public abstract class Funcs {
 		return str;
 	}
 
-	/**
-	 * replase " with ' ' (space)
-	 * @param text
-	 * @return
-	 */
-	public static String SearchField(String text) {
-		String newStr = text;
-		if(text.indexOf('"'+"")!=-1){
-			newStr=text.replace('"', ' ');
-		}
-		return newStr;
-	}
+	
 
 
 

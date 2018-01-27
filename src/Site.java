@@ -13,9 +13,12 @@ public abstract class Site extends Funcs {
 
 	static WebDriver driver;
 	Page page;
-	
-	
-	
+
+
+
+
+
+
 	/**
 	 * the Main function for Site. start the search and build the List of reports.
 	 * @param textToSearch -text to the search field
@@ -35,7 +38,7 @@ public abstract class Site extends Funcs {
 		return null;
 	}
 
-	 
+
 	/**
 	 * @param textToSearch -text to the search field
 	 * @param textToCompare -text to search inside the article
@@ -51,7 +54,25 @@ public abstract class Site extends Funcs {
 	 * @param textToCompare -text to compare with
 	 * @return true if the body contains the text, otherwise false
 	 */
-	public abstract boolean bodyState(String link, String textToCompare);
+	public boolean bodyState(String link, String textToCompare) {
+		boolean getLink=true;
+		try{
+			this.page.driver= startWebDriver(link);
+			String body="";
+			body = page.urlHandler(link, true).body;
+			if(!contain(body, textToCompare)){
+				System.err.println("not Found.");
+				ArticlesRow.counter--;
+				getLink = false;
+			}
+			else System.err.println("okey!!");
+			page.driver.close();
+			sleep(10000);
+
+		}
+		catch(Exception e){return false;}
+		return getLink;
+	}
 
 	/**
 	 * this function get the title of the report from link, and compare to attached string
@@ -59,7 +80,25 @@ public abstract class Site extends Funcs {
 	 * @param textToCompare -text to compare with
 	 * @return true if the title contains the text, otherwise false
 	 */
-	public abstract boolean headlineState(String link, String textToCompare);
+	public boolean headlineState(String link, String textToCompare) {
+		boolean getLink=true;
+		try{
+			this.page.driver= startWebDriver(link);
+			String title="";
+			title = page.urlHandler(link, true).headLine;
+			if(!contain(title, textToCompare)){
+				System.err.println("not Found.");
+				ArticlesRow.counter--;
+				getLink = false;
+			}
+			else System.err.println("okey!!");
+			page.driver.close();
+			sleep(10000);
+		}
+		catch(Exception e){return false;}
+		return getLink;
+	}
+
 
 	/**
 	 * this function get the comments of the report in link, and compare to attached string
@@ -67,19 +106,34 @@ public abstract class Site extends Funcs {
 	 * @param textToCompare -text to compare with
 	 * @return true if the comments contains the text, otherwise false
 	 */
-	public abstract boolean commentState(String link, String textToCompare);
-	
-	
-	
+	public boolean commentState(String link, String textToCompare) {
+		boolean getLink=true;
+		try{
+			page.driver= startWebDriver(link);
+			String comments=CommentRow.wireAllComments(page.getComments());
+			if(!contain(comments, textToCompare)){
+				System.err.println("not Found.");
+//				ArticlesRow.counter--;
+				getLink = false;
+			}
+			else System.err.println("okey!!");
+			page.driver.close();
+			sleep(10000);
+		}
+		catch(Exception e){return false;}
+		return getLink;
+	}
+
+
 
 	/**
 	 * check if the headline contains the keys.
 	 * if there ar words surrounded by " " the finction will relate them like one word.
-	 * @param headLine
+	 * @param big text
 	 * @param text
 	 * @return true if contains, false otherwise
 	 */
-	public static boolean contain(String headLine, String text) {
+	public boolean contain(String bigText, String text) {
 
 		text= text.trim();
 		int index =0;
@@ -114,7 +168,7 @@ public abstract class Site extends Funcs {
 		}
 
 		for(int i=0; i<keys.length; i++){
-			if(!headLine.contains(keys[i]))
+			if(!bigText.contains(keys[i]))
 				return false;
 		}
 
