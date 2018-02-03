@@ -13,9 +13,29 @@ public abstract class Site extends Funcs {
 
 	static WebDriver driver;
 	Page page;
+	Boolean DateRange;
+	String fromDate;
+	String toDate;
+	String textToSearch;
+	String textToCompare;
+	int numOfArticles;
+	int maxSearch = 50;
+	state state;
+	
 
 
 
+
+	public Site(){}
+	
+	public Site(String tts, String ttc, int noa, state stat, String sd, String ed) {
+		this.textToSearch = tts;
+		this.textToCompare = ttc;
+		this.numOfArticles = noa;
+		this.state = stat;
+		this.fromDate = sd;
+		this.toDate = ed;
+	}
 
 
 
@@ -27,7 +47,7 @@ public abstract class Site extends Funcs {
 	 * @param state -type of search. the types are specified in Enum state javaDoc
 	 * @return List with all the Articles that found.
 	 */
-	public List<ArticlesRow> Start(String textToSearch,String textToCompare, int numOfArticles, state state){
+	public List<ArticlesRow> Start(){
 		List<String> articles = findLinks(textToSearch, textToCompare,numOfArticles, state);
 		driver.quit();
 		if(articles!=null){
@@ -54,7 +74,7 @@ public abstract class Site extends Funcs {
 	 * @param textToCompare -text to compare with
 	 * @return true if the body contains the text, otherwise false
 	 */
-	public boolean bodyState(String link, String textToCompare) {
+	public boolean bodyState(String link) {
 		boolean getLink=true;
 		try{
 			this.page.driver= startWebDriver(link);
@@ -68,6 +88,7 @@ public abstract class Site extends Funcs {
 			else System.err.println("okey!!");
 			page.driver.close();
 			sleep(10000);
+			
 
 		}
 		catch(Exception e){return false;}
@@ -80,7 +101,7 @@ public abstract class Site extends Funcs {
 	 * @param textToCompare -text to compare with
 	 * @return true if the title contains the text, otherwise false
 	 */
-	public boolean headlineState(String link, String textToCompare) {
+	public boolean headlineState(String link) {
 		boolean getLink=true;
 		try{
 			this.page.driver= startWebDriver(link);
@@ -106,14 +127,14 @@ public abstract class Site extends Funcs {
 	 * @param textToCompare -text to compare with
 	 * @return true if the comments contains the text, otherwise false
 	 */
-	public boolean commentState(String link, String textToCompare) {
+	public boolean commentState(String link) {
 		boolean getLink=true;
 		try{
 			page.driver= startWebDriver(link);
 			String comments=CommentRow.wireAllComments(page.getComments());
 			if(!contain(comments, textToCompare)){
 				System.err.println("not Found.");
-//				ArticlesRow.counter--;
+				//				ArticlesRow.counter--;
 				getLink = false;
 			}
 			else System.err.println("okey!!");
@@ -174,5 +195,9 @@ public abstract class Site extends Funcs {
 
 		return true;
 	}
+
+
+
+
 
 }

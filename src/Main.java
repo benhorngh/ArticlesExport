@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 
+
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,13 +24,16 @@ public class Main {
 		String textToCompare = "ישראל";
 		state stat= state.regular;  
 		int numOfArticles = 5;
-		String fileName = "excelFile";
+
 
 		boolean ynet = false;
 		boolean WSJ = false;
 		boolean TM = true;
 
-		play(textToSearch, textToCompare, stat, numOfArticles, fileName, ynet, WSJ, TM);
+		String startDate="1/1/2017";
+		String endDate="1/1/2018";
+
+		play(textToSearch, textToCompare, stat, numOfArticles, startDate,endDate, ynet, WSJ, TM);
 
 		System.out.println();
 		System.out.println("Done.");
@@ -40,58 +44,62 @@ public class Main {
 
 
 
-	private static void play(String tts, String ttc, state stat, int noa, String fn, 
+	private static void play(String tts, String ttc, state stat, int noa, String sd,String ed, 
 			boolean ynet, boolean WSJ, boolean TM) {
-		
-		Site ynetS = new Ynet();
-		Site WSJS = new WallStreetJournal();
-		Site TMS = new TheMarker();
+
+		String fileName = "excelFile";
+
+		Site ynetS = new Ynet(tts, ttc, noa, stat, sd,ed);
+		Site WSJS = new WallStreetJournal(tts, ttc, noa, stat, sd,ed);
+		Site TMS = new TheMarker(tts, ttc, noa, stat, sd,ed);
 
 		startWriters();
-		
-		
-		
+
+
+
 		if(ynet){
 			List<ArticlesRow> YnetReports=null;
 			try{
-				YnetReports = ynetS.Start(tts, ttc,  noa, stat);
+				YnetReports = ynetS.Start();
 			}
 			catch(Exception e){System.err.println("Ynet Faild ");
 			e.printStackTrace();}
-			
+
 			if(YnetReports!=null)
 				ArticlesRow.WriteToFile(YnetReports);
 		}
-		
-		
+
+
 		if(WSJ){
 			List<ArticlesRow> WSJReports=null;
 			try{
-				WSJReports = WSJS.Start(tts, ttc,  noa, stat);
+
+				WSJReports = WSJS.Start();
 			}
 			catch(Exception e){System.err.println("Wall Street Journal Faild ");
 			e.printStackTrace();}
-			
+
 			if(WSJReports!=null)
 				ArticlesRow.WriteToFile(WSJReports);
 		}
-		
+
 		if(TM){
 			List<ArticlesRow> TMReports=null;
 			try{
-				TMReports = TMS.Start(tts, ttc,  noa, stat);
+				
+				 TMReports = TMS.Start();
 			}
 			catch(Exception e){System.err.println("The Marker Faild ");
 			e.printStackTrace();}
-			
+
 			if(TMReports!=null)
 				ArticlesRow.WriteToFile(TMReports);
 		}
 
-		
 
-		closeWriters(fn);
-		
+
+		closeWriters(fileName);
+
 	}
 
 

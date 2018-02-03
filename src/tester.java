@@ -16,7 +16,7 @@ public class tester {
 		
 		
 		String bigText = "big text in here, long big text. is it gonna work? maybe. hope so.";
-		String text = "text";
+		String text = "text in";
 		assertTrue(funcs.contain(bigText, text));
 
 		text = "text long big";

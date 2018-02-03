@@ -11,9 +11,10 @@ public class WallStreetJournal extends Site {
 	static final String url="http://www.wsj.com";
 
 
-	public WallStreetJournal(){
-		super();
-		this.page = new WSJPage();
+	
+
+	public WallStreetJournal(String tts, String ttc, int noa, state stat, String sd, String ed) {
+		super(tts, ttc, noa, stat, sd,ed);
 	}
 
 
@@ -105,6 +106,7 @@ public class WallStreetJournal extends Site {
 		sleep(30000);
 		return null;
 	}
+
 
 
 

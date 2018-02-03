@@ -6,15 +6,18 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebElement;
 
-public class TheMarker extends Site{
+public class TheMarker extends Site implements DateRange{
 
-	static final String url= "http://www.themarker.com";
+	 final String url= "http://www.themarker.com";
 
 
-	public TheMarker(){
-		super();
+	
+	
+	public TheMarker(String tts, String ttc, int noa, state stat, String sd, String ed) {
+		super(tts, ttc, noa, stat, sd,ed);
 		this.window = WindowState.Invisible;
 		this.page = new TheMarkerPage(window);
+		this.DateRange = true;
 	}
 
 
@@ -53,7 +56,8 @@ public class TheMarker extends Site{
 		catch (NoSuchFrameException e) {e.printStackTrace(); return null;}
 		catch (NoSuchElementException e) {e.printStackTrace(); return null;}
 
-
+		chooseTime();
+		
 		List<String> urls = new ArrayList<String>();
 
 
@@ -66,6 +70,7 @@ public class TheMarker extends Site{
 		int found = 0;
 		String link="", title="";
 		int i=0;
+		int  checks = 0;
 		boolean addLink=false;
 		while(found < numOfArticles){
 
@@ -87,10 +92,10 @@ public class TheMarker extends Site{
 					addLink=true;
 			}
 			if(state==state.body){
-				addLink = bodyState(link, textToCompare);
+				addLink = bodyState(link);
 			}
 			if(state==state.comment){
-				addLink = commentState(link, textToCompare);
+				addLink = commentState(link);
 			}
 			
 			if(addLink){
@@ -100,6 +105,7 @@ public class TheMarker extends Site{
 			addLink=false;
 
 			i++;
+			checks++;
 
 			if(i==6){
 				i=0;
@@ -112,8 +118,42 @@ public class TheMarker extends Site{
 
 				resutls = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
 			}
+			if(checks == maxSearch)
+				return urls;
+			
 		}
 		return urls;
+	}
+
+
+
+
+	@Override
+	public void chooseTime() {
+		fromDate = DateToFormat(this.fromDate);
+		toDate = DateToFormat(this.toDate);
+		
+		if(this.fromDate.isEmpty())
+			return;
+		
+		WebElement tof = driver.findElement(By.className("textOnlySearchForm"));
+		WebElement bttn = tof.findElement(By.cssSelector("#advancedFormOpenBtn"));
+		moveTo2(driver, bttn);
+		sleep(1000);
+		bttn.click();
+		
+		WebElement st = driver.findElement(By.xpath("//*[@name='startDate']"));
+		//startDate
+		
+		
+	}
+
+	
+
+	@Override
+	public String DateToFormat(String date) {
+		
+		return "";
 	}
 	
 	

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -18,23 +19,33 @@ import org.openqa.selenium.interactions.Actions;
 public class Ynet extends  Site {
 	
 	static final String url="https://www.Ynet.co.il";
+
 	
 	
 	
 	
 	public Ynet(){
 		super();
-		this.window = WindowState.Background;
+		this.window = WindowState.Regular;
 		this.page = new YnetPage(window);
+		this.DateRange = false;
 	}
 	
-	
+	public Ynet(String tts, String ttc, int noa, state stat, String sd, String ed) {
+		super(tts, ttc, noa, stat, sd,ed);
+		this.window = WindowState.Background;
+		
+		
+		
+		this.page = new YnetPage(window);
+		this.DateRange = false;
+	}
+
+
 	@Override
 	public List<String> findLinks(String textToSearch,String textToCompare, int numOfArticles, state state) {
 
-		int maxSearch = 50;
-
-		//open web
+			//open web
 		driver = startWebDriver(url);
 
 
@@ -131,11 +142,11 @@ public class Ynet extends  Site {
 
 
 			if(state==state.comment){
-				addLink= commentState(link, textToCompare);
+				addLink= commentState(link);
 			}
 
 			if(state==state.body){
-				addLink= bodyState(link, textToCompare);
+				addLink= bodyState(link);
 			}
 
 			if(addLink){
@@ -156,9 +167,10 @@ public class Ynet extends  Site {
 	
 
 	@Override
-	public boolean headlineState(String link, String textToCompare) {
+	public boolean headlineState(String link) {
 		return true;
 	}
+
 
 	
 

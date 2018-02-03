@@ -109,8 +109,8 @@ public class YnetPage extends Page  {
 			moveTo2(driver, we);
 			we.click();
 			sleep(3000);
-			driver.navigate().refresh();
-			sleep(3000);
+//			driver.navigate().refresh();
+//			sleep(3000);
 
 		}
 		catch (Exception e){
