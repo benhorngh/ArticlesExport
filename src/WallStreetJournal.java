@@ -13,7 +13,7 @@ public class WallStreetJournal extends Site {
 
 	
 
-	public WallStreetJournal(String tts, String ttc, int noa, state stat, String sd, String ed) {
+	public WallStreetJournal(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
 		super(tts, ttc, noa, stat, sd,ed);
 	}
 
@@ -49,7 +49,7 @@ public class WallStreetJournal extends Site {
 		catch (NoSuchElementException e) {e.printStackTrace(); return null;}
 
 		try{
-			WebElement ad = driver.findElement(By.cssSelector("#cx-scrim-wrapper"));
+//			WebElement ad = driver.findElement(By.cssSelector("#cx-scrim-wrapper"));
 			WebElement close = driver.findElement(By.className("close-btn"));
 			close.click();
 		}
@@ -78,7 +78,7 @@ public class WallStreetJournal extends Site {
 			System.out.println("hl: " +headline.getText());
 			
 			title = headline.getText();
-			
+			System.out.println(title);
 			WebElement h3 = results.get(i).findElement(By.xpath("//*[@class='headline']/a"));
 			
 			link=h3.getAttribute("href");
@@ -92,19 +92,25 @@ public class WallStreetJournal extends Site {
 			if(i==20){
 				//TODO click next page, update results List.
 			}
-
-
-
-
-
-
-
-
 		}
 
 
 		sleep(30000);
 		return null;
+	}
+
+
+	@Override
+	public void resultsPage(List<String> urls) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public boolean search() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 

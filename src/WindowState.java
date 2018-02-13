@@ -1,5 +1,5 @@
 
 public enum WindowState {
 
-	Regular, Invisible, Background
+	visible, Invisible, Background
 }

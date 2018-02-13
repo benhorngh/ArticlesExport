@@ -1,21 +1,22 @@
-import java.util.ArrayList;
 import java.util.List;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebElement;
 
+/**
+ * http://www.themarker.com
+ * @author benho
+ *
+ */
 public class TheMarker extends Site implements DateRange{
 
-	 final String url= "http://www.themarker.com";
-
-
 	
-	
-	public TheMarker(String tts, String ttc, int noa, state stat, String sd, String ed) {
+	public TheMarker(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
 		super(tts, ttc, noa, stat, sd,ed);
-		this.window = WindowState.Invisible;
+		this.url= "http://www.themarker.com";
+		this.SiteName = "The Marker";
+		this.window = WindowState.visible;
 		this.page = new TheMarkerPage(window);
 		this.DateRange = true;
 	}
@@ -24,7 +25,7 @@ public class TheMarker extends Site implements DateRange{
 
 
 	@Override
-	public List<String> findLinks() {
+	public boolean search() {
 
 		driver = startWebDriver(url);
 		sleep(10000);
@@ -51,20 +52,27 @@ public class TheMarker extends Site implements DateRange{
 			button.click();
 		}
 
-		catch (NullPointerException e) {e.printStackTrace(); return null;}
-		catch (NoSuchFrameException e) {e.printStackTrace(); return null;}
-		catch (NoSuchElementException e) {e.printStackTrace(); return null;}
+		catch (NullPointerException e) {e.printStackTrace(); return false;}
+		catch (NoSuchFrameException e) {e.printStackTrace(); return false;}
+		catch (NoSuchElementException e) {e.printStackTrace(); return false;}
 
 		chooseTime();
 		
-		List<String> urls = new ArrayList<String>();
+		return true;
+	}
 
 
-		WebElement box = driver.findElement(By.xpath("//*[contains(@class, 'border-box no-border-box list')]"));
+
+
+	
+
+
+
+	@Override
+	public void resultsPage(List<String> urls) {
+//		WebElement box = driver.findElement(By.xpath("//*[contains(@class, 'border-box no-border-box list')]"));
 
 		List<WebElement> resutls = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
-
-//		System.out.println(resutls.size());
 
 		int found = 0;
 		String link="", title="";
@@ -73,18 +81,14 @@ public class TheMarker extends Site implements DateRange{
 		boolean addLink=false;
 		while(found < numOfArticles){
 
-
 			WebElement ttl = resutls.get(i).findElement(By.className("caption"));
 			link = ttl.getAttribute("href");
 			System.out.println(link);
-
 			
 			title = ttl.getText();
 			System.out.println(title);
 
 			addLink = stateHandle(link, title);
-
-			
 			
 			if(addLink){
 				urls.add(link);
@@ -107,16 +111,11 @@ public class TheMarker extends Site implements DateRange{
 				resutls = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
 			}
 			if(checks == maxSearch)
-				return urls;
-			
+				return;
 		}
-		return urls;
+
+		
 	}
-
-
-
-
-	
 
 
 
@@ -135,7 +134,7 @@ public class TheMarker extends Site implements DateRange{
 		sleep(1000);
 		bttn.click();
 		
-		WebElement st = driver.findElement(By.xpath("//*[@name='startDate']"));
+//		WebElement st = driver.findElement(By.xpath("//*[@name='startDate']"));
 		//startDate
 		
 		

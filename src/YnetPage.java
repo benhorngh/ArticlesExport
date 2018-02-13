@@ -1,28 +1,14 @@
-import java.io.FileWriter;
-
-import java.io.IOError;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
- * @author Ben Horn and Sefi Erlich
+ * @author benho
  * @since 1/2018
  *
  */
@@ -33,7 +19,6 @@ public class YnetPage extends Page  {
 	public YnetPage(WindowState window){
 		super();
 		this.window = window;
-		this.SiteName="Ynet";
 	}
 	
 	
@@ -208,11 +193,7 @@ public class YnetPage extends Page  {
 			ghl= fixTitle( ghl, body );
 			gtb= fixName(gtb);
 
-
-
-
 			CommentRow cr = new CommentRow("Ynet", gtb, date, ghl, body, last, org);
-
 
 			commentsArr.add(cr);
 
@@ -240,6 +221,7 @@ public class YnetPage extends Page  {
 			return -1;
 		}
 	}
+	@SuppressWarnings("finally")
 	private static String getHeadline(String text) {
 		String[] arr = text.split("\n");
 		String str="";
@@ -247,9 +229,11 @@ public class YnetPage extends Page  {
 		try{
 			str = arr[0];
 		}
+		catch(Exception e){}
 		finally{return str;}
 
 	}
+	@SuppressWarnings("finally")
 	private static String getTalkbackist(String text) {
 		String[] arr = text.split("\n");
 		String str="";
@@ -257,6 +241,7 @@ public class YnetPage extends Page  {
 		try{
 			str = arr[1];
 		}
+		catch(Exception e){}
 		finally{return str;}
 	}
 

@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -12,43 +10,41 @@ import org.openqa.selenium.interactions.Actions;
 
 
 /**
- * @author Ben Horn
+ * https://www.Ynet.co.il
+ * @author benho
  * @since 1/2018
  *
  */
 public class Ynet extends  Site {
-	
-	static final String url="https://www.Ynet.co.il";
 
-	
-	
-	
-	
+
 	public Ynet(){
 		super();
-		this.window = WindowState.Regular;
-		this.page = new YnetPage(window);
-		this.DateRange = false;
-	}
-	
-	
-	public Ynet(String tts, String ttc, int noa, state stat, String sd, String ed) {
-		super(tts, ttc, noa, stat, sd,ed);
+		this.url = "https://www.Ynet.co.il";
 		this.window = WindowState.Background;
 		this.page = new YnetPage(window);
 		this.DateRange = false;
 	}
 
 
-//	@Override
-	public List<String> findLinks() {
+	public Ynet(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
+		super(tts, ttc, noa, stat, sd,ed);
+		this.url = "https://www.Ynet.co.il";
+		this.SiteName="Ynet";
+		this.window = WindowState.Background;
+		this.page = new YnetPage(window);
+		this.DateRange = false;
+	}
 
-			//open web
+
+	@Override
+	public boolean search() {
+
 		driver = startWebDriver(url);
-
-
+		sleep(10000);
 		//find searchField section and open search window
 		try {
+			//open web
 
 			WebElement search = driver.findElement(By.cssSelector("#mainSrchBoxInput"));
 			moveTo2(driver, search);
@@ -65,29 +61,35 @@ public class Ynet extends  Site {
 			textField.clear();
 			textField.sendKeys(searchf);
 
-		}catch (NullPointerException e) {e.printStackTrace(); return null;}
-		catch (NoSuchFrameException e) {e.printStackTrace(); return null;}
-		catch (NoSuchElementException e) {e.printStackTrace(); return null;}
-		
+		}catch (NullPointerException e) {e.printStackTrace(); return false ;}
+		catch (NoSuchFrameException e) {e.printStackTrace(); return false ;}
+		catch (NoSuchElementException e) {e.printStackTrace(); return false ;}
 
+		return true;
+
+	}
+
+
+
+
+
+	@Override
+	public void resultsPage(List<String> urls) {
 		//get results
 		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		WebElement lis=null;
 		try {
 			lis = driver.findElements(By.cssSelector("#su_w_s_search_content_list")).get(0);
-		}catch (NullPointerException e) {System.err.println(e); return null;}
-
-		List<String> urls = new ArrayList<String>();
+		}catch (NullPointerException e) {System.err.println(e); return;}
 
 		boolean getLink = true;
 		boolean addLink = false;
-		if(state==state.regular) {
+		if(state==SearchState.regular) {
 			addLink = true;
 		}
-		if(state==state.headline) {
+		if(state==SearchState.headline) {
 			getLink = false;
 		}
-
 
 		int found=0, i=0;
 		String link="";
@@ -106,7 +108,7 @@ public class Ynet extends  Site {
 				sleep(2500);
 
 
-				if(state==state.headline){
+				if(state==SearchState.headline){
 					if((i+2)%10==0){
 						moveTo(driver, res);
 					}
@@ -139,11 +141,11 @@ public class Ynet extends  Site {
 			} catch (Exception e){ System.err.println(e); }
 
 
-			if(state==state.comment){
+			if(state==SearchState.comment){
 				addLink= commentState(link);
 			}
 
-			if(state==state.body){
+			if(state==SearchState.body){
 				addLink= bodyState(link);
 			}
 
@@ -158,33 +160,11 @@ public class Ynet extends  Site {
 			if(i==maxSearch)
 				break;
 		}
-		
-		//remove duplicate with "http" and "https".
-		String url1, url2;
-		for(i=0; i<urls.size()-1; i++){
-			url1 = urls.get(i);
-			url2 = urls.get(i+1);
-			url1 = url1.substring(url1.indexOf("://"), url1.length());
-			url1 = url2.substring(url2.indexOf("://"), url2.length());
-			if(url1.equals(url2)){
-				if(url1.contains("https"))
-					urls.remove(i+1);
-				else urls.remove(i);	
-			}
-		}
-		return urls;
 
 	}
 
-	
-
-	@Override
-	public boolean headlineState(String link) {
-		return true;
-	}
 
 
-	
 
 
 }

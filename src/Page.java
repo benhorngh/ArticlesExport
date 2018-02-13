@@ -14,7 +14,7 @@ public abstract class Page extends Funcs{
 
 
 	public WebDriver driver;
-	String SiteName ;
+	
 
 	/**
 	 * @param urls -List with the urls of the reports. 

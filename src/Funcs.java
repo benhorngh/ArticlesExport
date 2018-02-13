@@ -22,8 +22,8 @@ public abstract class Funcs {
 	/**
 	 *  the visibility of the webdriver window. by WindowState enum.
 	 */
-	WindowState window = WindowState.Regular;
-
+	WindowState window = WindowState.visible;
+	String SiteName ="";
 
 	/**
 	 * start webDriver with url in this.window of visability
@@ -31,8 +31,8 @@ public abstract class Funcs {
 	 * @return started driver
 	 */
 	public WebDriver startWebDriver(String url){
-		if(this.window == WindowState.Regular){
-			return startRegularWebDriver(url);
+		if(this.window == WindowState.visible){
+			return startVisibleWebDriver(url);
 		}
 		if(this.window == WindowState.Background){
 			return startDistanceWebDriver(url);
@@ -49,7 +49,7 @@ public abstract class Funcs {
 	 * @param url -first url
 	 * @return new webDriver open with param url
 	 */
-	public WebDriver startRegularWebDriver(String url){
+	public WebDriver startVisibleWebDriver(String url){
 		WebDriver driver;
 		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 		ChromeOptions options = new ChromeOptions();

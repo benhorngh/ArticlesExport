@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.WebDriver;
@@ -11,7 +12,8 @@ import org.openqa.selenium.WebDriver;
 
 public abstract class Site extends Funcs implements Runnable {
 
-	static WebDriver driver;
+	String url="";
+	WebDriver driver;
 	Page page;
 	Boolean DateRange;
 	String fromDate;
@@ -20,7 +22,9 @@ public abstract class Site extends Funcs implements Runnable {
 	String textToCompare;
 	int numOfArticles;
 	int maxSearch = 200;
-	state state;
+	SearchState state;
+
+
 
 	List<ArticlesRow> articles;
 
@@ -31,7 +35,7 @@ public abstract class Site extends Funcs implements Runnable {
 
 
 	public Site(){}
-	
+
 	/**
 	 * 
 	 * @param textToSearch -text to the search field
@@ -42,7 +46,7 @@ public abstract class Site extends Funcs implements Runnable {
 	 * @param endAt ending date
 	 */
 	public Site(String textToSearch, String textToCompare, int numOfArticles,
-			state state, String startAt, String endAt) {
+			SearchState state, String startAt, String endAt) {
 		this.textToSearch = textToSearch;
 		this.textToCompare = textToCompare;
 		this.numOfArticles = numOfArticles;
@@ -59,12 +63,13 @@ public abstract class Site extends Funcs implements Runnable {
 	 */
 	public List<ArticlesRow> Start(){
 		List<String> articles = findLinks();
-		driver.quit();
-		if(articles!=null){
-			System.out.println("find "+ articles.size() +" articles.");
+
+
+		if(articles!=null && !articles.isEmpty()){
+			System.out.println("find "+ articles.size() +" articles in "+this.SiteName);
 			return page.linksToList(articles);
 		}
-		else System.err.println("Faild");
+		else System.err.println(this.SiteName+" fail");
 		return null;
 	}
 
@@ -72,7 +77,37 @@ public abstract class Site extends Funcs implements Runnable {
 	/**
 	 * @return List of all links to the reports
 	 */
-	public abstract List<String> findLinks();
+	public List<String> findLinks(){
+		List<String> urls = new ArrayList<String>();
+		try{
+			
+			boolean search = search();
+			if(search) {
+				resultsPage(urls);
+				removeDuplicate(urls);
+			}
+		}
+		catch(Exception e){e.printStackTrace();}
+		try{
+		driver.quit();
+		}
+		catch(Exception e){}
+		return urls;
+	}
+
+
+	/**
+	 * search end open result page
+	 */
+	public abstract boolean search();
+
+
+	/**
+	 * after the search, this method add to url the links to articles.
+	 * @param urls
+	 */
+	public abstract void resultsPage(List<String> urls) ;
+
 
 	/**
 	 * this function get the body of the report from link, and compare to attached string
@@ -83,11 +118,11 @@ public abstract class Site extends Funcs implements Runnable {
 		boolean getLink=true;
 		try{
 			this.page.driver= startWebDriver(link);
-			
+
 			try{
 				this.page.signIn();
 			}
-			
+
 			catch(Exception e){System.err.println("can't login");}
 			String body="";
 			body = page.urlHandler(link, true).body;
@@ -104,7 +139,10 @@ public abstract class Site extends Funcs implements Runnable {
 		return getLink;
 	}
 
-	
+
+
+
+
 	/**
 	 * 
 	 * @param link -link to the article
@@ -112,22 +150,22 @@ public abstract class Site extends Funcs implements Runnable {
 	 * @return true if standing on condition by the state, false otherwise.
 	 */
 	public boolean stateHandle(String link, String title) {
-		if(state==state.regular){
+		if(state==SearchState.regular){
 			return true;
 		}
-		if(state==state.headline){
+		if(state==SearchState.headline){
 			return contain(title, textToCompare);
 		}
-		if(state==state.body){
+		if(state==SearchState.body){
 			return bodyState(link);
 		}
-		if(state==state.comment){
+		if(state==SearchState.comment){
 			return commentState(link);
 		}
 		return false;
 	}
 
-	
+
 	/**
 	 * this function get the comments of the report in link, and compare to attached string
 	 * @param link -link to the report
@@ -156,29 +194,7 @@ public abstract class Site extends Funcs implements Runnable {
 	}
 
 
-	/**
-	 * this function get the title of the report from link, and compare to attached string
-	 * @param link -link to the report
-	 * @return true if the title contains the text, otherwise false
-	 */
-	public boolean headlineState(String link) {
-		boolean getLink=true;
-		try{
-			this.page.driver= startWebDriver(link);
-			String title="";
-			title = page.urlHandler(link, true).headLine;
-			if(!contain(title, textToCompare)){
-				System.err.println("not Found.");
-				ArticlesRow.counter--;
-				getLink = false;
-			}
-			else System.err.println("okey!!");
-			page.driver.close();
-			sleep(10000);
-		}
-		catch(Exception e){return false;}
-		return getLink;
-	}
+	
 
 	/**
 	 * check if the headline contains the keys.
@@ -225,8 +241,29 @@ public abstract class Site extends Funcs implements Runnable {
 
 		return true;
 	}
-	
-	
+
+
+
+	/**
+	 * remove duplicate urls with "http" and "https". only https taken.
+	 * @param urls
+	 */
+	public void removeDuplicate(List<String> urls){
+
+		String url1, url2;
+		for(int i=0; i<urls.size()-1; i++){
+			url1 = urls.get(i);
+			url2 = urls.get(i+1);
+			url1 = url1.substring(url1.indexOf("://"), url1.length());
+			url1 = url2.substring(url2.indexOf("://"), url2.length());
+			if(url1.equals(url2)){
+				if(url1.contains("https"))
+					urls.remove(i+1);
+				else urls.remove(i);	
+			}
+		}
+	}
+
 
 
 

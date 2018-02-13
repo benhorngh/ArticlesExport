@@ -7,16 +7,24 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebElement;
 
+/**
+ * https://www.bloomberg.com
+ * @author benho
+ *
+ */
 public class Bloomberg extends Site{
 
-	static final String url="https://www.bloomberg.com";
 
-	public Bloomberg(String tts, String ttc, int noa, state stat, String sd, String ed) {
+	public Bloomberg(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
 		super(tts, ttc, noa, stat, sd,ed);
-		this.window = WindowState.Regular;
+		this.url="https://www.bloomberg.com";
+		this.SiteName = "Bloomberg";
+		this.window = WindowState.Invisible;
 		this.DateRange = false;
 		this.page = new BloombergPage(window);
 	}
+	
+	
 
 	/*
 	 * (non-Javadoc)
@@ -24,6 +32,8 @@ public class Bloomberg extends Site{
 	 * benhorenn@gmail.com
 	 * Bb4546662/
 	 */
+	private static final String mail = "benhorenn@gmail.com";
+	private static final String password = "Bb4546662/";
 
 
 	private void closeAd(){
@@ -44,7 +54,7 @@ public class Bloomberg extends Site{
 	}
 
 	@Override
-	public List<String> findLinks() {
+	public boolean search() {
 
 
 		driver = startWebDriver(url);
@@ -65,13 +75,18 @@ public class Bloomberg extends Site{
 			sleep(2000);
 			input.sendKeys(Keys.RETURN);
 		}
-		catch (NullPointerException e) {e.printStackTrace(); return null;}
-		catch (NoSuchFrameException e) {e.printStackTrace(); return null;}
-		catch (NoSuchElementException e) {e.printStackTrace(); return null;}
+		catch (NullPointerException e) {e.printStackTrace(); return false;}
+		catch (NoSuchFrameException e) {e.printStackTrace(); return false ;}
+		catch (NoSuchElementException e) {e.printStackTrace(); return false ;}
 
 		sleep(5000);
+		
+		return true;
+	}
+	
+	@Override
+	public void resultsPage(List<String> urls) {
 
-		List<String> urls = new ArrayList<String>();
 		int found = 0;
 		String link="", title="";
 		int i=0;
@@ -117,14 +132,13 @@ public class Bloomberg extends Site{
 
 
 				if(checks == maxSearch)
-					return urls;
+					return;
 			}
 
-		}catch(Exception e){return urls;}
-		return urls;
+		}catch(Exception e){return;}
 	}
-	private static final String mail = "benhorenn@gmail.com";
-	private static final String password = "Bb4546662/";
+
+	
 	@Override
 	public void signIn(){
 		boolean closed = false;

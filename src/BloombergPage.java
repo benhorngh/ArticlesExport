@@ -7,15 +7,11 @@ public class BloombergPage extends Page{
 	public BloombergPage(WindowState window){
 		super();
 		this.window = window;
-		this.SiteName = "Bloomberg";
 	}
 	
 	
 	
-
 	private final String s  = "//*[@class='transporter-item current']";
-	
-	
 	
 	@Override
 	public String getTitle() {

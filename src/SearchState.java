@@ -5,7 +5,7 @@
  *  <li>{@link #headline}</li>
  *  <li>{@link #headline}</li>
  */
-public enum state {
+public enum SearchState {
 	/**
 	 * take every article in the results.
 	 */

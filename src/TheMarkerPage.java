@@ -1,16 +1,14 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+
 
 public class TheMarkerPage extends Page {
 
 	public TheMarkerPage(WindowState window){
 		super();
 		this.window = window;
-		this.SiteName = "The Marker";
 	}
 
 
@@ -26,18 +24,18 @@ public class TheMarkerPage extends Page {
 		}
 		catch(Exception e){
 			try{
-			WebElement hl = driver.findElement(By.xpath("//*[@class='art__head  mag-max']"));
-			str=hl.getText();}
+				WebElement hl = driver.findElement(By.xpath("//*[@class='art__head  mag-max']"));
+				str=hl.getText();}
 			catch(Exception e2){}
-			
+
 		}
 		if(str.isEmpty()){
 			try{
 				WebElement hl = driver.findElement(By.xpath("//*[@class='h-mb--xxtight h-tac']"));
 				str=hl.getText();}
-				catch(Exception e){}
+			catch(Exception e){}
 		}
-		
+
 		return str;
 	}
 
@@ -50,18 +48,18 @@ public class TheMarkerPage extends Page {
 		}
 		catch(Exception e){
 			try{
-			WebElement shlBigA = driver.findElement(By.className("art__sub"));
-			str = shlBigA.getText();}
+				WebElement shlBigA = driver.findElement(By.className("art__sub"));
+				str = shlBigA.getText();}
 			catch(Exception e2){}
 		}
 		if(str.isEmpty()){
 			try{
 				WebElement shl = driver.findElement(By.xpath("//*[@class='island--flush t-delta h-tac']"));
 				str = shl.getText();}
-				catch(Exception e2){}
+			catch(Exception e2){}
 		}
 
-		
+
 		return str;
 	}
 
@@ -75,27 +73,27 @@ public class TheMarkerPage extends Page {
 		}
 		catch(Exception e){
 			try{
-			WebElement byline = driver.findElement(By.xpath("//*[@class='t-byline']"));
-			WebElement autor = byline.findElement(By.xpath("//*[@class='js-stat-util-info']/span"));
-			str=autor.getText();
+				WebElement byline = driver.findElement(By.xpath("//*[@class='t-byline']"));
+				WebElement autor = byline.findElement(By.xpath("//*[@class='js-stat-util-info']/span"));
+				str=autor.getText();
 			}
 			catch(Exception e1){}
 		}
 		if(str.isEmpty()){
 			try{
-			WebElement aut = driver.findElement(By.xpath("//*[@class='h-fr']/div[@class='t-byline']/address/span"));
-			str = aut.getText();}
+				WebElement aut = driver.findElement(By.xpath("//*[@class='h-fr']/div[@class='t-byline']/address/span"));
+				str = aut.getText();}
 			catch(Exception e1){}
-			
+
 		}
 		if(str.isEmpty()){
 			try{
-			WebElement aut = driver.findElement(By.xpath("//*[@class='t-byline h-tac']/address//span"));
-			str = aut.getText();}
+				WebElement aut = driver.findElement(By.xpath("//*[@class='t-byline h-tac']/address//span"));
+				str = aut.getText();}
 			catch(Exception e1){}
-			
+
 		}
-		
+
 		return str;
 	}
 
@@ -111,16 +109,16 @@ public class TheMarkerPage extends Page {
 		}
 		catch(Exception e){
 			try{
-			WebElement dt = driver.findElement(By.xpath("//*[@class='t-byline']/div[2]/time"));
-			str=dt.getText();
+				WebElement dt = driver.findElement(By.xpath("//*[@class='t-byline']/div[2]/time"));
+				str=dt.getText();
 			}
 			catch(Exception e2){}
 		}
-			if(str.isEmpty()){
-				WebElement dt = driver.findElement(By.xpath("//*[@class='t-byline h-tac']//time"));
-				str=dt.getText();
-				str = str.split(" ")[1];
-			}
+		if(str.isEmpty()){
+			WebElement dt = driver.findElement(By.xpath("//*[@class='t-byline h-tac']//time"));
+			str=dt.getText();
+			str = str.split(" ")[1];
+		}
 		return str;
 	}
 
@@ -172,11 +170,10 @@ public class TheMarkerPage extends Page {
 			moveTo2(driver, lac);
 			sleep(3000);
 			lac.click();
-			System.out.println("more");
 			sleep(5000);
 
 		}
-		catch(Exception e){System.err.println("no more comment");}
+		catch(Exception e){}
 
 
 		readComments(comments);
@@ -264,6 +261,8 @@ public class TheMarkerPage extends Page {
 
 
 	private String getDate(String text) {
+		System.out.println(text);
+		if(text.length()<11) return text;
 		String dt = "";
 		if(text == null || text.isEmpty())
 			return "";
@@ -272,8 +271,11 @@ public class TheMarkerPage extends Page {
 		String[] arr = text.split('\n'+"");
 		String dateandAut = arr[arr.length-5];
 
-		dt = dateandAut.substring(dateandAut.length()-10);
-
+		
+//		dt = dateandAut.substring(dateandAut.length()-10);
+//		return dt.split(" ")[0];
+		
+		dt = dateandAut;
 		return dt.split(" ")[0];
 	}
 
