@@ -15,33 +15,34 @@ public class Main {
 	public static XSSFWorkbook workbook;
 
 	public static void main(String[] args) {
-		int numOfArticles = 20;
-		String textToSearch = "ביטקוין";
-		String textToSearchEnglish = "bitcoin";
-		String textToCompare = "בנק";
-		String textToCompareEnglish = "bitcoin";
-		SearchState stat= SearchState.regular;  
-		boolean ynet = true;
-		boolean blmbrg = true;
-		boolean TM = true;
+		int numOfArticles = 10;
+		String textToSearch = "אפל";
+		String textToSearchEnglish = "apple";
+		String textToCompare = "Apple";
+		String textToCompareEnglish = "Apple";
+		SearchState stat= SearchState.body;  
+		boolean ynet = false;
+		boolean TM = false;
+		boolean blmbrg = false;
+		boolean rtrs = true;
 
 		String startDate="1/1/2017";
 		String endDate="1/1/2018";
 
-		
+
 		Site[] sites = init(textToSearch,textToSearchEnglish, textToCompare, textToCompareEnglish,
 				stat, numOfArticles, startDate,endDate);
-		boolean[] players = {ynet, TM, blmbrg};
-		//Ynet , TheMarker, Bloomberg
-		
+		boolean[] players = {ynet, TM, blmbrg, rtrs};
+		//Ynet , TheMarker, Bloomberg, Reuters
+
 		play(sites, players);
 
 		System.out.println();
 		System.out.println("Done.");
 	}
 
-	
-	
+
+
 	/**
 	 * 
 	 * @param tts -text to the search field
@@ -56,10 +57,11 @@ public class Main {
 	 */
 	private static Site[] init(String tts, String etts, String ttc, String ettc, 
 			SearchState stat, int noa, String sd,String ed){
-		Site[] sites = new Site[3];
+		Site[] sites = new Site[4];
 		sites[0]=new Ynet     (tts, ttc, noa, stat, sd,ed);
 		sites[1]=new TheMarker(tts, ttc, noa, stat, sd,ed);
 		sites[2]=new Bloomberg(etts, ettc, noa, stat, sd,ed);
+		sites[3]=new Reuters(etts, ettc, noa, stat, sd,ed);
 
 		return sites;
 
@@ -67,44 +69,51 @@ public class Main {
 
 	private static void play(Site[] sites, boolean[] players) {
 
+		boolean useThreads = false;
+
 		String fileName = "excelFile";
 
 		startWriters();
-		
+
 		Thread[] threads = new  Thread[sites.length];
 		for(int i=0; i<threads.length; i++){
 			threads[i] = new Thread(sites[i]);
 		}
-		
+
 
 		for(int i=0; i<sites.length; i++){
 			if(players[i]){
 				try{
-//					sites[i].run();
-					threads[i].start();
+					if(useThreads)
+						threads[i].start();
+					else sites[i].run();
+
 				}
 				catch(Exception e){System.err.println("failed!");
 				e.printStackTrace();}
 			}
 		}
-		
-		try {
-			Thread.currentThread().sleep(100000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.err.println("the end has come. join!");
-		try{
-			for(int i=0; i<threads.length; i++){
-				threads[i].join();
+
+		if(useThreads){
+			try {
+				Thread.currentThread();
+				Thread.sleep(100000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		}catch(Exception e){};
-	
-		
+			System.err.println("the end has come. join!");
+			try{
+				for(int i=0; i<threads.length; i++){
+					threads[i].join();
+				}
+			}catch(Exception e){};
+		}
+
 		for(int i=0; i<sites.length; i++){
-			if(sites[i].articles!=null)
-				ArticlesRow.WriteToFile(sites[i].articles);
+			if(players[i]==true)
+				if(sites[i].articles!=null && sites[i].articles.size()!=0)
+					ArticlesRow.WriteToFile(sites[i].articles);
 		}
 
 		closeWriters(fileName);

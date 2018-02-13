@@ -127,10 +127,10 @@ public abstract class Site extends Funcs implements Runnable {
 			body = page.urlHandler(link, true).body;
 			if(!contain(body, textToCompare)){
 				System.err.println("not Found.");
-				ArticlesRow.counter--;
 				getLink = false;
 			}
 			else System.err.println("okey!!");
+			ArticlesRow.counter--;
 			page.driver.close();
 			sleep(10000);
 		}

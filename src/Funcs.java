@@ -235,32 +235,41 @@ public abstract class Funcs {
 	 * @param monthStr month in String
 	 * @return month in int (1/2/3/4..12)
 	 */
-	public static int monthToInt(String monthStr){
-		if (monthStr.equals("January"))
+	public static int monthToInt(String month){
+		String monthStr = "";
+		int c ='\0';
+		for(int i=0;i<month.length(); i++){
+			c= month.charAt(i);
+			if(c>=97 && c<=122)
+				c=c-32;
+			monthStr =monthStr + (char) c;
+		}
+//		System.out.println(month+" ->> "+monthStr);
+		if (monthStr.equals("JANUARY"))
 			return 1;
-		if (monthStr.equals("February"))
+		if (monthStr.equals("FEBRUARY"))
 			return 2;
-		if (monthStr.equals("March"))
+		if (monthStr.equals("MARCH"))
 			return 3;
-		if (monthStr.equals("April"))
+		if (monthStr.equals("APRIL"))
 			return 4;
-		if (monthStr.equals("May"))
+		if (monthStr.equals("MAY"))
 			return 5;
-		if (monthStr.equals("June"))
+		if (monthStr.equals("JUNE"))
 			return 6;
-		if (monthStr.equals("July"))
+		if (monthStr.equals("JULY"))
 			return 7;
-		if (monthStr.equals("August"))
+		if (monthStr.equals("AUGUST"))
 			return 8;
-		if (monthStr.equals("September"))
+		if (monthStr.equals("SEPTEMBER"))
 			return 9;
-		if (monthStr.equals("October"))
+		if (monthStr.equals("OCTOBER"))
 			return 10;
-		if (monthStr.equals("November"))
+		if (monthStr.equals("NOVEMBER"))
 			return 11;
-		if (monthStr.equals("December"))
+		if (monthStr.equals("DECEMBER"))
 			return 12;
-		return -1;
+		return 0;
 			
 	}
 

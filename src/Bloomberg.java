@@ -35,6 +35,9 @@ public class Bloomberg extends Site{
 	private static final String password = "Bb4546662/";
 
 
+	/**
+	 * close the annoying ad about register.
+	 */
 	private void closeAd(){
 		boolean closed = false;
 		int tryies = 0;
@@ -54,7 +57,6 @@ public class Bloomberg extends Site{
 
 	@Override
 	public boolean search() {
-
 
 		driver = startWebDriver(url);
 		sleep(10000);
