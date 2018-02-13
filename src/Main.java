@@ -71,33 +71,34 @@ public class Main {
 
 		startWriters();
 		
-//		Thread[] threads = new  Thread[sites.length];
-//		for(int i=0; i<threads.length; i++){
-//			threads[i] = new Thread(sites[i]);
-//		}
+		Thread[] threads = new  Thread[sites.length];
+		for(int i=0; i<threads.length; i++){
+			threads[i] = new Thread(sites[i]);
+		}
 		
 
 		for(int i=0; i<sites.length; i++){
 			if(players[i]){
 				try{
-					sites[i].run();
+//					sites[i].run();
+					threads[i].start();
 				}
 				catch(Exception e){System.err.println("failed!");
 				e.printStackTrace();}
 			}
 		}
 		
-//		try {
-//			Thread.currentThread().sleep(100000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		try{
-//			for(int i=0; i<threads.length; i++){
-//				threads[i].join();
-//			}
-//		}catch(Exception e){};
+		try {
+			Thread.currentThread().sleep(100000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try{
+			for(int i=0; i<threads.length; i++){
+				threads[i].join();
+			}
+		}catch(Exception e){};
 	
 		
 		for(int i=0; i<sites.length; i++){
