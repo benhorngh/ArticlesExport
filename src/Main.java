@@ -15,9 +15,9 @@ public class Main {
 	public static XSSFWorkbook workbook;
 
 	public static void main(String[] args) {
-		int numOfArticles = 5;
-		String textToSearch = "ביטקוין";
-		String textToSearchEnglish = "bitcoin";
+		int numOfArticles = 20;
+		String textToSearch = "טראמפ";
+		String textToSearchEnglish = "trump";
 		String textToCompare = "בנק";
 		String textToCompareEnglish = "bitcoin";
 		SearchState stat= SearchState.regular;  
@@ -94,6 +94,7 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.err.println("the end has come. join!");
 		try{
 			for(int i=0; i<threads.length; i++){
 				threads[i].join();

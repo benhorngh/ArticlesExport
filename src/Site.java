@@ -254,7 +254,7 @@ public abstract class Site extends Funcs implements Runnable {
 			url1 = urls.get(i);
 			url2 = urls.get(i+1);
 			url1 = url1.substring(url1.indexOf("://"), url1.length());
-			url1 = url2.substring(url2.indexOf("://"), url2.length());
+			url2 = url2.substring(url2.indexOf("://"), url2.length());
 			if(url1.equals(url2)){
 				if(url1.contains("https"))
 					urls.remove(i+1);

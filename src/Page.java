@@ -41,9 +41,10 @@ public abstract class Page extends Funcs{
 				catch(Exception e){System.err.println("can't login");}
 			}
 			reports.add(urlHandler(url, false));
+			System.out.println("finish URL");
 		}
 		driver.quit();
-		System.out.println("finish "+SiteName);
+		System.err.println("finish "+SiteName);
 		return reports;
 	}
 

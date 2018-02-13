@@ -100,7 +100,6 @@ public class YnetPage extends Page  {
 
 		}
 		catch (Exception e){
-			System.err.println("no comments");
 			IsComments=false;
 		}
 

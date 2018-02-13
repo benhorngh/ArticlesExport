@@ -13,7 +13,6 @@ import org.openqa.selenium.interactions.Actions;
  * https://www.Ynet.co.il
  * @author benho
  * @since 1/2018
- *
  */
 public class Ynet extends  Site {
 
@@ -134,6 +133,7 @@ public class Ynet extends  Site {
 					driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 					WebElement cli = res.findElements(By.className("su_btn_link")).get(0);
 					link=cli.getAttribute("href");
+					
 					System.out.println(link);					
 				}
 
@@ -153,8 +153,6 @@ public class Ynet extends  Site {
 				urls.add(link);
 			}
 
-			System.out.println((found)+" /"+numOfArticles);
-			System.out.println();
 			i++;
 			if(i==maxSearch)
 				break;

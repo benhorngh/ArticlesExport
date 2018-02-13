@@ -9,11 +9,11 @@ public class BloombergPage extends Page{
 		this.window = window;
 		this.SiteName = "Bloomberg";
 	}
-	
-	
-	
+
+
+
 	private final String s  = "//*[@class='transporter-item current']";
-	
+
 	@Override
 	public String getTitle() {
 		boolean ok = false;
@@ -60,7 +60,7 @@ public class BloombergPage extends Page{
 			catch(Exception e){
 			}
 		}
-		
+
 		if(!ok){
 			try{
 				ttl =  driver.findElement(By.xpath(s+"//*[@class='lede-text-only__hed']"));
@@ -70,8 +70,16 @@ public class BloombergPage extends Page{
 			catch(Exception e){
 			}
 		}
+		if(!ok){
+			try{
+				ttl =  driver.findElement(By.xpath(s+"//*[@class='article-title copy-width']"));
+				if(!ttl.getText().isEmpty())
+					ok= true;
+			}
+			catch(Exception e){
+			}
+		}
 
-		System.out.println(ttl.getText());
 		return ttl.getText();		
 	}
 
@@ -140,8 +148,8 @@ public class BloombergPage extends Page{
 			}
 			catch(Exception e){}
 		}
-		
-//		
+
+		//		
 		return subs;
 	}
 
@@ -156,21 +164,40 @@ public class BloombergPage extends Page{
 		}
 		catch(Exception e){}
 		if(!ok){
-			author =  driver.findElement(By.xpath(s+"//*[@class='lede-text-only__byline']"));
-			if(!author.getText().isEmpty())
-				ok = true;
+			try{
+				author =  driver.findElement(By.xpath(s+"//*[@class='lede-text-only__byline']"));
+				if(!author.getText().isEmpty())
+					ok = true;
+			}catch(Exception e){}
 		}
 		if(!ok){
-			author =  driver.findElement(By.xpath(s+"//*[@class='lede-large-content__byline']"));
-			if(!author.getText().isEmpty())
-				ok = true;
+			try{
+				author =  driver.findElement(By.xpath(s+"//*[@class='lede-large-content__byline']"));
+				if(!author.getText().isEmpty())
+					ok = true;
+			}catch(Exception e){}
 		}
 		if(!ok){
-			author =  driver.findElement(By.xpath("//*[@class='video-metadata__seriesname-link']"));
-			if(!author.getText().isEmpty())
-				ok = true;
+			try{
+				author =  driver.findElement(By.xpath("//*[@class='video-metadata__seriesname-link']"));
+				if(!author.getText().isEmpty())
+					ok = true;
+			}catch(Exception e){}
 		}
-
+		if(!ok){
+			try{
+				author =  driver.findElement(By.xpath("//*[@class='article-title copy-width']"));
+				if(!author.getText().isEmpty())
+					ok = true;
+			}catch(Exception e){}
+		}
+		if(!ok){
+			try{
+				author =  driver.findElement(By.xpath("//*[@class='bydek copy-width']"));
+				if(!author.getText().isEmpty())
+					ok = true;
+			}catch(Exception e){}
+		}	
 		return author.getText();
 	}
 
@@ -193,7 +220,6 @@ public class BloombergPage extends Page{
 		String body="";
 
 		ArrayList<WebElement> pgr =  (ArrayList<WebElement>) driver.findElements(By.xpath(s+"//*[@class='body-copy']/p"));
-		System.err.println(pgr.size());
 		String tmp = "";
 		for(int i=0; i<pgr.size(); i++){
 			tmp  = pgr.get(i).getText();
@@ -201,9 +227,12 @@ public class BloombergPage extends Page{
 
 		}
 		if(body.isEmpty()){
-			WebElement bd =  driver.findElement(By.xpath("//*[@class='video-metadata__summary']"));
+			
+			WebElement bd =  driver.findElement(By.xpath("//*[@class='copy-block copy-width']"));
 			body = bd.getText();
 		}
+		
+		
 		return body;
 	}
 
@@ -212,7 +241,6 @@ public class BloombergPage extends Page{
 	@Override
 	public ArrayList<CommentRow> commentSecction() {
 		WebElement cmm = null;
-		System.out.println("start comments");
 		ArrayList<CommentRow> cmmts = new ArrayList<CommentRow>();
 		try{
 			cmm =  driver.findElement(By.xpath(s+"//*[@class='disqus']"));
@@ -257,7 +285,7 @@ public class BloombergPage extends Page{
 		return cmmts;
 	}
 
-	
+
 	@Override
 	public void readComments(ArrayList<CommentRow> commentList){
 		String[] path = {"//*[@id='posts']","","","","","","","","",""};
@@ -338,7 +366,6 @@ public class BloombergPage extends Page{
 
 	public CommentRow getComment(WebElement we, int[] num) {
 		WebElement name = we.findElement(By.className("post-byline")).findElements(By.tagName("span")).get(0);
-//		*[@class='post-byline']/span[1]
 		String tkbk = name.getText();
 
 		WebElement comment = we.findElement(By.className("post-body-inner"));
@@ -367,7 +394,7 @@ public class BloombergPage extends Page{
 		}
 		return Integer.parseInt(s);
 	}
-	
+
 	private String strPath(String[] path){
 		String s ="";
 		s+=path[0];
@@ -385,7 +412,7 @@ public class BloombergPage extends Page{
 		int month= monthToInt(monthStr);
 		String day = arr[2].substring(0, arr[2].length()-1);
 		String year = arr[3];
-		return day+"/"+month+"/"+year;
+		return day+"."+month+"."+year;
 	}
 
 }
