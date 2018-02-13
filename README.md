@@ -8,3 +8,8 @@ The search type (Normal / Headline / Body / Comments) affects the selection of a
 The Excel file contains 2 sheets. 
 sheets 1 - Articles - Each article is taken apart into title, subheading, date, name of the writer and so on.
 sheets 2 - Comments - Each comment on each article is numbered and divided into title, body talkback, talkback, etc.
+
+
+Ben Horn
+benhorenn@gmail.com
+1/2018
