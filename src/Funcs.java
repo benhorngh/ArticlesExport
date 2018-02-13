@@ -23,7 +23,7 @@ public abstract class Funcs {
 	 *  the visibility of the webdriver window. by WindowState enum.
 	 */
 	WindowState window = WindowState.visible;
-	String SiteName ="";
+	
 
 	/**
 	 * start webDriver with url in this.window of visability
@@ -55,6 +55,8 @@ public abstract class Funcs {
 		ChromeOptions options = new ChromeOptions();
 		//		options.addArguments("--headless");
 		options.addArguments("--start-maximized");
+		options.addArguments("--mute-audio");
+		
 		driver = new ChromeDriver(options);
 		try{
 			//			driver.manage().window().setPosition(new Point(-2000, 0));
@@ -81,6 +83,7 @@ public abstract class Funcs {
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--headless");
 		options.addArguments("--start-maximized");
+		options.addArguments("--mute-audio");
 		driver = new ChromeDriver(options);
 
 		if(url.isEmpty() || url.equals(""))
@@ -103,6 +106,7 @@ public abstract class Funcs {
 		ChromeOptions options = new ChromeOptions();
 		//		options.addArguments("--headless");
 		options.addArguments("--start-maximized");
+		options.addArguments("--mute-audio");
 		driver = new ChromeDriver(options);
 		try{
 			driver.manage().window().setPosition(new Point(-2000, 0));

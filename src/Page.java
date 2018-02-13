@@ -14,6 +14,7 @@ public abstract class Page extends Funcs{
 
 
 	public WebDriver driver;
+	String SiteName ="";
 	
 
 	/**

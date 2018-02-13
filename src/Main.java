@@ -15,28 +15,29 @@ public class Main {
 	public static XSSFWorkbook workbook;
 
 	public static void main(String[] args) {
-		int numOfArticles = 30;
+		int numOfArticles = 5;
 		String textToSearch = "ביטקוין";
 		String textToSearchEnglish = "bitcoin";
 		String textToCompare = "בנק";
 		String textToCompareEnglish = "bitcoin";
 		SearchState stat= SearchState.regular;  
-		boolean ynet = false;
-		boolean blmbrg = false;
+		boolean ynet = true;
+		boolean blmbrg = true;
 		boolean TM = true;
 
 		String startDate="1/1/2017";
 		String endDate="1/1/2018";
 
+		
 		Site[] sites = init(textToSearch,textToSearchEnglish, textToCompare, textToCompareEnglish,
 				stat, numOfArticles, startDate,endDate);
 		boolean[] players = {ynet, TM, blmbrg};
 		//Ynet , TheMarker, Bloomberg
+		
 		play(sites, players);
 
 		System.out.println();
 		System.out.println("Done.");
-
 	}
 
 	
@@ -126,7 +127,6 @@ public class Main {
 
 		String[] cmhl={"report num.","website","num.","is Original","name","date","title","comment"};
 		Funcs.StringArrToLastRow(cmhl, CommentsSheet);
-
 	}
 
 	public static void closeWriters(String fileName){

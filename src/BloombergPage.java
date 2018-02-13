@@ -7,6 +7,7 @@ public class BloombergPage extends Page{
 	public BloombergPage(WindowState window){
 		super();
 		this.window = window;
+		this.SiteName = "Bloomberg";
 	}
 	
 	

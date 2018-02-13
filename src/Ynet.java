@@ -30,7 +30,6 @@ public class Ynet extends  Site {
 	public Ynet(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url = "https://www.Ynet.co.il";
-		this.SiteName="Ynet";
 		this.window = WindowState.Background;
 		this.page = new YnetPage(window);
 		this.DateRange = false;

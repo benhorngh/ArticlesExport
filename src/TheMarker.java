@@ -9,14 +9,13 @@ import org.openqa.selenium.WebElement;
  * @author benho
  *
  */
-public class TheMarker extends Site implements DateRange{
+public class TheMarker extends Site implements DateRange {
 
 	
 	public TheMarker(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url= "http://www.themarker.com";
-		this.SiteName = "The Marker";
-		this.window = WindowState.visible;
+		this.window = WindowState.Invisible;
 		this.page = new TheMarkerPage(window);
 		this.DateRange = true;
 	}

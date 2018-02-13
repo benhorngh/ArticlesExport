@@ -18,6 +18,7 @@ public class YnetPage extends Page  {
 	
 	public YnetPage(WindowState window){
 		super();
+		this.SiteName = "Ynet";
 		this.window = window;
 	}
 	

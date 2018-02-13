@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -8,6 +9,7 @@ public class TheMarkerPage extends Page {
 
 	public TheMarkerPage(WindowState window){
 		super();
+		this.SiteName = "The Marker";
 		this.window = window;
 	}
 
@@ -142,6 +144,7 @@ public class TheMarkerPage extends Page {
 
 	@Override
 	public ArrayList<CommentRow> commentSecction() {
+		String date = getDate();
 		ArrayList <CommentRow> comments  = new ArrayList<CommentRow>();
 		sleep(6000);
 
@@ -177,6 +180,11 @@ public class TheMarkerPage extends Page {
 
 
 		readComments(comments);
+		
+		for(int i=0; i<comments.size(); i++)
+			if(comments.get(i).date.indexOf(":")!=-1)
+				comments.get(i).date = date;
+		
 		return comments;
 	}
 
@@ -261,7 +269,6 @@ public class TheMarkerPage extends Page {
 
 
 	private String getDate(String text) {
-		System.out.println(text);
 		if(text.length()<11) return text;
 		String dt = "";
 		if(text == null || text.isEmpty())
@@ -276,7 +283,8 @@ public class TheMarkerPage extends Page {
 //		return dt.split(" ")[0];
 		
 		dt = dateandAut;
-		return dt.split(" ")[0];
+		
+		return dt.split(" ")[dt.split(" ").length-1];
 	}
 
 }

@@ -24,8 +24,6 @@ public abstract class Site extends Funcs implements Runnable {
 	int maxSearch = 200;
 	SearchState state;
 
-
-
 	List<ArticlesRow> articles;
 
 	@Override
@@ -47,6 +45,7 @@ public abstract class Site extends Funcs implements Runnable {
 	 */
 	public Site(String textToSearch, String textToCompare, int numOfArticles,
 			SearchState state, String startAt, String endAt) {
+		super();
 		this.textToSearch = textToSearch;
 		this.textToCompare = textToCompare;
 		this.numOfArticles = numOfArticles;
@@ -66,10 +65,10 @@ public abstract class Site extends Funcs implements Runnable {
 
 
 		if(articles!=null && !articles.isEmpty()){
-			System.out.println("find "+ articles.size() +" articles in "+this.SiteName);
+			System.out.println("find "+ articles.size() +" articles in "+this.page.SiteName);
 			return page.linksToList(articles);
 		}
-		else System.err.println(this.SiteName+" fail");
+		else System.err.println(this.page.SiteName+" fail");
 		return null;
 	}
 
@@ -106,7 +105,7 @@ public abstract class Site extends Funcs implements Runnable {
 	 * after the search, this method add to url the links to articles.
 	 * @param urls
 	 */
-	public abstract void resultsPage(List<String> urls) ;
+	public abstract void resultsPage(List<String> urls);
 
 
 	/**

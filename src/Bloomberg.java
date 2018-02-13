@@ -18,7 +18,6 @@ public class Bloomberg extends Site{
 	public Bloomberg(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url="https://www.bloomberg.com";
-		this.SiteName = "Bloomberg";
 		this.window = WindowState.Invisible;
 		this.DateRange = false;
 		this.page = new BloombergPage(window);
