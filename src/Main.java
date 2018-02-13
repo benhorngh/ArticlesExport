@@ -16,8 +16,8 @@ public class Main {
 
 	public static void main(String[] args) {
 		int numOfArticles = 20;
-		String textToSearch = "טראמפ";
-		String textToSearchEnglish = "trump";
+		String textToSearch = "ביטקוין";
+		String textToSearchEnglish = "bitcoin";
 		String textToCompare = "בנק";
 		String textToCompareEnglish = "bitcoin";
 		SearchState stat= SearchState.regular;  

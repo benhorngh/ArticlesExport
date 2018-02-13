@@ -122,7 +122,6 @@ public class YnetPage extends Page  {
 
 			}
 			catch (Exception e){
-				System.out.println("finish url");
 				break;
 			}
 		}
