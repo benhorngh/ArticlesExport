@@ -19,7 +19,7 @@ public class WallStreetJournal extends Site {
 
 
 	@Override
-	public List<String> findLinks(String textToSearch, String textToCompare, int numOfArticles, state state) {
+	public List<String> findLinks() {
 
 
 		driver = startWebDriver(url);

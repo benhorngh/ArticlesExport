@@ -18,16 +18,26 @@ public class TheMarkerPage extends Page {
 	@Override
 	public String getTitle() {
 		String str="";
-		
+
 		try{
-		WebElement art = driver.findElement(By.xpath("//*[@class='article  has-l-fixed-column']"));
-		WebElement hl = art.findElement(By.className("h-mb--xxtight"));
-		str=hl.getText();
-		}
-		catch(Exception e){
-			WebElement hl = driver.findElement(By.xpath("//*[@class='art__head  mag-max']"));
+			WebElement art = driver.findElement(By.xpath("//*[@class='article  has-l-fixed-column']"));
+			WebElement hl = art.findElement(By.className("h-mb--xxtight"));
 			str=hl.getText();
 		}
+		catch(Exception e){
+			try{
+			WebElement hl = driver.findElement(By.xpath("//*[@class='art__head  mag-max']"));
+			str=hl.getText();}
+			catch(Exception e2){}
+			
+		}
+		if(str.isEmpty()){
+			try{
+				WebElement hl = driver.findElement(By.xpath("//*[@class='h-mb--xxtight h-tac']"));
+				str=hl.getText();}
+				catch(Exception e){}
+		}
+		
 		return str;
 	}
 
@@ -39,10 +49,19 @@ public class TheMarkerPage extends Page {
 			str = shl.getText();
 		}
 		catch(Exception e){
+			try{
 			WebElement shlBigA = driver.findElement(By.className("art__sub"));
-			str = shlBigA.getText();
+			str = shlBigA.getText();}
+			catch(Exception e2){}
+		}
+		if(str.isEmpty()){
+			try{
+				WebElement shl = driver.findElement(By.xpath("//*[@class='island--flush t-delta h-tac']"));
+				str = shl.getText();}
+				catch(Exception e2){}
 		}
 
+		
 		return str;
 	}
 
@@ -51,18 +70,32 @@ public class TheMarkerPage extends Page {
 		String str="";
 
 		try{
-//			WebElement autor = driver.findElement(By.xpath("//*[@class='t-byline']/address/span"));
-			WebElement autor = driver.findElement(By.xpath("//*[@class='h-fr']/div[@class='t-byline']/address/a/spann"));
-			
-			
+			WebElement autor = driver.findElement(By.xpath("//*[@class='h-fr']/div[@class='t-byline']/address/a/span"));
 			str=autor.getText();
 		}
 		catch(Exception e){
+			try{
 			WebElement byline = driver.findElement(By.xpath("//*[@class='t-byline']"));
 			WebElement autor = byline.findElement(By.xpath("//*[@class='js-stat-util-info']/span"));
 			str=autor.getText();
+			}
+			catch(Exception e1){}
 		}
-
+		if(str.isEmpty()){
+			try{
+			WebElement aut = driver.findElement(By.xpath("//*[@class='h-fr']/div[@class='t-byline']/address/span"));
+			str = aut.getText();}
+			catch(Exception e1){}
+			
+		}
+		if(str.isEmpty()){
+			try{
+			WebElement aut = driver.findElement(By.xpath("//*[@class='t-byline h-tac']/address//span"));
+			str = aut.getText();}
+			catch(Exception e1){}
+			
+		}
+		
 		return str;
 	}
 
@@ -71,15 +104,23 @@ public class TheMarkerPage extends Page {
 		String str="";
 		try{
 			WebElement lilbox = driver.findElement(By.className("h-fr"));
-//			WebElement dt = lilbox.findElement(By.xpath("//*[@class='t-byline']/time"));
+			//			WebElement dt = lilbox.findElement(By.xpath("//*[@class='t-byline']/time"));
 			WebElement dt = lilbox.findElement(By.xpath("//*[@class='h-fr']/div[@class='t-byline']/div/time"));
-			
+
 			str=dt.getText();
 		}
 		catch(Exception e){
+			try{
 			WebElement dt = driver.findElement(By.xpath("//*[@class='t-byline']/div[2]/time"));
 			str=dt.getText();
+			}
+			catch(Exception e2){}
 		}
+			if(str.isEmpty()){
+				WebElement dt = driver.findElement(By.xpath("//*[@class='t-byline h-tac']//time"));
+				str=dt.getText();
+				str = str.split(" ")[1];
+			}
 		return str;
 	}
 
@@ -161,7 +202,6 @@ public class TheMarkerPage extends Page {
 			}
 			catch(Exception e){org = false;}
 			CommentRow cr = oneComment(cmmt, last,org);
-
 			commentsList.add(cr);
 
 
@@ -211,9 +251,6 @@ public class TheMarkerPage extends Page {
 			return "";
 		String[] arr = text.split('\n'+"");
 
-		//		System.out.println();
-		//		System.out.println(arr.length+": "+Arrays.toString(arr));
-
 		String dateandAut = arr[arr.length-5];
 
 		arr = dateandAut.split(":");
@@ -237,7 +274,7 @@ public class TheMarkerPage extends Page {
 
 		dt = dateandAut.substring(dateandAut.length()-10);
 
-		return dt;
+		return dt.split(" ")[0];
 	}
 
 }

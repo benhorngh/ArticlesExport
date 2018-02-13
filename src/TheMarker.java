@@ -24,10 +24,9 @@ public class TheMarker extends Site implements DateRange{
 
 
 	@Override
-	public List<String> findLinks(String textToSearch, String textToCompare, int numOfArticles, state state) {
+	public List<String> findLinks() {
 
 		driver = startWebDriver(url);
-
 		sleep(10000);
 		//search
 		try{
@@ -79,24 +78,13 @@ public class TheMarker extends Site implements DateRange{
 			link = ttl.getAttribute("href");
 			System.out.println(link);
 
-//			WebElement teas = ttl.findElement(By.className("teaserTitleText"));
+			
 			title = ttl.getText();
 			System.out.println(title);
 
+			addLink = stateHandle(link, title);
 
-			if(state==state.regular){
-				addLink=true;
-			}
-			if(state==state.headline){
-				if(contain(title, textToCompare))
-					addLink=true;
-			}
-			if(state==state.body){
-				addLink = bodyState(link);
-			}
-			if(state==state.comment){
-				addLink = commentState(link);
-			}
+			
 			
 			if(addLink){
 				urls.add(link);
@@ -124,6 +112,11 @@ public class TheMarker extends Site implements DateRange{
 		}
 		return urls;
 	}
+
+
+
+
+	
 
 
 

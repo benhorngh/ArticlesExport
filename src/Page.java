@@ -17,7 +17,6 @@ public abstract class Page extends Funcs{
 	String SiteName ;
 
 	/**
-	 * 
 	 * @param urls -List with the urls of the reports. 
 	 * @return List with the reports orgnaized in 'ArticlesRow' class.
 	 */
@@ -34,12 +33,21 @@ public abstract class Page extends Funcs{
 				System.out.println("Invaild url "+url);
 				continue;
 			}
+			if(i==0){
+				try{
+					signIn();
+				}
+				catch(Exception e){System.err.println("can't login");}
+			}
 			reports.add(urlHandler(url, false));
 		}
 		driver.quit();
 		System.out.println("finish "+SiteName);
 		return reports;
 	}
+
+
+	
 
 
 	/**
@@ -70,14 +78,11 @@ public abstract class Page extends Funcs{
 			catch(Exception e){System.err.println("cant get subtitle");}
 
 
-
-
 			//publish date
 			try{
 				publishDate=getDate();
 			}
 			catch(Exception e){System.err.println("cant get publish date");}
-
 
 
 			//reporter
@@ -94,7 +99,6 @@ public abstract class Page extends Funcs{
 				article = getBody();
 			}
 			catch(Exception e){System.err.println("cant get body");}
-
 
 
 			ar.body = article;
@@ -117,9 +121,6 @@ public abstract class Page extends Funcs{
 		return ar;
 	}
 
-
-
-	//	public abstract ArticlesRow urlHandler(String url, boolean bodyOnly);
 
 	/**
 	 * @return title of the article

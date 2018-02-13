@@ -24,7 +24,12 @@ public abstract class Funcs {
 	 */
 	WindowState window = WindowState.Regular;
 
-	
+
+	/**
+	 * start webDriver with url in this.window of visability
+	 * @param url first url
+	 * @return started driver
+	 */
 	public WebDriver startWebDriver(String url){
 		if(this.window == WindowState.Regular){
 			return startRegularWebDriver(url);
@@ -37,8 +42,8 @@ public abstract class Funcs {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * this function open and start new visable WebDriver
 	 * @param url -first url
@@ -48,11 +53,11 @@ public abstract class Funcs {
 		WebDriver driver;
 		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 		ChromeOptions options = new ChromeOptions();
-//		options.addArguments("--headless");
+		//		options.addArguments("--headless");
 		options.addArguments("--start-maximized");
 		driver = new ChromeDriver(options);
 		try{
-//			driver.manage().window().setPosition(new Point(-2000, 0));
+			//			driver.manage().window().setPosition(new Point(-2000, 0));
 		}
 		catch(Exception e){System.err.println(e);}
 
@@ -62,9 +67,9 @@ public abstract class Funcs {
 		driver.get(url);
 		return driver;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * this function open and start new invisible WebDriver
 	 * @param url -first url
@@ -77,18 +82,16 @@ public abstract class Funcs {
 		options.addArguments("--headless");
 		options.addArguments("--start-maximized");
 		driver = new ChromeDriver(options);
-		
-
 
 		if(url.isEmpty() || url.equals(""))
 			return driver;
 		driver.get(url);
 		return driver;
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * this function open and start new WebDriver in background
 	 * @param url -first url
@@ -98,7 +101,7 @@ public abstract class Funcs {
 		WebDriver driver;
 		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 		ChromeOptions options = new ChromeOptions();
-//		options.addArguments("--headless");
+		//		options.addArguments("--headless");
 		options.addArguments("--start-maximized");
 		driver = new ChromeDriver(options);
 		try{
@@ -111,6 +114,11 @@ public abstract class Funcs {
 			return driver;
 		driver.get(url);
 		return driver;
+	}
+
+	public void clickInvisible(WebDriver driver, WebElement element){
+		JavascriptExecutor js = (JavascriptExecutor)driver;
+		js.executeScript("arguments[0].click();", element);
 	}
 
 
@@ -156,6 +164,13 @@ public abstract class Funcs {
 	}
 
 
+	/**
+	 * use to sign into a website for full access.
+	 * can be overriden.
+	 */
+	public void signIn() {}
+
+
 
 	/**
 	 * this finction write a String arr to the last row in sheet
@@ -167,10 +182,12 @@ public abstract class Funcs {
 		if(row==null)
 			row = sheet.createRow(sheet.getLastRowNum());
 		else row = sheet.createRow(sheet.getLastRowNum()+1);
-		String cmt="";
-		if(arr[arr.length-1].length()>30000){
-			cmt=arr[arr.length-1].substring(30000, arr[arr.length-1].length());
-			arr[arr.length-1]=arr[arr.length-1].substring(0, 30000);
+
+		for(int i=0 ;i<arr.length; i++){
+			if(arr[i].length()>30000){
+				expand(arr);
+				break;
+			}
 		}
 
 		int i=0;
@@ -179,9 +196,21 @@ public abstract class Funcs {
 			cell = row.createCell(i);
 			cell.setCellValue(arr[i]);
 		}
-		cell = row.createCell(i);
-		cell.setCellValue(cmt);
+	}
 
+	/**
+	 * expand big arr cells to next cells
+	 * @param arr array with Strings.
+	 */
+	private static void expand(String[] arr){
+		String tmp = "";
+		for(int i=0; i<arr.length; i++){
+			if(arr[i].length()>30000){
+				tmp = arr[i].substring(30000, arr[i].length());
+				arr[i] = arr[i].substring(0, 30000);
+				arr[i+1] = tmp;
+			}
+		}
 	}
 
 
@@ -198,6 +227,38 @@ public abstract class Funcs {
 	}
 
 
+	/**
+	 * @param monthStr month in String
+	 * @return month in int (1/2/3/4..12)
+	 */
+	public static int monthToInt(String monthStr){
+		if (monthStr.equals("January"))
+			return 1;
+		if (monthStr.equals("February"))
+			return 2;
+		if (monthStr.equals("March"))
+			return 3;
+		if (monthStr.equals("April"))
+			return 4;
+		if (monthStr.equals("May"))
+			return 5;
+		if (monthStr.equals("June"))
+			return 6;
+		if (monthStr.equals("July"))
+			return 7;
+		if (monthStr.equals("August"))
+			return 8;
+		if (monthStr.equals("September"))
+			return 9;
+		if (monthStr.equals("October"))
+			return 10;
+		if (monthStr.equals("November"))
+			return 11;
+		if (monthStr.equals("December"))
+			return 12;
+		return -1;
+			
+	}
 
 
 	/**
@@ -245,7 +306,7 @@ public abstract class Funcs {
 		return str;
 	}
 
-	
+
 
 
 

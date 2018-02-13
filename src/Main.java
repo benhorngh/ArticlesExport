@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -19,84 +20,58 @@ public class Main {
 	public static XSSFWorkbook workbook;
 
 	public static void main(String[] args) {
-
-		String textToSearch = "הסערה הגדולה";
-		String textToCompare = "ישראל";
+		int numOfArticles = 10;
+		String textToSearch = "ביטקוין";
+		String textToCompare = "US";
 		state stat= state.regular;  
-		int numOfArticles = 5;
-
-
 		boolean ynet = false;
-		boolean WSJ = false;
-		boolean TM = true;
+		boolean blmbrg = true;
+		boolean TM = false;
 
 		String startDate="1/1/2017";
 		String endDate="1/1/2018";
 
-		play(textToSearch, textToCompare, stat, numOfArticles, startDate,endDate, ynet, WSJ, TM);
+		Site[] sites = init(textToSearch, textToCompare, stat, numOfArticles, startDate,endDate);
+		boolean[] players = {ynet, TM, blmbrg};
+		//Ynet , TheMarker, Bloomberg
+		play(sites, players);
 
 		System.out.println();
 		System.out.println("Done.");
 
 	}
 
+	private static Site[] init(String tts, String ttc, state stat, int noa, String sd,String ed){
+		Site[] sites = new Site[3];
+		sites[0]=new Ynet     (tts, ttc, noa, stat, sd,ed);
+		sites[1]=new TheMarker(tts, ttc, noa, stat, sd,ed);
+		sites[2]=new Bloomberg("Bitcoin", ttc, noa, stat, sd,ed);
 
+		return sites;
 
+	}
 
-
-	private static void play(String tts, String ttc, state stat, int noa, String sd,String ed, 
-			boolean ynet, boolean WSJ, boolean TM) {
+	private static void play(Site[] sites, boolean[] players) {
 
 		String fileName = "excelFile";
 
-		Site ynetS = new Ynet(tts, ttc, noa, stat, sd,ed);
-		Site WSJS = new WallStreetJournal(tts, ttc, noa, stat, sd,ed);
-		Site TMS = new TheMarker(tts, ttc, noa, stat, sd,ed);
-
 		startWriters();
 
-
-
-		if(ynet){
-			List<ArticlesRow> YnetReports=null;
-			try{
-				YnetReports = ynetS.Start();
+		for(int i=0; i<sites.length; i++){
+			if(players[i]){
+				try{
+					sites[i].run();
+				}
+				catch(Exception e){System.err.println("Ynet Faild ");
+				e.printStackTrace();}
 			}
-			catch(Exception e){System.err.println("Ynet Faild ");
-			e.printStackTrace();}
-
-			if(YnetReports!=null)
-				ArticlesRow.WriteToFile(YnetReports);
 		}
-
-
-		if(WSJ){
-			List<ArticlesRow> WSJReports=null;
-			try{
-
-				WSJReports = WSJS.Start();
-			}
-			catch(Exception e){System.err.println("Wall Street Journal Faild ");
-			e.printStackTrace();}
-
-			if(WSJReports!=null)
-				ArticlesRow.WriteToFile(WSJReports);
+	
+		
+		for(int i=0; i<sites.length; i++){
+			if(sites[i].articles!=null)
+				ArticlesRow.WriteToFile(sites[i].articles);
 		}
-
-		if(TM){
-			List<ArticlesRow> TMReports=null;
-			try{
-				
-				 TMReports = TMS.Start();
-			}
-			catch(Exception e){System.err.println("The Marker Faild ");
-			e.printStackTrace();}
-
-			if(TMReports!=null)
-				ArticlesRow.WriteToFile(TMReports);
-		}
-
-
 
 		closeWriters(fileName);
 
@@ -107,7 +82,6 @@ public class Main {
 
 
 	public static void startWriters(){
-
 		workbook = new XSSFWorkbook();
 
 		XSSFSheet ArticlesSheet = workbook.createSheet("Articles");

@@ -9,7 +9,7 @@ import org.openqa.selenium.WebDriver;
  *
  */
 
-public abstract class Site extends Funcs {
+public abstract class Site extends Funcs implements Runnable {
 
 	static WebDriver driver;
 	Page page;
@@ -19,36 +19,46 @@ public abstract class Site extends Funcs {
 	String textToSearch;
 	String textToCompare;
 	int numOfArticles;
-	int maxSearch = 50;
+	int maxSearch = 200;
 	state state;
-	
 
+	List<ArticlesRow> articles;
 
+	@Override
+	public void run(){
+		this.articles = Start();
+	}
 
 
 	public Site(){}
 	
-	public Site(String tts, String ttc, int noa, state stat, String sd, String ed) {
-		this.textToSearch = tts;
-		this.textToCompare = ttc;
-		this.numOfArticles = noa;
-		this.state = stat;
-		this.fromDate = sd;
-		this.toDate = ed;
+	/**
+	 * 
+	 * @param textToSearch -text to the search field
+	 * @param textToCompare -text to search inside the article
+	 * @param numOfArticles -number of needed reports
+	 * @param state -state of search. regular, search in title, body or in the comments. 
+	 * @param startAt starting date
+	 * @param endAt ending date
+	 */
+	public Site(String textToSearch, String textToCompare, int numOfArticles,
+			state state, String startAt, String endAt) {
+		this.textToSearch = textToSearch;
+		this.textToCompare = textToCompare;
+		this.numOfArticles = numOfArticles;
+		this.state = state;
+		this.fromDate = startAt;
+		this.toDate = endAt;
 	}
 
 
 
 	/**
 	 * the Main function for Site. start the search and build the List of reports.
-	 * @param textToSearch -text to the search field
-	 * @param textToCompare -text to search inside the report
-	 * @param numOfArticles -number of the article that needed.
-	 * @param state -type of search. the types are specified in Enum state javaDoc
 	 * @return List with all the Articles that found.
 	 */
 	public List<ArticlesRow> Start(){
-		List<String> articles = findLinks(textToSearch, textToCompare,numOfArticles, state);
+		List<String> articles = findLinks();
 		driver.quit();
 		if(articles!=null){
 			System.out.println("find "+ articles.size() +" articles.");
@@ -60,24 +70,25 @@ public abstract class Site extends Funcs {
 
 
 	/**
-	 * @param textToSearch -text to the search field
-	 * @param textToCompare -text to search inside the article
-	 * @param numOfArticles -number of needed reports
-	 * @param state -state of search. regular, search in title, body or in the comments. 
 	 * @return List of all links to the reports
 	 */
-	public abstract List<String> findLinks(String textToSearch,String textToCompare, int numOfArticles, state state);
+	public abstract List<String> findLinks();
 
 	/**
 	 * this function get the body of the report from link, and compare to attached string
 	 * @param link -link to the report
-	 * @param textToCompare -text to compare with
 	 * @return true if the body contains the text, otherwise false
 	 */
 	public boolean bodyState(String link) {
 		boolean getLink=true;
 		try{
 			this.page.driver= startWebDriver(link);
+			
+			try{
+				this.page.signIn();
+			}
+			
+			catch(Exception e){System.err.println("can't login");}
 			String body="";
 			body = page.urlHandler(link, true).body;
 			if(!contain(body, textToCompare)){
@@ -88,17 +99,66 @@ public abstract class Site extends Funcs {
 			else System.err.println("okey!!");
 			page.driver.close();
 			sleep(10000);
-			
-
 		}
 		catch(Exception e){return false;}
 		return getLink;
 	}
 
+	
+	/**
+	 * 
+	 * @param link -link to the article
+	 * @param title - headline of article
+	 * @return true if standing on condition by the state, false otherwise.
+	 */
+	public boolean stateHandle(String link, String title) {
+		if(state==state.regular){
+			return true;
+		}
+		if(state==state.headline){
+			return contain(title, textToCompare);
+		}
+		if(state==state.body){
+			return bodyState(link);
+		}
+		if(state==state.comment){
+			return commentState(link);
+		}
+		return false;
+	}
+
+	
+	/**
+	 * this function get the comments of the report in link, and compare to attached string
+	 * @param link -link to the report
+	 * @return true if the comments contains the text, otherwise false
+	 */
+	public boolean commentState(String link) {
+		boolean getLink=true;
+		try{
+			page.driver= startWebDriver(link);
+			try{
+				signIn();
+				driver.navigate().to(link);
+			}
+			catch(Exception e){System.err.println("can't login");}
+			String comments=CommentRow.wireAllComments(page.getComments());
+			if(!contain(comments, textToCompare)){
+				System.err.println("not Found.");
+				getLink = false;
+			}
+			else System.err.println("okey!!");
+			page.driver.close();
+			sleep(10000);
+		}
+		catch(Exception e){return false;}
+		return getLink;
+	}
+
+
 	/**
 	 * this function get the title of the report from link, and compare to attached string
 	 * @param link -link to the report
-	 * @param textToCompare -text to compare with
 	 * @return true if the title contains the text, otherwise false
 	 */
 	public boolean headlineState(String link) {
@@ -119,33 +179,6 @@ public abstract class Site extends Funcs {
 		catch(Exception e){return false;}
 		return getLink;
 	}
-
-
-	/**
-	 * this function get the comments of the report in link, and compare to attached string
-	 * @param link -link to the report
-	 * @param textToCompare -text to compare with
-	 * @return true if the comments contains the text, otherwise false
-	 */
-	public boolean commentState(String link) {
-		boolean getLink=true;
-		try{
-			page.driver= startWebDriver(link);
-			String comments=CommentRow.wireAllComments(page.getComments());
-			if(!contain(comments, textToCompare)){
-				System.err.println("not Found.");
-				//				ArticlesRow.counter--;
-				getLink = false;
-			}
-			else System.err.println("okey!!");
-			page.driver.close();
-			sleep(10000);
-		}
-		catch(Exception e){return false;}
-		return getLink;
-	}
-
-
 
 	/**
 	 * check if the headline contains the keys.
@@ -176,9 +209,6 @@ public abstract class Site extends Funcs {
 		}
 		String[] words = text.split(" ");
 
-		//		System.out.println(Arrays.toString(words));
-		//		System.out.println(Arrays.toString(grs));
-
 		String[] keys = new String[words.length+ grs.length];
 
 		for(int i=0; i<grs.length; i++){
@@ -195,6 +225,8 @@ public abstract class Site extends Funcs {
 
 		return true;
 	}
+	
+	
 
 
 

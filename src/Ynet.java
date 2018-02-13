@@ -31,19 +31,17 @@ public class Ynet extends  Site {
 		this.DateRange = false;
 	}
 	
+	
 	public Ynet(String tts, String ttc, int noa, state stat, String sd, String ed) {
 		super(tts, ttc, noa, stat, sd,ed);
 		this.window = WindowState.Background;
-		
-		
-		
 		this.page = new YnetPage(window);
 		this.DateRange = false;
 	}
 
 
-	@Override
-	public List<String> findLinks(String textToSearch,String textToCompare, int numOfArticles, state state) {
+//	@Override
+	public List<String> findLinks() {
 
 			//open web
 		driver = startWebDriver(url);
@@ -159,6 +157,20 @@ public class Ynet extends  Site {
 			i++;
 			if(i==maxSearch)
 				break;
+		}
+		
+		//remove duplicate with "http" and "https".
+		String url1, url2;
+		for(i=0; i<urls.size()-1; i++){
+			url1 = urls.get(i);
+			url2 = urls.get(i+1);
+			url1 = url1.substring(url1.indexOf("://"), url1.length());
+			url1 = url2.substring(url2.indexOf("://"), url2.length());
+			if(url1.equals(url2)){
+				if(url1.contains("https"))
+					urls.remove(i+1);
+				else urls.remove(i);	
+			}
 		}
 		return urls;
 
