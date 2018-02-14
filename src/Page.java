@@ -15,7 +15,18 @@ public abstract class Page extends Funcs{
 
 	public WebDriver driver;
 	String SiteName ="";
-	
+	Site site;
+
+	public Page() {
+	}
+
+	public Page(Site site) {
+		this.site = site;
+	}
+
+
+
+
 
 	/**
 	 * @param urls -List with the urls of the reports. 
@@ -49,7 +60,7 @@ public abstract class Page extends Funcs{
 	}
 
 
-	
+
 
 
 	/**

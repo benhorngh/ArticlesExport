@@ -11,7 +11,7 @@ public class Reuters extends Site {
 	public Reuters(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url="https://www.reuters.com/";
-		this.window = WindowState.visible;
+		this.window = WindowState.Invisible;
 		this.DateRange = false;
 		this.page = new ReutersPage(window);
 	}
@@ -46,7 +46,6 @@ public class Reuters extends Site {
 	@Override
 	public void resultsPage(List<String> urls) {
 
-		clickLoadMore();
 		
 		for(int i=10; i<this.numOfArticles; i=i+10){
 			clickLoadMore();
@@ -89,7 +88,7 @@ public class Reuters extends Site {
 				if(checks == maxSearch)
 					return;
 			}
-		}catch(Exception e){return;}
+		}catch(Exception e){e.printStackTrace();return;}
 
 	}
 

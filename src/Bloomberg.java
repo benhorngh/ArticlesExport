@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -20,10 +21,10 @@ public class Bloomberg extends Site{
 		this.url="https://www.bloomberg.com";
 		this.window = WindowState.Invisible;
 		this.DateRange = false;
-		this.page = new BloombergPage(window);
+		this.page = new BloombergPage((Site)this, window);
 	}
-	
-	
+
+
 
 	/*
 	 * (non-Javadoc)
@@ -38,17 +39,25 @@ public class Bloomberg extends Site{
 	/**
 	 * close the annoying ad about register.
 	 */
-	private void closeAd(){
+	public void closeAd(WebDriver driver){
 		boolean closed = false;
 		int tryies = 0;
 		while(!closed){
-			try{				
+			try{
+				
+				WebElement ad = driver.findElement(By.xpath("//*[@id='chromeTout']"));
+				if(!ad.getAttribute("style").equals("display: block;")){
+					System.out.println("isClosed");
+					closed = true;
+					continue;
+				}
 				sleep(3000);
-				WebElement ad = driver.findElement(By.xpath("//*[@id='closeChromeTout']"));
-				ad.click();
+				WebElement x = driver.findElement(By.xpath("//*[@id='chromeTout']/button"));
+				x.click();
 				closed =  true;
 			}
 			catch(Exception e){
+				System.out.println("adf");
 				tryies++;
 				if(tryies == 7)
 					break;}
@@ -62,7 +71,7 @@ public class Bloomberg extends Site{
 		sleep(10000);
 
 		try{
-			closeAd();
+			closeAd(driver);
 			sleep(2000);
 
 			WebElement search = driver.findElement(By.xpath("//*[@class='bb-nav-search__icon']"));
@@ -81,10 +90,10 @@ public class Bloomberg extends Site{
 		catch (NoSuchElementException e) {e.printStackTrace(); return false ;}
 
 		sleep(5000);
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public void resultsPage(List<String> urls) {
 
@@ -136,54 +145,9 @@ public class Bloomberg extends Site{
 					return;
 			}
 
-		}catch(Exception e){return;}
+		}catch(Exception e){e.printStackTrace();return;}
 	}
 
-	
-	@Override
-	public void signIn(){
-		boolean closed = false;
-		int tryies = 0;
-		while(!closed){
-			try{				
-				sleep(3000);
-				WebElement ad = driver.findElement(By.xpath("//*[@id='closeChromeTout']"));
-				ad.click();
-				closed =  true;
-				System.out.println("succ");
-			}
-			catch(Exception e){
-				System.out.println("adf");
-				tryies++;
-				if(tryies == 7)
-					break;}
-		}
-
-		WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
-		si.click();
-
-		sleep(3000);
-
-		driver.switchTo().frame("reg-ui-client__iframe");
-
-		WebElement mailbox = driver.findElement(By.className("form-element__email"));
-		mailbox.clear();
-		mailbox.click();
-		mailbox.sendKeys(mail);
-
-		WebElement pass = driver.findElement(By.className("form-element__password"));
-		pass.clear();
-		pass.click();
-		pass.sendKeys(password);
-
-		sleep(3000);
-		WebElement button = driver.findElement(By.className("login-register__submit"));
-		button.click();
-
-		sleep(3000);
-
-		driver.navigate().refresh();
-	}
 
 
 }

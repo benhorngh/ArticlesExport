@@ -4,11 +4,12 @@ import org.openqa.selenium.WebElement;
 
 public class BloombergPage extends Page{
 
-	public BloombergPage(WindowState window){
-		super();
+	public BloombergPage(Site site,WindowState window){
+		super(site);
 		this.window = window;
 		this.SiteName = "Bloomberg";
 	}
+
 
 
 
@@ -79,6 +80,16 @@ public class BloombergPage extends Page{
 			catch(Exception e){
 			}
 		}
+		if(!ok){
+			try{
+				ttl =  driver.findElement(By.xpath("//*[@class='article-title copy-width']"));
+				if(!ttl.getText().isEmpty())
+					ok= true;
+			}
+			catch(Exception e){
+			}
+		}
+
 
 		return ttl.getText();		
 	}
@@ -227,12 +238,12 @@ public class BloombergPage extends Page{
 
 		}
 		if(body.isEmpty()){
-			
+
 			WebElement bd =  driver.findElement(By.xpath("//*[@class='copy-block copy-width']"));
 			body = bd.getText();
 		}
-		
-		
+
+
 		return body;
 	}
 
@@ -285,6 +296,24 @@ public class BloombergPage extends Page{
 		return cmmts;
 	}
 
+	private String pts(){
+		String str = path.get(0);
+		for(int i=1; i<path.size(); i++){
+			str += "//*[@id='"+path.get(i)+"']";
+		}
+		return str;
+	}
+
+	ArrayList<String> path = new ArrayList<String>();
+	public void readCommentsRec(ArrayList<CommentRow> commentList){
+		if(path.size()==0)
+			path.add("//*[@id='posts']");
+
+		ArrayList<WebElement> cmmts= (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@id='posts']/ul/li"));
+
+
+
+	}
 
 	@Override
 	public void readComments(ArrayList<CommentRow> commentList){
@@ -385,6 +414,43 @@ public class BloombergPage extends Page{
 		CommentRow cr = new CommentRow("Bloomberg", tkbk, date, "", body, toInt(num), org);
 		return cr;
 	}
+
+
+	private static final String mail = "benhorenn@gmail.com";
+	private static final String password = "Bb4546662/";
+
+
+	@Override
+	public void signIn(){
+		Bloomberg b = (Bloomberg) this.site;
+		b.closeAd(driver);
+
+		WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
+		si.click();
+
+		sleep(3000);
+
+		driver.switchTo().frame("reg-ui-client__iframe");
+
+		WebElement mailbox = driver.findElement(By.className("form-element__email"));
+		mailbox.clear();
+		mailbox.click();
+		mailbox.sendKeys(mail);
+
+		WebElement pass = driver.findElement(By.className("form-element__password"));
+		pass.clear();
+		pass.click();
+		pass.sendKeys(password);
+
+		sleep(3000);
+		WebElement button = driver.findElement(By.className("login-register__submit"));
+		button.click();
+
+		sleep(3000);
+
+		driver.navigate().refresh();
+	}
+
 
 
 	private int toInt(int[] num){

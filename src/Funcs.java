@@ -23,7 +23,7 @@ public abstract class Funcs {
 	 *  the visibility of the webdriver window. by WindowState enum.
 	 */
 	WindowState window = WindowState.visible;
-	
+
 
 	/**
 	 * start webDriver with url in this.window of visability
@@ -56,7 +56,7 @@ public abstract class Funcs {
 		//		options.addArguments("--headless");
 		options.addArguments("--start-maximized");
 		options.addArguments("--mute-audio");
-		
+
 		driver = new ChromeDriver(options);
 		try{
 			//			driver.manage().window().setPosition(new Point(-2000, 0));
@@ -160,10 +160,13 @@ public abstract class Funcs {
 	 * move to element in page. 
 	 * @param driver
 	 * @param web element
+	 * @return false if faild.
 	 */
 	public boolean moveTo2(WebDriver driver, WebElement we){
-		JavascriptExecutor jse = (JavascriptExecutor)driver;
-		jse.executeScript("arguments[0].scrollIntoView()", we); 
+		try{
+			JavascriptExecutor jse = (JavascriptExecutor)driver;
+			jse.executeScript("arguments[0].scrollIntoView()", we); 
+		}catch(Exception e) {return false;}
 		return true;
 	}
 
@@ -244,7 +247,7 @@ public abstract class Funcs {
 				c=c-32;
 			monthStr =monthStr + (char) c;
 		}
-//		System.out.println(month+" ->> "+monthStr);
+		//		System.out.println(month+" ->> "+monthStr);
 		if (monthStr.equals("JANUARY"))
 			return 1;
 		if (monthStr.equals("FEBRUARY"))
@@ -270,7 +273,7 @@ public abstract class Funcs {
 		if (monthStr.equals("DECEMBER"))
 			return 12;
 		return 0;
-			
+
 	}
 
 

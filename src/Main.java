@@ -15,16 +15,17 @@ public class Main {
 	public static XSSFWorkbook workbook;
 
 	public static void main(String[] args) {
-		int numOfArticles = 10;
-		String textToSearch = "אפל";
-		String textToSearchEnglish = "apple";
-		String textToCompare = "Apple";
-		String textToCompareEnglish = "Apple";
-		SearchState stat= SearchState.body;  
+		int numOfArticles = 3;
+		String textToSearch = "נתניהו";
+		String textToSearchEnglish = "trump";
+		String textToCompare = "סטיב";
+		String textToCompareEnglish = "Trump";
+		SearchState stat= SearchState.comment;  
 		boolean ynet = false;
 		boolean TM = false;
 		boolean blmbrg = false;
 		boolean rtrs = true;
+		boolean glbs = false;
 
 		String startDate="1/1/2017";
 		String endDate="1/1/2018";
@@ -32,11 +33,12 @@ public class Main {
 
 		Site[] sites = init(textToSearch,textToSearchEnglish, textToCompare, textToCompareEnglish,
 				stat, numOfArticles, startDate,endDate);
-		boolean[] players = {ynet, TM, blmbrg, rtrs};
-		//Ynet , TheMarker, Bloomberg, Reuters
+		boolean[] players = {ynet, TM, blmbrg, rtrs, glbs};
+		//Ynet , TheMarker, Bloomberg, Reuters, Globes
 
 		play(sites, players);
 
+		
 		System.out.println();
 		System.out.println("Done.");
 	}
@@ -57,14 +59,14 @@ public class Main {
 	 */
 	private static Site[] init(String tts, String etts, String ttc, String ettc, 
 			SearchState stat, int noa, String sd,String ed){
-		Site[] sites = new Site[4];
+		Site[] sites = new Site[5];
 		sites[0]=new Ynet     (tts, ttc, noa, stat, sd,ed);
 		sites[1]=new TheMarker(tts, ttc, noa, stat, sd,ed);
 		sites[2]=new Bloomberg(etts, ettc, noa, stat, sd,ed);
 		sites[3]=new Reuters(etts, ettc, noa, stat, sd,ed);
+		sites[4]=new Globes(tts, ttc, noa, stat, sd,ed);
 
 		return sites;
-
 	}
 
 	private static void play(Site[] sites, boolean[] players) {
@@ -99,7 +101,6 @@ public class Main {
 				Thread.currentThread();
 				Thread.sleep(100000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			System.err.println("the end has come. join!");

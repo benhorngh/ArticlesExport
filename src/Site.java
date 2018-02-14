@@ -21,8 +21,9 @@ public abstract class Site extends Funcs implements Runnable {
 	String textToSearch;
 	String textToCompare;
 	int numOfArticles;
-	int maxSearch = 200;
 	SearchState state;
+	
+	final int maxSearch = 10000;
 
 	List<ArticlesRow> articles;
 
@@ -62,7 +63,6 @@ public abstract class Site extends Funcs implements Runnable {
 	 */
 	public List<ArticlesRow> Start(){
 		List<String> articles = findLinks();
-
 
 		if(articles!=null && !articles.isEmpty()){
 			System.out.println("find "+ articles.size() +" articles in "+this.page.SiteName);
@@ -108,36 +108,7 @@ public abstract class Site extends Funcs implements Runnable {
 	public abstract void resultsPage(List<String> urls);
 
 
-	/**
-	 * this function get the body of the report from link, and compare to attached string
-	 * @param link -link to the report
-	 * @return true if the body contains the text, otherwise false
-	 */
-	public boolean bodyState(String link) {
-		boolean getLink=true;
-		try{
-			this.page.driver= startWebDriver(link);
-
-			try{
-				this.page.signIn();
-			}
-
-			catch(Exception e){System.err.println("can't login");}
-			String body="";
-			body = page.urlHandler(link, true).body;
-			if(!contain(body, textToCompare)){
-				System.err.println("not Found.");
-				getLink = false;
-			}
-			else System.err.println("okey!!");
-			ArticlesRow.counter--;
-			page.driver.close();
-			sleep(10000);
-		}
-		catch(Exception e){return false;}
-		return getLink;
-	}
-
+	
 
 
 
@@ -165,6 +136,38 @@ public abstract class Site extends Funcs implements Runnable {
 	}
 
 
+	
+	/**
+	 * this function get the body of the report from link, and compare to attached string
+	 * @param link -link to the report
+	 * @return true if the body contains the text, otherwise false
+	 */
+	public boolean bodyState(String link) {
+		boolean getLink=true;
+		try{
+			this.page.driver= startWebDriver(link);
+
+			try{
+				this.page.signIn();
+				
+			}
+			catch(Exception e){System.err.println("can't login");}
+			String body="";
+			body = page.urlHandler(link, true).body;
+			if(!contain(body, textToCompare)){
+				System.err.println("not Found.");
+				getLink = false;
+			}
+			else System.err.println("okey!!");
+			ArticlesRow.counter--;
+			page.driver.close();
+			sleep(10000);
+		}
+		catch(Exception e){return false;}
+		return getLink;
+	}
+
+	
 	/**
 	 * this function get the comments of the report in link, and compare to attached string
 	 * @param link -link to the report
@@ -175,8 +178,9 @@ public abstract class Site extends Funcs implements Runnable {
 		try{
 			page.driver= startWebDriver(link);
 			try{
-				signIn();
-				driver.navigate().to(link);
+				this.page.signIn();
+				
+				
 			}
 			catch(Exception e){System.err.println("can't login");}
 			String comments=CommentRow.wireAllComments(page.getComments());
@@ -261,6 +265,25 @@ public abstract class Site extends Funcs implements Runnable {
 				else urls.remove(i);	
 			}
 		}
+	}
+	
+	/**
+	 * close all other tabs in driver, except the current.
+	 * @param driver the webdriver
+	 * @return driver after changes - with one tab only.
+	 */
+	public WebDriver closeOthers(WebDriver driver){
+		String originalHandle = driver.getWindowHandle();
+
+	    //Do something to open new tabs
+	    for(String handle : driver.getWindowHandles()) {
+	        if (!handle.equals(originalHandle)) {
+	            driver.switchTo().window(handle);
+	            driver.close();
+	        }
+	    }
+	    driver.switchTo().window(originalHandle);
+	    return driver;
 	}
 
 
