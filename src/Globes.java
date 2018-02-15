@@ -13,7 +13,7 @@ public class Globes extends Site{
 	public Globes(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url="http://www.globes.co.il/";
-		this.window = WindowState.visible;
+		this.window = WindowState.Invisible;
 		this.DateRange = false;
 		this.page = new GlobesPage(window);
 	}
@@ -76,7 +76,6 @@ public class Globes extends Site{
 
 
 		for(int i=10; i<this.numOfArticles; i=i+10){
-			System.out.println("click");
 			clickLoadMore();
 		}
 
@@ -87,7 +86,6 @@ public class Globes extends Site{
 		int i=0;
 		int  checks = 0;
 		boolean addLink=false;
-		System.out.println(results.size());
 		try{
 			while(found < numOfArticles){
 

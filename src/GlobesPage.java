@@ -1,5 +1,7 @@
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -91,7 +93,16 @@ public class GlobesPage extends Page{
 
 	@Override
 	public ArrayList<CommentRow> commentSecction() {
-		WebElement frame = driver.findElement(By.xpath("//*[@class='sppre_frame-container']/iframe"));
+		WebElement frame = null;
+
+		for(int i=0; i<5; i++){
+			try{
+				frame = driver.findElement(By.xpath("//*[@class='sppre_frame-container']/iframe"));
+				break;
+			}
+			catch(Exception e){sleep(3000);if(i==4) return null;}
+		}
+		
 		moveTo2(driver, frame);
 		driver.switchTo().frame(frame);
 
@@ -106,11 +117,10 @@ public class GlobesPage extends Page{
 				sleep(2000);
 				clickInvisible(driver, load);
 				sleep(2000);
-				System.out.println("load more");
 			}
-			catch(Exception e){System.out.println("no more comments"); more = false;};
+			catch(Exception e){more = false;};
 		}
-		
+
 		boolean rep = true;
 		while(rep){
 			try{
@@ -120,62 +130,88 @@ public class GlobesPage extends Page{
 				sleep(2000);
 				clickInvisible(driver, load);
 				sleep(2000);
-				System.out.println("load more");
 			}
-			catch(Exception e){System.out.println("no more comments"); rep = false;};
+			catch(Exception e){ rep = false;};
 		}
-		
 
-		System.out.println("open all?");
+
 		sleep(3000);
 		ArrayList<CommentRow> commentList = new ArrayList<CommentRow>();
 		readComments(commentList);
-		return commentList;
+
+
+		fixDates(commentList);
 		
+		return commentList;
+
 	}
 
+
+	private void fixDates(ArrayList<CommentRow> commentList) {
+//		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date cd = new Date();
+
+		if(commentList != null && commentList.size()>=1){
+			String ArticleDate="";
+			try{
+				ArticleDate = getDate();
+			}catch(Exception e){}
+
+			String ndt = ArticleDate;
+			if(!ArticleDate.isEmpty()){
+				for(int i=0; i<commentList.size(); i++){
+					String dt = commentList.get(i).date;
+					if(dt.length()<8){
+						if(dt.charAt(1)=='d'){
+							ndt =  Integer.parseInt(cd.getDay()+"")-1+"";
+							ndt = ndt+"."+cd.getMonth()+"."+cd.getYear();
+						}
+						
+						
+					}
+				}
+			}
+		}
+
+		
+	}
 
 	@Override
 	public void readComments(ArrayList<CommentRow> commentList){
 		ArrayList<WebElement> cmmts=null;
 		try{
 			cmmts= (ArrayList<WebElement>) 
-				driver.findElements(By.xpath("//*[@class='sppre_messages-list']/li"));
+					driver.findElements(By.xpath("//*[@class='sppre_messages-list']/li"));
 		}catch(Exception e){e.printStackTrace(); return;}
-		
-		System.out.println("size::"+cmmts.size());
-		
+
 		ArrayList<WebElement> childs;
 		int[] nums = {0,0};
 		WebElement comment;
-		
+
 		for(WebElement cmmt : cmmts){
 			try{
 				comment =  cmmt.findElement(By.className("sppre_message-stack"));
 				commentList.add(getComment(comment, nums,true));
-			}catch(Exception e){e.printStackTrace();}
+			}catch(Exception e){}
 
 
 			try{
-			childs = (ArrayList<WebElement>) 
-					cmmt.findElement(By.className("sppre_children-list"))
-					.findElements(By.tagName("li"));
-			
-			System.out.println("size::::"+childs.size());
-			
-			for(WebElement child:childs){
-				nums[1]++;
-				try{
-					comment =  child.findElement(By.className("sppre_message-stack"));
-					commentList.add(getComment(comment, nums,false));
-				}catch(Exception e){e.printStackTrace();}
+				childs = (ArrayList<WebElement>) 
+						cmmt.findElement(By.className("sppre_children-list"))
+						.findElements(By.tagName("li"));
 
 
-			}
+				for(WebElement child:childs){
+					nums[1]++;
+					try{
+						comment =  child.findElement(By.className("sppre_message-stack"));
+						commentList.add(getComment(comment, nums,false));
+					}catch(Exception e){}
+
+
+				}
 			}catch(Exception e){}
 			nums[1]=0;
-
-
 		}
 	}
 
@@ -192,7 +228,7 @@ public class GlobesPage extends Page{
 			WebElement name = user.findElement(By.className("sppre_username"));
 			tkbk = name.getText();
 		}catch(Exception e){}
-		
+
 		if(org){
 			try{
 				WebElement number = we.findElement(By.className("sppre_label"));
@@ -205,14 +241,15 @@ public class GlobesPage extends Page{
 			date = time.getText();
 		}
 		catch(Exception e){}
-		
+
 
 		if(!org){
 			try{
-//				WebElement repleyto = we.findElement(By.className("sppre_reply-to"));
-//				WebElement name = repleyto.findElement(By.className("sppre_username"));
+				//				WebElement repleyto = we.findElement(By.className("sppre_reply-to"));
+				//				WebElement name = repleyto.findElement(By.className("sppre_username"));
+				//				System.out.println("in here");
 				WebElement name = we.findElement(By.xpath(".//*[@class='sppre_reply-to']//*[@class='sppre_username']"));
-				
+
 				sub = name.getText();
 			}catch(Exception e){}
 		}
@@ -221,8 +258,8 @@ public class GlobesPage extends Page{
 		String number = nums[0]+"";
 		if(!org)
 			number+="."+nums[1];
-		
-		CommentRow cr = new CommentRow("Globes", tkbk, date, "", body,number, org);
+
+		CommentRow cr = new CommentRow("Globes", tkbk, date, sub, body,number, org);
 		return cr;
 	}
 

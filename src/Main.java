@@ -16,7 +16,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		//will replace it with GUI
-		int numOfArticles = 5;
+		int numOfArticles = 3;
 		String textToSearch = "נתניהו";
 		String textToSearchEnglish = "Trump";
 		String textToCompare = "סטיב";
@@ -28,7 +28,7 @@ public class Main {
 		boolean rtrs = false;
 		boolean glbs = true;
 
-		String startDate="1/1/2017"; //currently noe completed
+		String startDate="1/1/2017"; //currently not completed
 		String endDate="1/1/2018";
 
 
@@ -38,7 +38,6 @@ public class Main {
 		//Ynet , TheMarker, Bloomberg, Reuters, Globes .
 
 		play(sites, players);
-
 
 		System.out.println();
 		System.out.println("Done.");

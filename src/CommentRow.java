@@ -112,8 +112,6 @@ public class CommentRow {
 		}
 		return allc;
 	}
-
-
 	public static void WriteToFile(ArrayList<CommentRow> cmmts) {
 		for(int i=0; i<cmmts.size(); i++){
 			cmmts.get(i).WriteToFile();
