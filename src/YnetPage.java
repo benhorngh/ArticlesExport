@@ -192,7 +192,7 @@ public class YnetPage extends Page  {
 			ghl= fixTitle( ghl, body );
 			gtb= fixName(gtb);
 
-			CommentRow cr = new CommentRow("Ynet", gtb, date, ghl, body, last, org);
+			CommentRow cr = new CommentRow("Ynet", gtb, date, ghl, body, last+"", org);
 
 			commentsArr.add(cr);
 

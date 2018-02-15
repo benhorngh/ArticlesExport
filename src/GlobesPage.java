@@ -110,16 +110,122 @@ public class GlobesPage extends Page{
 			}
 			catch(Exception e){System.out.println("no more comments"); more = false;};
 		}
+		
+		boolean rep = true;
+		while(rep){
+			try{
+				load = driver.findElement(By.xpath("//*[@class='sppre_show-more-replies-button']"));
+				moveTo2(driver, load);
+				load = driver.findElement(By.xpath("//*[@class='sppre_show-more-replies-button']"));
+				sleep(2000);
+				clickInvisible(driver, load);
+				sleep(2000);
+				System.out.println("load more");
+			}
+			catch(Exception e){System.out.println("no more comments"); rep = false;};
+		}
+		
 
 		System.out.println("open all?");
-		sleep(10000);
-		return null;
+		sleep(3000);
+		ArrayList<CommentRow> commentList = new ArrayList<CommentRow>();
+		readComments(commentList);
+		return commentList;
+		
 	}
 
-	@Override
-	public void readComments(ArrayList<CommentRow> commentsList) {
-		// TODO Auto-generated method stub
 
+	@Override
+	public void readComments(ArrayList<CommentRow> commentList){
+		ArrayList<WebElement> cmmts=null;
+		try{
+			cmmts= (ArrayList<WebElement>) 
+				driver.findElements(By.xpath("//*[@class='sppre_messages-list']/li"));
+		}catch(Exception e){e.printStackTrace(); return;}
+		
+		System.out.println("size::"+cmmts.size());
+		
+		ArrayList<WebElement> childs;
+		int[] nums = {0,0};
+		WebElement comment;
+		
+		for(WebElement cmmt : cmmts){
+			try{
+				comment =  cmmt.findElement(By.className("sppre_message-stack"));
+				commentList.add(getComment(comment, nums,true));
+			}catch(Exception e){e.printStackTrace();}
+
+
+			try{
+			childs = (ArrayList<WebElement>) 
+					cmmt.findElement(By.className("sppre_children-list"))
+					.findElements(By.tagName("li"));
+			
+			System.out.println("size::::"+childs.size());
+			
+			for(WebElement child:childs){
+				nums[1]++;
+				try{
+					comment =  child.findElement(By.className("sppre_message-stack"));
+					commentList.add(getComment(comment, nums,false));
+				}catch(Exception e){e.printStackTrace();}
+
+
+			}
+			}catch(Exception e){}
+			nums[1]=0;
+
+
+		}
+	}
+
+
+	public CommentRow getComment(WebElement we, int[] nums, boolean org) {
+		String tkbk="", date="",body="", sub="";
+		try{
+			WebElement comment = we.findElement(By.xpath(".//*[@data-spot-im-class='message-text']"));
+			body = comment.getText();
+		}catch(Exception e){}
+
+		try{
+			WebElement user = we.findElement(By.className("sppre_user-link"));
+			WebElement name = user.findElement(By.className("sppre_username"));
+			tkbk = name.getText();
+		}catch(Exception e){}
+		
+		if(org){
+			try{
+				WebElement number = we.findElement(By.className("sppre_label"));
+				nums[0] = Integer.parseInt(number.getText());
+			}catch(Exception e){}
+		}
+
+		try{
+			WebElement time = we.findElement(By.className("sppre_posted-at"));
+			date = time.getText();
+		}
+		catch(Exception e){}
+		
+
+		if(!org){
+			try{
+//				WebElement repleyto = we.findElement(By.className("sppre_reply-to"));
+//				WebElement name = repleyto.findElement(By.className("sppre_username"));
+				WebElement name = we.findElement(By.xpath(".//*[@class='sppre_reply-to']//*[@class='sppre_username']"));
+				
+				sub = name.getText();
+			}catch(Exception e){}
+		}
+
+
+		String number = nums[0]+"";
+		if(!org)
+			number+="."+nums[1];
+		
+		CommentRow cr = new CommentRow("Globes", tkbk, date, "", body,number, org);
+		return cr;
 	}
 
 }
+
+

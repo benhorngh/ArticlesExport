@@ -79,9 +79,9 @@ public abstract class Site extends Funcs implements Runnable {
 	public List<String> findLinks(){
 		List<String> urls = new ArrayList<String>();
 		try{
-			
 			boolean search = search();
 			if(search) {
+				driver.get(driver.getCurrentUrl());
 				resultsPage(urls);
 				removeDuplicate(urls);
 			}
@@ -179,7 +179,6 @@ public abstract class Site extends Funcs implements Runnable {
 			page.driver= startWebDriver(link);
 			try{
 				this.page.signIn();
-				
 				
 			}
 			catch(Exception e){System.err.println("can't login");}
@@ -288,7 +287,10 @@ public abstract class Site extends Funcs implements Runnable {
 
 
 
-
-
-
+	@Override
+	protected void finalize(){
+		try{
+			this.driver.quit();
+		}catch(Exception e){}
+	}
 }

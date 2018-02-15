@@ -49,7 +49,7 @@ public abstract class Page extends Funcs{
 				try{
 					signIn();
 				}
-				catch(Exception e){System.err.println("can't login");}
+				catch(Exception e){e.printStackTrace();System.err.println("can't login");}
 			}
 			reports.add(urlHandler(url, false));
 			System.out.println("finish URL");
@@ -187,4 +187,12 @@ public abstract class Page extends Funcs{
 	 * @param commentsArr -list of comments
 	 */
 	public abstract void readComments(ArrayList<CommentRow> commentsList);
+	
+	
+	@Override
+	protected void finalize(){
+		try{
+			this.driver.quit();
+		}catch(Exception e){}
+	}
 }

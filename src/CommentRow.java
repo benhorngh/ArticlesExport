@@ -18,7 +18,7 @@ public class CommentRow {
 	public String date;
 	public String headline;
 	public String comment;
-	public int convNum;
+	public String convNum;
 	public boolean original;
 
 
@@ -30,11 +30,21 @@ public class CommentRow {
 		date="";
 		headline="";
 		comment="";
-		convNum=0;
+		convNum="0";
 	}
 
-	
-	public CommentRow(String site, String tkbk, String date, String ttl, String cmmt, int cmmNum, boolean org) {
+
+	/**
+	 * 
+	 * @param site -name of the comment site
+	 * @param tkbk -talkbackist name
+	 * @param date -comment writen date
+	 * @param ttl -title
+	 * @param cmmt -body of the comment
+	 * @param cmmNum -comment num.
+	 * @param org -true if comment is original, false if comment on comment.
+	 */
+	public CommentRow(String site, String tkbk, String date, String ttl, String cmmt, String cmmNum, boolean org) {
 		this.site = site;
 		this.talkbakist = tkbk;
 		this.date = date;
@@ -92,13 +102,13 @@ public class CommentRow {
 	/**
 	 * 
 	 * @param cmmts List with all comments
-	 * @return
+	 * @return all comments attached
 	 */
 	public static String wireAllComments(ArrayList<CommentRow> cmmts) {
 		String allc="";
 
 		for(int i=0; i<cmmts.size(); i++){
-			allc+=cmmts.get(i).headline+" : "+cmmts.get(i).comment;
+			allc+=cmmts.get(i).headline+" . "+cmmts.get(i).comment;
 		}
 		return allc;
 	}

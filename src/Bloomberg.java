@@ -58,6 +58,7 @@ public class Bloomberg extends Site{
 			}
 			catch(Exception e){
 				System.out.println("adf");
+				sleep(2000);
 				tryies++;
 				if(tryies == 7)
 					break;}
@@ -68,6 +69,9 @@ public class Bloomberg extends Site{
 	public boolean search() {
 
 		driver = startWebDriver(url);
+		sleep(2000);
+		driver.get(url);
+		
 		sleep(10000);
 
 		try{
@@ -103,7 +107,6 @@ public class Bloomberg extends Site{
 		int  checks = 0;
 		boolean addLink=false;
 		ArrayList<WebElement> results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result']"));
-		System.out.println(results.size());
 		try{
 			while(found < numOfArticles){
 

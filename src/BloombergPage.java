@@ -12,7 +12,6 @@ public class BloombergPage extends Page{
 
 
 
-
 	private final String s  = "//*[@class='transporter-item current']";
 
 	@Override
@@ -271,7 +270,7 @@ public class BloombergPage extends Page{
 		WebElement loadMore;
 		while(!open){
 			try{
-
+				sleep(2000);
 				dad =  driver.findElement(By.xpath("//*[@class='load-more']"));
 				loadMore =  driver.findElement(By.xpath("//*[@class='btn load-more__button']"));
 				if(dad.getAttribute("style").equals("display: none;"))
@@ -296,27 +295,159 @@ public class BloombergPage extends Page{
 		return cmmts;
 	}
 
+
+
+
+	@Override
+	public void readComments(ArrayList<CommentRow> commentList){
+		if(path.size()==0)
+			path.add("//*[@id='posts']");
+		ArrayList<WebElement> cmmts=null;
+		try{
+			cmmts= (ArrayList<WebElement>) driver.findElements(By.xpath(pts()+"/ul/li"));
+		}catch(Exception e){return;}
+		//				if(cmmts == null || cmmts.size() == 0) return;
+
+		numbers.add(0);
+		for(WebElement cmmt: cmmts){
+			count();
+			commentList.add(getComment(cmmt, listToArray(numbers)));
+			path.add(cmmt.getAttribute("id"));
+			readComments(commentList);
+		}
+		numbers.remove(numbers.size()-1);
+		path.remove(path.size()-1);
+	}
+
+
+	private void count() {
+		int x= numbers.get(numbers.size()-1);
+		x++;
+		numbers.remove(numbers.size()-1);
+		numbers.add(x);
+	}
+
+	private int[] listToArray(ArrayList<Integer> IntArrList) {
+
+		int[] arr = new int[IntArrList.size()];
+
+		for(int i =0; i<arr.length; i++){
+			arr[i]  = IntArrList.get(i);
+		}
+		return arr;
+	}
+
+	private ArrayList<Integer> numbers = new ArrayList<Integer> ();
+	private ArrayList<String> path = new ArrayList<String>();
+
 	private String pts(){
 		String str = path.get(0);
 		for(int i=1; i<path.size(); i++){
+			if(path.get(i).isEmpty())
+				break;
 			str += "//*[@id='"+path.get(i)+"']";
 		}
 		return str;
 	}
-
-	ArrayList<String> path = new ArrayList<String>();
-	public void readCommentsRec(ArrayList<CommentRow> commentList){
-		if(path.size()==0)
-			path.add("//*[@id='posts']");
-
-		ArrayList<WebElement> cmmts= (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@id='posts']/ul/li"));
-
-
-
+	private String ArrToStr(int[] num){
+		String s="";
+		s = num[0]+"";
+		for(int i=1; i<num.length;i++){
+			s+= "."+num[i];
+		}
+		return s;
 	}
 
+
+	public CommentRow getComment(WebElement we, int[] num) {
+		String tkbk="", date="",body="";
+		try{
+			WebElement name = we.findElement(By.className("post-byline")).findElements(By.tagName("span")).get(0);
+			tkbk = name.getText();
+		}catch(Exception e){}
+
+		try{
+			WebElement comment = we.findElement(By.className("post-body-inner"));
+			body = comment.getText();
+		}catch(Exception e){}
+
+		try{
+			WebElement time = we.findElement(By.className("post-meta"));
+			date = time.findElement(By.tagName("a")).getAttribute("title");
+			date = toDate(date);
+		}
+		catch(Exception e){}
+
+		boolean org = false;
+		if(num[0]==1)
+			org = true;
+		CommentRow cr = new CommentRow("Bloomberg", tkbk, date, "", body, ArrToStr(num), org);
+		return cr;
+	}
+
+
+	private static final String mail = "benhorenn@gmail.com";
+	private static final String password = "Bb4546662/";
+
+
 	@Override
-	public void readComments(ArrayList<CommentRow> commentList){
+	public void signIn(){
+		try{
+			Bloomberg b = (Bloomberg) this.site;
+			b.closeAd(driver);
+			sleep(2000);
+
+			WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
+			si.click();
+
+			sleep(3000);
+
+			driver.switchTo().frame("reg-ui-client__iframe");
+			sleep(2000);
+
+			WebElement mailbox = driver.findElement(By.className("form-element__email"));
+			mailbox.clear();
+			mailbox.click();
+			mailbox.sendKeys(mail);
+
+			WebElement pass = driver.findElement(By.className("form-element__password"));
+			pass.clear();
+			pass.click();
+			pass.sendKeys(password);
+
+			sleep(3000);
+			WebElement button = driver.findElement(By.className("login-register__submit"));
+			button.click();
+
+			sleep(3000);
+		}
+		catch(Exception e) {e.printStackTrace();}
+
+		driver.get(driver.getCurrentUrl());
+	}
+
+
+
+	private String toDate(String date) {
+		if(date.isEmpty() || date == null) return "";
+		String arr[] = date.split(" ");
+		if(arr == null || arr.length<5) return "";
+		String monthStr = arr[1];
+		int month= monthToInt(monthStr);
+		String day = arr[2].substring(0, arr[2].length()-1);
+		String year = arr[3];
+		return day+"."+month+"."+year;
+	}
+
+
+
+	/*
+	 * a mehod I build, that do the same as the regular "readComments" 
+	 * just not recursive
+	 */
+	public void readCommentsWithoutRec(ArrayList<CommentRow> commentList){
+
+
 		String[] path = {"//*[@id='posts']","","","","","","","","",""};
 		int[] num = {1,1,1,1,1,1,1,1};
 		//		int num = 0;
@@ -392,75 +523,6 @@ public class BloombergPage extends Page{
 			}path[1] = ""; num[1]=1;
 		}
 	}
-
-	public CommentRow getComment(WebElement we, int[] num) {
-		WebElement name = we.findElement(By.className("post-byline")).findElements(By.tagName("span")).get(0);
-		String tkbk = name.getText();
-
-		WebElement comment = we.findElement(By.className("post-body-inner"));
-		String body = comment.getText();
-
-		WebElement time = we.findElement(By.className("post-meta"));
-		String date= "";
-		try{
-			date = time.findElement(By.tagName("a")).getAttribute("title");
-			date = toDate(date);
-		}
-		catch(Exception e){}
-
-		boolean org = false;
-		if(num[0]==1)
-			org = true;
-		CommentRow cr = new CommentRow("Bloomberg", tkbk, date, "", body, toInt(num), org);
-		return cr;
-	}
-
-
-	private static final String mail = "benhorenn@gmail.com";
-	private static final String password = "Bb4546662/";
-
-
-	@Override
-	public void signIn(){
-		Bloomberg b = (Bloomberg) this.site;
-		b.closeAd(driver);
-
-		WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
-		si.click();
-
-		sleep(3000);
-
-		driver.switchTo().frame("reg-ui-client__iframe");
-
-		WebElement mailbox = driver.findElement(By.className("form-element__email"));
-		mailbox.clear();
-		mailbox.click();
-		mailbox.sendKeys(mail);
-
-		WebElement pass = driver.findElement(By.className("form-element__password"));
-		pass.clear();
-		pass.click();
-		pass.sendKeys(password);
-
-		sleep(3000);
-		WebElement button = driver.findElement(By.className("login-register__submit"));
-		button.click();
-
-		sleep(3000);
-
-		driver.navigate().refresh();
-	}
-
-
-
-	private int toInt(int[] num){
-		String s="";
-		for(int i=0; i<num.length;i++){
-			s+= num[i]+"";
-		}
-		return Integer.parseInt(s);
-	}
-
 	private String strPath(String[] path){
 		String s ="";
 		s+=path[0];
@@ -470,15 +532,6 @@ public class BloombergPage extends Page{
 		}
 		return s;
 	}
-	private String toDate(String date) {
-		if(date.isEmpty() || date == null) return "";
-		String arr[] = date.split(" ");
-		if(arr == null || arr.length<5) return "";
-		String monthStr = arr[1];
-		int month= monthToInt(monthStr);
-		String day = arr[2].substring(0, arr[2].length()-1);
-		String year = arr[3];
-		return day+"."+month+"."+year;
-	}
+
 
 }

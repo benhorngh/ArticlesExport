@@ -15,30 +15,31 @@ public class Main {
 	public static XSSFWorkbook workbook;
 
 	public static void main(String[] args) {
-		int numOfArticles = 3;
+		//will replace it with GUI
+		int numOfArticles = 5;
 		String textToSearch = "נתניהו";
-		String textToSearchEnglish = "trump";
+		String textToSearchEnglish = "Trump";
 		String textToCompare = "סטיב";
 		String textToCompareEnglish = "Trump";
-		SearchState stat= SearchState.comment;  
+		SearchState stat= SearchState.regular;  
 		boolean ynet = false;
 		boolean TM = false;
 		boolean blmbrg = false;
-		boolean rtrs = true;
-		boolean glbs = false;
+		boolean rtrs = false;
+		boolean glbs = true;
 
-		String startDate="1/1/2017";
+		String startDate="1/1/2017"; //currently noe completed
 		String endDate="1/1/2018";
 
 
 		Site[] sites = init(textToSearch,textToSearchEnglish, textToCompare, textToCompareEnglish,
 				stat, numOfArticles, startDate,endDate);
 		boolean[] players = {ynet, TM, blmbrg, rtrs, glbs};
-		//Ynet , TheMarker, Bloomberg, Reuters, Globes
+		//Ynet , TheMarker, Bloomberg, Reuters, Globes .
 
 		play(sites, players);
 
-		
+
 		System.out.println();
 		System.out.println("Done.");
 	}
@@ -129,7 +130,7 @@ public class Main {
 		workbook = new XSSFWorkbook();
 
 		XSSFSheet ArticlesSheet = workbook.createSheet("Articles");
-		XSSFSheet CommentsSheet = workbook.createSheet("comments");
+		XSSFSheet CommentsSheet = workbook.createSheet("Comments");
 
 		//		ArticlesSheet.getCTWorksheet().getSheetViews().getSheetViewArray(0).setRightToLeft(true);
 		//		CommentsSheet.getCTWorksheet().getSheetViews().getSheetViewArray(0).setRightToLeft(true);

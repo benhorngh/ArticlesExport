@@ -7,6 +7,19 @@ import org.openqa.selenium.WebElement;
 
 public class WallStreetJournal extends Site {
 
+	/*
+	 * *****************************
+	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!]]]-------
+	 * *****************************
+	 *
+	 * 
+	 * this website canceld for now.
+	 * 
+	 * 
+	 * *****************************
+	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!]]]-------
+	 * *****************************
+	 */
 
 	static final String url="http://www.wsj.com";
 

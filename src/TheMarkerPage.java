@@ -240,7 +240,7 @@ public class TheMarkerPage extends Page {
 
 		}
 		catch(Exception e){e.printStackTrace();}
-		CommentRow cr = new CommentRow("The Marker", gtb, date, ghl, body, num, org);
+		CommentRow cr = new CommentRow("The Marker", gtb, date, ghl, body, num+"", org);
 		return cr;
 	}
 
