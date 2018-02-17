@@ -22,7 +22,7 @@ public abstract class Site extends Funcs implements Runnable {
 	String textToCompare;
 	int numOfArticles;
 	SearchState state;
-	
+
 	final int maxSearch = 10000;
 
 	List<ArticlesRow> articles;
@@ -81,14 +81,13 @@ public abstract class Site extends Funcs implements Runnable {
 		try{
 			boolean search = search();
 			if(search) {
-				driver.get(driver.getCurrentUrl());
 				resultsPage(urls);
 				removeDuplicate(urls);
 			}
 		}
 		catch(Exception e){e.printStackTrace();}
 		try{
-		driver.quit();
+			driver.quit();
 		}
 		catch(Exception e){}
 		return urls;
@@ -108,7 +107,7 @@ public abstract class Site extends Funcs implements Runnable {
 	public abstract void resultsPage(List<String> urls);
 
 
-	
+
 
 
 
@@ -136,7 +135,7 @@ public abstract class Site extends Funcs implements Runnable {
 	}
 
 
-	
+
 	/**
 	 * this function get the body of the report from link, and compare to attached string
 	 * @param link -link to the report
@@ -149,7 +148,7 @@ public abstract class Site extends Funcs implements Runnable {
 
 			try{
 				this.page.signIn();
-				
+
 			}
 			catch(Exception e){System.err.println("can't login");}
 			String body="";
@@ -167,7 +166,7 @@ public abstract class Site extends Funcs implements Runnable {
 		return getLink;
 	}
 
-	
+
 	/**
 	 * this function get the comments of the report in link, and compare to attached string
 	 * @param link -link to the report
@@ -179,7 +178,7 @@ public abstract class Site extends Funcs implements Runnable {
 			page.driver= startWebDriver(link);
 			try{
 				this.page.signIn();
-				
+
 			}
 			catch(Exception e){System.err.println("can't login");}
 			String comments=CommentRow.wireAllComments(page.getComments());
@@ -196,7 +195,7 @@ public abstract class Site extends Funcs implements Runnable {
 	}
 
 
-	
+
 
 	/**
 	 * check if the headline contains the keys.
@@ -265,7 +264,7 @@ public abstract class Site extends Funcs implements Runnable {
 			}
 		}
 	}
-	
+
 	/**
 	 * close all other tabs in driver, except the current.
 	 * @param driver the webdriver
@@ -274,15 +273,15 @@ public abstract class Site extends Funcs implements Runnable {
 	public WebDriver closeOthers(WebDriver driver){
 		String originalHandle = driver.getWindowHandle();
 
-	    //Do something to open new tabs
-	    for(String handle : driver.getWindowHandles()) {
-	        if (!handle.equals(originalHandle)) {
-	            driver.switchTo().window(handle);
-	            driver.close();
-	        }
-	    }
-	    driver.switchTo().window(originalHandle);
-	    return driver;
+		//Do something to open new tabs
+		for(String handle : driver.getWindowHandles()) {
+			if (!handle.equals(originalHandle)) {
+				driver.switchTo().window(handle);
+				driver.close();
+			}
+		}
+		driver.switchTo().window(originalHandle);
+		return driver;
 	}
 
 

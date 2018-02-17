@@ -16,7 +16,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		//will replace it with GUI
-		
+
 		String textToSearch = "טראמפ";
 		String textToSearchEnglish = "Trump";
 		String textToCompare = "טראמפ";
@@ -28,16 +28,22 @@ public class Main {
 		boolean blmbrg = true;
 		boolean rtrs = true;
 		boolean glbs = true;
+		boolean[] players={ynet
+				,TM
+				,blmbrg
+				,rtrs
+				,glbs
+		};
 
 		String startDate="1/1/2017"; //currently not completed
 		String endDate="1/1/2018";
-		
-		starter(textToSearch,textToSearchEnglish,textToCompare,textToCompareEnglish
-				,stat,startDate,endDate,numOfArticles,ynet,TM,blmbrg,rtrs,glbs	);
 
-		
+		starter(textToSearch,textToSearchEnglish,textToCompare,textToCompareEnglish
+				,stat,startDate,endDate,numOfArticles, players);
+
+
 	}
-	
+
 	public static void starter(String textToSearch
 			,String textToSearchEnglish
 			,String textToCompare
@@ -46,15 +52,11 @@ public class Main {
 			,String startDate
 			,String endDate
 			,int numOfArticles
-			,boolean ynet
-			,boolean TM
-			,boolean blmbrg
-			,boolean rtrs
-			,boolean glbs
+			,boolean[] players
 			){
 		Site[] sites = init(textToSearch,textToSearchEnglish, textToCompare, textToCompareEnglish,
 				stat, numOfArticles, startDate,endDate);
-		boolean[] players = {ynet, TM, blmbrg, rtrs, glbs};
+//		boolean[] players = {ynet, TM, blmbrg, rtrs, glbs};
 		//Ynet , TheMarker, Bloomberg, Reuters, Globes .
 
 		play(sites, players);

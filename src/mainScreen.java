@@ -37,15 +37,35 @@ import javax.swing.JSlider;
 import javax.swing.JPopupMenu;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.awt.Choice;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Button;
+import java.awt.Font;
+import javax.swing.JProgressBar;
 
 public class mainScreen {
 
 	private JFrame frame;
-//	private JTextField txtField_1;
-//	private JTextField txtField_2;
-//	private JTextField txtField_3;
-//	private JTextField txtField_4;
+	private JTextField textField_1;
+	private JTextField textField_2;
+	private JTextField textField_3;
+	private JTextField textField_4;
+	private Choice choice ;
+	private JSpinner spinner;
+
+	private JCheckBox chckbxYnet ;
+	private JCheckBox chckbxTheMarker;
+	private JCheckBox chckbxBloomberg;
+	private JCheckBox chckbxReuters;
+	private JCheckBox chckbxGlobes;
+	private JTextPane txtpnStartDate;
+	private JTextPane txtpnEndDate;
+	private JTextField txtstart;
+	private JTextField txtend;
+
+
 
 	/**
 	 * Launch the application.
@@ -76,60 +96,23 @@ public class mainScreen {
 	private void initialize() {
 
 
-		 JTextField txtField_1;
-		 JTextField txtField_2;
-		 JTextField txtField_3;
-		 JTextField txtField_4;
-
-		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.getContentPane().setBackground(Color.WHITE);
+		frame.setBounds(100, 100, 600, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("308px"),
-				FormSpecs.UNRELATED_GAP_COLSPEC,
-				ColumnSpec.decode("112px"),},
-			new RowSpec[] {
-				RowSpec.decode("194px"),}));
-		
-		JPanel panel_6 = new JPanel();
-		frame.getContentPane().add(panel_6, "3, 1, fill, fill");
-		panel_6.setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
-				FormSpecs.DEFAULT_COLSPEC,},
-			new RowSpec[] {
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,}));
-		
-		JCheckBox chckbxYnet = new JCheckBox("Ynet");
-		panel_6.add(chckbxYnet, "2, 2");
-		
-		JCheckBox chckbxTheMarker = new JCheckBox("The Marker");
-		panel_6.add(chckbxTheMarker, "2, 4");
-		
-		JCheckBox chckbxBloomberg = new JCheckBox("Bloomberg");
-		panel_6.add(chckbxBloomberg, "2, 6");
-		
-		JCheckBox chckbxReuters = new JCheckBox("Reuters");
-		panel_6.add(chckbxReuters, "2, 8");
-		
-		JCheckBox chckbxGlobes = new JCheckBox("Globes");
-		panel_6.add(chckbxGlobes, "2, 10");
-		
-		JPanel panel_7 = new JPanel();
-		frame.getContentPane().add(panel_7, "1, 1, fill, fill");
-		
-		JPopupMenu popupMenu = new JPopupMenu();
-		addPopup(panel_7, popupMenu);
-		panel_7.setLayout(new FormLayout(new ColumnSpec[] {
+				ColumnSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("default:grow"),},
+				new RowSpec[] {
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"),}));
+
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.WHITE);
+		frame.getContentPane().add(panel_1, "2, 2, fill, fill");
+		panel_1.setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),
 				FormSpecs.RELATED_GAP_COLSPEC,
@@ -144,73 +127,226 @@ public class mainScreen {
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),}));
-		
+
 		JTextPane txtpnTextToSearch_1 = new JTextPane();
+		txtpnTextToSearch_1.setDisabledTextColor(Color.BLACK);
+		txtpnTextToSearch_1.setCaretColor(Color.BLACK);
+		txtpnTextToSearch_1.setBackground(new Color(255, 255, 255));
+		txtpnTextToSearch_1.setForeground(new Color(0, 0, 0));
+		txtpnTextToSearch_1.setFont(new Font("Arial", Font.PLAIN, 11));
 		txtpnTextToSearch_1.setEditable(false);
-		txtpnTextToSearch_1.setText("text to search");
-		panel_7.add(txtpnTextToSearch_1, "2, 2, fill, fill");
-		
-		txtField_1 = new JTextField();
-		txtField_1.setText("field1");
-		panel_7.add(txtField_1, "4, 2, fill, default");
-		txtField_1.setColumns(10);
-		
+		txtpnTextToSearch_1.setEnabled(false);
+		txtpnTextToSearch_1.setText("Text to search");
+		panel_1.add(txtpnTextToSearch_1, "2, 2, center, center");
+
+		textField_4 = new JTextField();
+		panel_1.add(textField_4, "4, 2, fill, default");
+		textField_4.setColumns(10);
+
 		JTextPane txtpnTextToSearch = new JTextPane();
+		txtpnTextToSearch.setDisabledTextColor(Color.BLACK);
+		txtpnTextToSearch.setCaretColor(Color.BLACK);
+		txtpnTextToSearch.setBackground(new Color(255, 255, 255));
+		txtpnTextToSearch.setForeground(new Color(0, 0, 0));
+		txtpnTextToSearch.setFont(new Font("Arial", Font.PLAIN, 11));
 		txtpnTextToSearch.setEditable(false);
-		txtpnTextToSearch.setText("text to search- english");
-		panel_7.add(txtpnTextToSearch, "2, 4, fill, fill");
-		
-		txtField_2 = new JTextField();
-		txtField_2.setText("field2");
-		panel_7.add(txtField_2, "4, 4, fill, default");
-		txtField_2.setColumns(10);
-		
+		txtpnTextToSearch.setEnabled(false);
+		txtpnTextToSearch.setText("Text to search -english");
+		panel_1.add(txtpnTextToSearch, "2, 4, center, center");
+
+		textField_3 = new JTextField();
+		panel_1.add(textField_3, "4, 4, fill, default");
+		textField_3.setColumns(10);
+
 		JTextPane txtpnTextToCompare_1 = new JTextPane();
+		txtpnTextToCompare_1.setDisabledTextColor(Color.BLACK);
+		txtpnTextToCompare_1.setCaretColor(Color.BLACK);
+		txtpnTextToCompare_1.setBackground(new Color(255, 255, 255));
+		txtpnTextToCompare_1.setForeground(Color.BLACK);
+		txtpnTextToCompare_1.setFont(new Font("Arial", Font.PLAIN, 11));
 		txtpnTextToCompare_1.setEditable(false);
-		txtpnTextToCompare_1.setText("text to compare");
-		panel_7.add(txtpnTextToCompare_1, "2, 6, fill, fill");
-		
-		txtField_3 = new JTextField();
-		txtField_3.setText("field3");
-		panel_7.add(txtField_3, "4, 6, fill, default");
-		txtField_3.setColumns(10);
-		
+		txtpnTextToCompare_1.setEnabled(false);
+		txtpnTextToCompare_1.setText("Text to compare");
+		panel_1.add(txtpnTextToCompare_1, "2, 6, center, center");
+
+		textField_2 = new JTextField();
+		panel_1.add(textField_2, "4, 6, fill, default");
+		textField_2.setColumns(10);
+
 		JTextPane txtpnTextToCompare = new JTextPane();
+		txtpnTextToCompare.setDisabledTextColor(Color.BLACK);
+		txtpnTextToCompare.setCaretColor(Color.BLACK);
+		txtpnTextToCompare.setBackground(new Color(255, 255, 255));
+		txtpnTextToCompare.setBorder(null);
+		txtpnTextToCompare.setForeground(new Color(0, 0, 0));
+		txtpnTextToCompare.setFont(new Font("Arial", Font.PLAIN, 11));
 		txtpnTextToCompare.setEditable(false);
-		txtpnTextToCompare.setText("text to compare- english");
-		panel_7.add(txtpnTextToCompare, "2, 8, fill, fill");
+		txtpnTextToCompare.setEnabled(false);
+		txtpnTextToCompare.setText("Text to compare -english");
+		panel_1.add(txtpnTextToCompare, "2, 8, center, center");
 		
-		txtField_4 = new JTextField();
-		txtField_4.setText("field4");
-		panel_7.add(txtField_4, "4, 8, fill, default");
-		txtField_4.setColumns(10);
 		
-		JTextPane txtpnNomberOfReports = new JTextPane();
-		txtpnNomberOfReports.setEditable(false);
-		txtpnNomberOfReports.setText("nomber of reports");
-		panel_7.add(txtpnNomberOfReports, "2, 10, fill, fill");
 		
-		JSpinner spinner_1 = new JSpinner();
-		panel_7.add(spinner_1, "4, 10");
-	}
-	
-	
-	private static void addPopup(Component component, final JPopupMenu popup) {
-		component.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			public void mouseReleased(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			private void showMenu(MouseEvent e) {
-				popup.show(e.getComponent(), e.getX(), e.getY());
+
+		textField_1 = new JTextField();
+		panel_1.add(textField_1, "4, 8, fill, default");
+		textField_1.setColumns(10);
+
+		JTextPane txtpnNumberOfReports = new JTextPane();
+		txtpnNumberOfReports.setDisabledTextColor(Color.BLACK);
+		txtpnNumberOfReports.setCaretColor(Color.BLACK);
+		txtpnNumberOfReports.setBackground(new Color(255, 255, 255));
+		txtpnNumberOfReports.setForeground(new Color(0, 0, 0));
+		txtpnNumberOfReports.setFont(new Font("Arial", Font.PLAIN, 11));
+		txtpnNumberOfReports.setEditable(false);
+		txtpnNumberOfReports.setEnabled(false);
+		txtpnNumberOfReports.setText("Number of reports");
+		panel_1.add(txtpnNumberOfReports, "2, 10, center, center");
+
+		 spinner = new JSpinner();
+		panel_1.add(spinner, "4, 10");
+		
+		txtpnStartDate = new JTextPane();
+		txtpnStartDate.setDisabledTextColor(Color.BLACK);
+		txtpnStartDate.setBackground(new Color(255, 255, 255));
+		txtpnStartDate.setFont(new Font("Arial", Font.PLAIN, 11));
+		txtpnStartDate.setForeground(Color.WHITE);
+		txtpnStartDate.setEditable(false);
+		txtpnStartDate.setEnabled(false);
+		txtpnStartDate.setText("start date (dd/mm/yyyy)");
+		panel_1.add(txtpnStartDate, "2, 12, center, center");
+		
+		txtstart = new JTextField();
+		txtstart.setText("");
+		panel_1.add(txtstart, "4, 12, fill, default");
+		txtstart.setColumns(10);
+		
+		txtpnEndDate = new JTextPane();
+		txtpnEndDate.setDisabledTextColor(Color.BLACK);
+		txtpnEndDate.setBackground(new Color(255, 255, 255));
+		txtpnEndDate.setFont(new Font("Arial", Font.PLAIN, 11));
+		txtpnEndDate.setForeground(Color.WHITE);
+		txtpnEndDate.setEditable(false);
+		txtpnEndDate.setEnabled(false);
+		txtpnEndDate.setText("end date (dd/mm/yyyy)");
+		panel_1.add(txtpnEndDate, "2, 14, center, center");
+		
+		txtend = new JTextField();
+		txtend.setText("");
+		panel_1.add(txtend, "4, 14, fill, default");
+		txtend.setColumns(10);
+
+
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		frame.getContentPane().add(panel, "4, 2, fill, fill");
+		panel.setLayout(new FormLayout(new ColumnSpec[] {
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,},
+				new RowSpec[] {
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						FormSpecs.DEFAULT_ROWSPEC,
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						FormSpecs.DEFAULT_ROWSPEC,
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						FormSpecs.DEFAULT_ROWSPEC,
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						FormSpecs.DEFAULT_ROWSPEC,
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						FormSpecs.DEFAULT_ROWSPEC,
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						FormSpecs.DEFAULT_ROWSPEC,
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						FormSpecs.DEFAULT_ROWSPEC,
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						FormSpecs.DEFAULT_ROWSPEC,
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						FormSpecs.DEFAULT_ROWSPEC,}));
+
+		chckbxYnet = new JCheckBox("Ynet");
+		chckbxYnet.setFocusable(false);
+		chckbxYnet.setBackground(Color.WHITE);
+		panel.add(chckbxYnet, "2, 2");
+
+		chckbxTheMarker = new JCheckBox("The Marker");
+		chckbxTheMarker.setFocusable(false);
+		chckbxTheMarker.setBackground(Color.WHITE);
+		panel.add(chckbxTheMarker, "2, 4");
+
+		chckbxBloomberg = new JCheckBox("Bloomberg");
+		chckbxBloomberg.setFocusable(false);
+		chckbxBloomberg.setBackground(Color.WHITE);
+		panel.add(chckbxBloomberg, "2, 6");
+
+		chckbxReuters = new JCheckBox("Reuters");
+		chckbxReuters.setFocusable(false);
+		chckbxReuters.setBackground(Color.WHITE);
+		panel.add(chckbxReuters, "2, 8");
+
+		chckbxGlobes = new JCheckBox("Globes");
+		chckbxGlobes.setFocusable(false);
+		chckbxGlobes.setBackground(Color.WHITE);
+		panel.add(chckbxGlobes, "2, 10");
+
+		
+		choice = new Choice();
+		choice.add("Regular");
+		choice.add("Title");
+		choice.add("Body");
+		choice.add("Comments");
+		panel.add(choice, "2, 14");
+
+		JButton btnStart = new JButton("Start");
+		btnStart.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				String tts = textField_4.getText();
+				String ttse = textField_3.getText();
+				String ttc = textField_2.getText();
+				String ttce = textField_1.getText();
+				
+				
+				String selected = choice.getSelectedItem();
+
+				int noa = (Integer) spinner.getValue();
+				SearchState state = SearchState.regular;
+				if(selected.equals("Regular"))
+					state = SearchState.regular;
+				if(selected.equals("Title"))
+					state = SearchState.headline;
+				if(selected.equals("Body"))
+					state = SearchState.body;
+				if(selected.equals("Comments"))
+					state = SearchState.comment;
+				
+				boolean[] sites = {chckbxYnet.isSelected()
+						,chckbxTheMarker.isSelected()
+						,chckbxBloomberg.isSelected()
+						,chckbxReuters.isSelected()
+						,chckbxGlobes.isSelected()
+				};
+				
+				
+				
+				System.out.println("tts: "+tts);
+				System.out.println("ttse: "+ttse);
+				System.out.println("ttc: "+ttc);
+				System.out.println("ttce: "+ttce);
+				System.out.println("stat: "+selected);
+				System.out.println(Arrays.toString(sites));
+				
+				Main.starter(tts, ttse, ttc, ttce, state, "", "", noa, sites);
 			}
 		});
+		panel.add(btnStart, "2, 18");
+	}
+
+
+	private static void addPopup(Component component, final JPopupMenu popup) {
 	}
 }

@@ -38,6 +38,7 @@ public class Ynet extends  Site {
 	@Override
 	public boolean search() {
 
+//		return true;
 		driver = startWebDriver(url);
 		driver.get(url);
 		sleep(10000);
@@ -80,8 +81,9 @@ public class Ynet extends  Site {
 //		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		WebElement lis=null;
 		try {
-			lis = driver.findElements(By.cssSelector("#su_w_s_search_content_list")).get(0);
-		}catch (NullPointerException e) {System.err.println(e); return;}
+			lis = driver.findElement(By.cssSelector("#su_w_s_search_content_list"));
+		}catch (Exception e) {e.printStackTrace(); return;}
+		
 
 		boolean getLink = true;
 		boolean addLink = false;
@@ -101,7 +103,6 @@ public class Ynet extends  Site {
 
 			try { 
 				res=lis.findElements(By.cssSelector("#search_result_id_"+i)).get(0);
-
 
 				if(i>70 && i+2%10==0){
 					sleep(5000);
@@ -127,7 +128,7 @@ public class Ynet extends  Site {
 				}
 
 
-			} catch (Exception e){ System.err.println(e); break;}
+			} catch (Exception e){ e.printStackTrace(); break;}
 
 			try{
 				if(getLink){				
