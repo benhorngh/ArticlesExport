@@ -39,6 +39,7 @@ public class Ynet extends  Site {
 	public boolean search() {
 
 		driver = startWebDriver(url);
+		driver.get(url);
 		sleep(10000);
 		//find searchField section and open search window
 		try {
@@ -74,7 +75,9 @@ public class Ynet extends  Site {
 	@Override
 	public void resultsPage(List<String> urls) {
 		//get results
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+//		driver.get(url);
+		sleep(3000);
+//		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		WebElement lis=null;
 		try {
 			lis = driver.findElements(By.cssSelector("#su_w_s_search_content_list")).get(0);

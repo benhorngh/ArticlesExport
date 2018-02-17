@@ -16,22 +16,42 @@ public class Main {
 
 	public static void main(String[] args) {
 		//will replace it with GUI
-		int numOfArticles = 3;
-		String textToSearch = "נתניהו";
+		
+		String textToSearch = "טראמפ";
 		String textToSearchEnglish = "Trump";
-		String textToCompare = "סטיב";
+		String textToCompare = "טראמפ";
 		String textToCompareEnglish = "Trump";
-		SearchState stat= SearchState.regular;  
-		boolean ynet = false;
-		boolean TM = false;
-		boolean blmbrg = false;
-		boolean rtrs = false;
+		SearchState stat= SearchState.comment;  
+		int numOfArticles = 3;
+		boolean ynet = true;
+		boolean TM = true;
+		boolean blmbrg = true;
+		boolean rtrs = true;
 		boolean glbs = true;
 
 		String startDate="1/1/2017"; //currently not completed
 		String endDate="1/1/2018";
+		
+		starter(textToSearch,textToSearchEnglish,textToCompare,textToCompareEnglish
+				,stat,startDate,endDate,numOfArticles,ynet,TM,blmbrg,rtrs,glbs	);
 
-
+		
+	}
+	
+	public static void starter(String textToSearch
+			,String textToSearchEnglish
+			,String textToCompare
+			,String textToCompareEnglish
+			,SearchState stat
+			,String startDate
+			,String endDate
+			,int numOfArticles
+			,boolean ynet
+			,boolean TM
+			,boolean blmbrg
+			,boolean rtrs
+			,boolean glbs
+			){
 		Site[] sites = init(textToSearch,textToSearchEnglish, textToCompare, textToCompareEnglish,
 				stat, numOfArticles, startDate,endDate);
 		boolean[] players = {ynet, TM, blmbrg, rtrs, glbs};

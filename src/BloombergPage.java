@@ -392,38 +392,43 @@ public class BloombergPage extends Page{
 
 	@Override
 	public void signIn(){
-		try{
-			Bloomberg b = (Bloomberg) this.site;
-			b.closeAd(driver);
-			sleep(2000);
+		for(int i=0; i<3; i++){
+			try{
+				Bloomberg b = (Bloomberg) this.site;
+				b.closeAd(driver);
+				sleep(2000);
 
-			WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
-			si.click();
+				WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
+				si.click();
 
-			sleep(3000);
+				sleep(3000);
 
-			driver.switchTo().frame("reg-ui-client__iframe");
-			sleep(2000);
+				driver.switchTo().frame("reg-ui-client__iframe");
+				sleep(2000);
 
-			WebElement mailbox = driver.findElement(By.className("form-element__email"));
-			mailbox.clear();
-			mailbox.click();
-			mailbox.sendKeys(mail);
+				WebElement mailbox = driver.findElement(By.className("form-element__email"));
+				mailbox.clear();
+				mailbox.click();
+				mailbox.sendKeys(mail);
 
-			WebElement pass = driver.findElement(By.className("form-element__password"));
-			pass.clear();
-			pass.click();
-			pass.sendKeys(password);
+				WebElement pass = driver.findElement(By.className("form-element__password"));
+				pass.clear();
+				pass.click();
+				pass.sendKeys(password);
 
-			sleep(3000);
-			WebElement button = driver.findElement(By.className("login-register__submit"));
-			button.click();
+				sleep(3000);
+				WebElement button = driver.findElement(By.className("login-register__submit"));
+				button.click();
+				
+				sleep(3000);
+				break;
+		
+			}
+			catch(Exception e) {e.printStackTrace();	
+			}
 
-			sleep(3000);
+			driver.get(driver.getCurrentUrl());
 		}
-		catch(Exception e) {e.printStackTrace();}
-
-		driver.get(driver.getCurrentUrl());
 	}
 
 

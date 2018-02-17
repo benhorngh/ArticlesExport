@@ -18,7 +18,12 @@ public class Reuters extends Site {
 
 	@Override
 	public boolean search() {
+
+		if(this.state == SearchState.comment)
+			return false;
+
 		driver = startWebDriver(url);
+		driver.get(url);
 		sleep(10000);
 
 		try{
@@ -46,7 +51,7 @@ public class Reuters extends Site {
 	@Override
 	public void resultsPage(List<String> urls) {
 
-		
+
 		for(int i=10; i<this.numOfArticles; i=i+10){
 			clickLoadMore();
 		}
@@ -59,10 +64,12 @@ public class Reuters extends Site {
 		ArrayList<WebElement> results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result-indiv']"));
 		System.out.println(results.size());
 		try{
+			WebElement head = null;
 			while(found < numOfArticles){
 
-				WebElement head = results.get(i)
-						.findElement(By.className("search-result-title")).findElement(By.tagName("a"));
+				if(i < results.size()){
+					 head = results.get(i)
+					.findElement(By.className("search-result-title")).findElement(By.tagName("a"));
 
 				title = head.getText();
 				link = head.getAttribute("href");
@@ -79,7 +86,7 @@ public class Reuters extends Site {
 				}
 				i++;
 				checks++;
-
+				}
 				if(i>=results.size()){
 					clickLoadMore();
 					results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result-indiv']"));
