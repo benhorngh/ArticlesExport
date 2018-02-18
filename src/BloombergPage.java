@@ -424,11 +424,11 @@ public class BloombergPage extends Page{
 				break;
 		
 			}
-			catch(Exception e) {e.printStackTrace();	
-			}
-
-			driver.get(driver.getCurrentUrl());
+			catch(Exception e) {e.printStackTrace();}			
 		}
+//		driver.navigate().refresh();
+		driver.get(driver.getCurrentUrl());
+		sleep(2000);
 	}
 
 

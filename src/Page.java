@@ -48,14 +48,20 @@ public abstract class Page extends Funcs{
 			if(i==0){
 				try{
 					signIn();
+					driver.navigate().refresh();
 				}
 				catch(Exception e){e.printStackTrace();System.err.println("can't login");}
 			}
 			reports.add(urlHandler(url, false));
 			System.out.println("finish URL");
+//			mainScreen.addToLog("finish URL..");
+			
 		}
 		driver.quit();
 		System.err.println("finish "+SiteName);
+		
+		mainScreen.addToLog("finish "+SiteName);
+		
 		return reports;
 	}
 
@@ -81,7 +87,7 @@ public abstract class Page extends Funcs{
 			try{
 				headline = getTitle();
 			}
-			catch(Exception e){System.err.println("cant get title");}
+			catch(Exception e){e.printStackTrace(); System.err.println("cant get title");}
 
 
 			//subheadline

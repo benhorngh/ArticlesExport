@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -44,13 +45,14 @@ import java.awt.GridBagConstraints;
 import java.awt.Button;
 import java.awt.Font;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import java.awt.SystemColor;
 
 public class mainScreen {
 
 	private JFrame frame;
-	private JTextField textField_1;
 	private JTextField textField_2;
-	private JTextField textField_3;
 	private JTextField textField_4;
 	private Choice choice ;
 	private JSpinner spinner;
@@ -65,7 +67,11 @@ public class mainScreen {
 	private JTextField txtstart;
 	private JTextField txtend;
 
-	private JButton btnStart;
+	private static JButton btnStart;
+	private JPanel panel_2;
+	private JPanel panel_3;
+
+	private static JTextArea log;
 
 
 
@@ -100,7 +106,7 @@ public class mainScreen {
 
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setBounds(100, 100, 600, 300);
+		frame.setBounds(100, 100, 800, 360);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
@@ -108,6 +114,12 @@ public class mainScreen {
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),},
 				new RowSpec[] {
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"),
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"),
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"),
 						FormSpecs.RELATED_GAP_ROWSPEC,
 						RowSpec.decode("default:grow"),}));
 
@@ -150,21 +162,6 @@ public class mainScreen {
 		panel_1.add(textField_4, "4, 2, fill, default");
 		textField_4.setColumns(10);
 
-		JTextPane txtpnTextToSearch = new JTextPane();
-		txtpnTextToSearch.setDisabledTextColor(Color.BLACK);
-		txtpnTextToSearch.setCaretColor(Color.BLACK);
-		txtpnTextToSearch.setBackground(new Color(255, 255, 255));
-		txtpnTextToSearch.setForeground(new Color(0, 0, 0));
-		txtpnTextToSearch.setFont(new Font("Arial", Font.PLAIN, 11));
-		txtpnTextToSearch.setEditable(false);
-		txtpnTextToSearch.setEnabled(false);
-		txtpnTextToSearch.setText("Text to search -english");
-		panel_1.add(txtpnTextToSearch, "2, 4, center, center");
-
-		textField_3 = new JTextField();
-		panel_1.add(textField_3, "4, 4, fill, default");
-		textField_3.setColumns(10);
-
 		JTextPane txtpnTextToCompare_1 = new JTextPane();
 		txtpnTextToCompare_1.setDisabledTextColor(Color.BLACK);
 		txtpnTextToCompare_1.setCaretColor(Color.BLACK);
@@ -174,28 +171,11 @@ public class mainScreen {
 		txtpnTextToCompare_1.setEditable(false);
 		txtpnTextToCompare_1.setEnabled(false);
 		txtpnTextToCompare_1.setText("Keywords");
-		panel_1.add(txtpnTextToCompare_1, "2, 6, center, center");
+		panel_1.add(txtpnTextToCompare_1, "2, 4, center, center");
 
 		textField_2 = new JTextField();
-		panel_1.add(textField_2, "4, 6, fill, default");
+		panel_1.add(textField_2, "4, 4, fill, default");
 		textField_2.setColumns(10);
-
-		JTextPane txtpnTextToCompare = new JTextPane();
-		txtpnTextToCompare.setDisabledTextColor(Color.BLACK);
-		txtpnTextToCompare.setCaretColor(Color.BLACK);
-		txtpnTextToCompare.setBackground(new Color(255, 255, 255));
-		txtpnTextToCompare.setBorder(null);
-		txtpnTextToCompare.setForeground(new Color(0, 0, 0));
-		txtpnTextToCompare.setFont(new Font("Arial", Font.PLAIN, 11));
-		txtpnTextToCompare.setEditable(false);
-		txtpnTextToCompare.setEnabled(false);
-		txtpnTextToCompare.setText("Keywords -english");
-		panel_1.add(txtpnTextToCompare, "2, 8, center, center");
-
-
-		textField_1 = new JTextField();
-		panel_1.add(textField_1, "4, 8, fill, default");
-		textField_1.setColumns(10);
 
 		JTextPane txtpnNumberOfReports = new JTextPane();
 		txtpnNumberOfReports.setDisabledTextColor(Color.BLACK);
@@ -206,10 +186,10 @@ public class mainScreen {
 		txtpnNumberOfReports.setEditable(false);
 		txtpnNumberOfReports.setEnabled(false);
 		txtpnNumberOfReports.setText("Number of reports");
-		panel_1.add(txtpnNumberOfReports, "2, 10, center, center");
+		panel_1.add(txtpnNumberOfReports, "2, 6, center, center");
 
 		spinner = new JSpinner();
-		panel_1.add(spinner, "4, 10");
+		panel_1.add(spinner, "4, 6");
 
 		txtpnStartDate = new JTextPane();
 		txtpnStartDate.setDisabledTextColor(Color.BLACK);
@@ -219,11 +199,11 @@ public class mainScreen {
 		txtpnStartDate.setEditable(false);
 		txtpnStartDate.setEnabled(false);
 		txtpnStartDate.setText("start date (dd/mm/yyyy)");
-		panel_1.add(txtpnStartDate, "2, 12, center, center");
+		panel_1.add(txtpnStartDate, "2, 10, center, center");
 
 		txtstart = new JTextField();
 		txtstart.setText("");
-		panel_1.add(txtstart, "4, 12, fill, default");
+		panel_1.add(txtstart, "4, 10, fill, default");
 		txtstart.setColumns(10);
 
 		txtpnEndDate = new JTextPane();
@@ -234,11 +214,11 @@ public class mainScreen {
 		txtpnEndDate.setEditable(false);
 		txtpnEndDate.setEnabled(false);
 		txtpnEndDate.setText("end date (dd/mm/yyyy)");
-		panel_1.add(txtpnEndDate, "2, 14, center, center");
+		panel_1.add(txtpnEndDate, "2, 12, center, center");
 
 		txtend = new JTextField();
 		txtend.setText("");
-		panel_1.add(txtend, "4, 14, fill, default");
+		panel_1.add(txtend, "4, 12, fill, default");
 		txtend.setColumns(10);
 
 
@@ -304,11 +284,11 @@ public class mainScreen {
 
 		btnStart = new JButton("Start");
 		btnStart.setFocusable(false);
-		
-		
+
+
 		btnStart.addActionListener(new ActionListener()
-	    {
-	      public void actionPerformed(ActionEvent e)  {
+		{
+			public void actionPerformed(ActionEvent e)  {
 
 				btnStart.setEnabled(false);
 
@@ -317,9 +297,9 @@ public class mainScreen {
 					public void run(){
 
 						String tts = textField_4.getText();
-						String ttse = textField_3.getText();
+						//						String ttse = textField_3.getText();
 						String ttc = textField_2.getText();
-						String ttce = textField_1.getText();
+						//						String ttce = textField_1.getText();
 						String sdt = txtstart.getText();
 						String edt = txtend.getText();
 
@@ -346,24 +326,113 @@ public class mainScreen {
 
 
 						System.out.println("tts: "+tts);
-						System.out.println("ttse: "+ttse);
+						//						System.out.println("ttse: "+ttse);
 						System.out.println("ttc: "+ttc);
-						System.out.println("ttce: "+ttce);
+						//						System.out.println("ttce: "+ttce);
 						System.out.println("stat: "+selected);
 						System.out.println("sdt: "+sdt);
 						System.out.println("edt: "+edt);
 						System.out.println(Arrays.toString(sites));
 
-						Main.starter(tts, ttse, ttc, ttce, state, sdt, edt, noa, sites);
+						Main.starter(tts, "Trump", ttc, "Trump", state, sdt, edt, noa, sites);
 					}
 				};
 				thread.start();
-	      }
-	    });
-		
-	
+			}
+		});
+
 		panel.add(btnStart, "2, 18");
+
+
+
+		panel_2 = new JPanel();
+		panel_2.setFocusable(false);
+		panel_2.setDoubleBuffered(false);
+		panel_2.setEnabled(false);
+		panel_2.setBackground(Color.WHITE);
+		//		frame.getContentPane().add(panel_2, "2, 3, 1, 6, fill, fill");
+		frame.getContentPane().add(panel_2, "2, 4, 1, 5, right, top");
+		panel_2.setLayout(new FormLayout(new ColumnSpec[] {
+
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("default:grow"),
+		},
+				new RowSpec[] {
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"),
+
+		}));
+
+
+		JTextPane jtp = new JTextPane();
+		jtp.setDisabledTextColor(Color.BLACK);
+		jtp.setCaretColor(Color.BLACK);
+		jtp.setBackground(new Color(255, 255, 255));
+		jtp.setForeground(new Color(0, 0, 0));
+		jtp.setFont(new Font("Arial", Font.PLAIN, 11));
+		jtp.setEditable(false);
+		jtp.setEnabled(false);
+		jtp.setText("log:");
+		panel_2.add(jtp, "2, 2, center, center");
+
+
+		/////////////////////
+
+
+
+		//		    JTextArea display = new JTextArea ( 16, 58 );
+		//		    display.setEditable ( false ); // set textArea non-editable
+
+
+		// My code
+		//		    JFrame frame = new JFrame ();
+		//		    frame.add ( panel_3 );
+		//		    frame.pack ();
+		//		    frame.setLocationRelativeTo ( null );
+		//		    frame.setVisible ( true );
+
+
+
+		panel_3 = new JPanel();
+		//		frame.getContentPane().add(panel_2, "2, 3, 1, 6, fill, fill");
+		frame.getContentPane().add(panel_3, "4, 4, 1, 2, left, top");
+		panel_3.setLayout(new FormLayout(new ColumnSpec[] {
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("default:grow"),},
+				new RowSpec[] {
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"),}));
+
+		log = new JTextArea(3, 20 );
+		log.setAlignmentY(Component.TOP_ALIGNMENT);
+		log.setAlignmentX(Component.LEFT_ALIGNMENT);
+		log.setDisabledTextColor(Color.BLACK);
+		log.setFont(new Font("Arial", Font.PLAIN, 11));
+		log.setWrapStyleWord(true);
+		log.setFocusable(false);
+		log.setEnabled(false);
+		log.setEditable(false);
+		log.setDisabledTextColor(SystemColor.activeCaption);
+		log.setText("");
+		panel_3.add(log, "2, 2, left, top");
+
+
+		JScrollPane scroll = new JScrollPane ( log );
+		scroll.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
+		panel_3.add(scroll, "2, 2, left, top");
 	}
+
+	public static void addToLog(String message){
+		if(log != null){
+			String past = log.getText();
+			String nm = past + '\n' + message;
+			log.setText(nm);
+
+			if(message.contains("Done"))
+				btnStart.setEnabled(true);	
+		}
+	}
+
 
 
 	private static void addPopup(Component component, final JPopupMenu popup) {

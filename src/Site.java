@@ -17,8 +17,8 @@ public abstract class Site extends Funcs implements Runnable {
 	WebDriver driver;
 	Page page;
 	Boolean DateRange;
-	String fromDate;
-	String toDate;
+	String fromDate="";
+	String toDate="";
 	String textToSearch;
 	String textToCompare;
 	int numOfArticles;
@@ -54,6 +54,7 @@ public abstract class Site extends Funcs implements Runnable {
 		this.state = state;
 		this.fromDate = startAt;
 		this.toDate = endAt;
+
 	}
 
 
@@ -63,13 +64,19 @@ public abstract class Site extends Funcs implements Runnable {
 	 * @return List with all the Articles that found.
 	 */
 	public List<ArticlesRow> Start(){
-		List<String> articles = findLinks();
+		mainScreen.addToLog("start "+this.page.SiteName);
+		List<String> articles =null;
+		try{
+			articles = findLinks();
+		}catch(Exception e){e.printStackTrace();}
 
 		if(articles!=null && !articles.isEmpty()){
 			System.out.println("find "+ articles.size() +" articles in "+this.page.SiteName);
+			mainScreen.addToLog("find "+ articles.size() +" articles in "+this.page.SiteName);
 			return page.linksToList(articles);
 		}
 		else System.err.println(this.page.SiteName+" fail");
+		mainScreen.addToLog(this.page.SiteName+" fail");
 		return null;
 	}
 
@@ -121,8 +128,15 @@ public abstract class Site extends Funcs implements Runnable {
 	 */
 	public boolean stateHandle(String link, String title) {
 		boolean okdate = true;
-		if(!this.fromDate.isEmpty())
-			okdate = dateState(link);
+
+		if(!this.fromDate.isEmpty()){
+
+			if(state!=SearchState.body)
+				okdate = dateState(link, false);
+			else okdate = dateState(link, true);
+
+		}
+
 
 		if(state==SearchState.regular){
 			return okdate;
@@ -141,10 +155,12 @@ public abstract class Site extends Funcs implements Runnable {
 
 
 
-	public boolean dateState(String link) {
+
+	public boolean dateState(String link, boolean bd) {
 		if(this.DateRange) return true;
-		
+
 		boolean getLink=true;
+		ArticlesRow ar=null;
 		try{
 			this.page.driver= startWebDriver(link);
 
@@ -153,10 +169,9 @@ public abstract class Site extends Funcs implements Runnable {
 
 			}
 			catch(Exception e){System.err.println("can't login");}
-			
-			String date = page.urlHandler(link, true).date;
 
-
+			ar =  page.urlHandler(link, true);
+			String date = ar.date;
 			Date urlD = stringToDate(date);
 			Date fromD = stringToDate(this.fromDate);
 			Date toD = stringToDate(this.toDate);
@@ -171,6 +186,19 @@ public abstract class Site extends Funcs implements Runnable {
 			sleep(10000);
 		}
 		catch(Exception e){e.printStackTrace();page.driver.quit();return false;}
+		if(bd && getLink){
+			if(ar!=null){	
+				String body="";
+				body = ar.body;
+				if(!contain(body, textToCompare)){
+					System.err.println("not Found.");
+					getLink = false;
+				}
+				else { System.err.println("okey!!");getLink = true;}
+			}
+
+		}
+
 		return getLink;
 	}
 
@@ -187,7 +215,6 @@ public abstract class Site extends Funcs implements Runnable {
 
 			try{
 				this.page.signIn();
-
 			}
 			catch(Exception e){System.err.println("can't login");}
 			String body="";

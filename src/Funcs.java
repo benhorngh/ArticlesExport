@@ -349,8 +349,7 @@ public abstract class Funcs {
 		}
 
 		DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-   		String reportDate = df.format(dt);
-		
+   		
 		return dt;
 	}
 	

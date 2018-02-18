@@ -14,7 +14,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class Main {
 
-	public static XSSFWorkbook workbook;
+	static final String fileName = "excelFile";
 
 	public static void main(String[] args) {
 		//will replace it with GUI
@@ -23,8 +23,8 @@ public class Main {
 		String textToSearchEnglish = "Trump";
 		String textToCompare = "טראמפ";
 		String textToCompareEnglish = "Trump";
-		SearchState stat= SearchState.comment;  
-		int numOfArticles = 3;
+		SearchState stat= SearchState.body;  
+		int numOfArticles = 5;
 		boolean ynet = true;
 		boolean TM = true;
 		boolean blmbrg = true;
@@ -56,10 +56,12 @@ public class Main {
 			,boolean[] players
 			){
 
+		mainScreen.addToLog("starting..");
+
 		if(endDate.isEmpty()){
 			endDate = Funcs.todayString();
 		}
-		
+
 		Site[] sites = init(textToSearch,textToSearchEnglish, textToCompare, textToCompareEnglish,
 				stat, numOfArticles, startDate,endDate);
 		//		boolean[] players = {ynet, TM, blmbrg, rtrs, glbs};
@@ -69,6 +71,7 @@ public class Main {
 
 		System.out.println();
 		System.out.println("Done.");
+		mainScreen.addToLog('\n'+"Done.");
 	}
 
 
@@ -101,9 +104,14 @@ public class Main {
 
 		boolean useThreads = false;
 
-		String fileName = "excelFile";
 
 		startWriters();
+		try {
+			outputStream = new FileOutputStream(fileName+".xlsx");
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace(); return;
+		}
+
 
 		Thread[] threads = new  Thread[sites.length];
 		for(int i=0; i<threads.length; i++){
@@ -116,8 +124,10 @@ public class Main {
 				try{
 					if(useThreads)
 						threads[i].start();
-					else sites[i].run();
-
+					else {
+						sites[i].run();
+						outputStream.flush();
+					}
 				}
 				catch(Exception e){System.err.println("failed!");
 				e.printStackTrace();}
@@ -145,13 +155,15 @@ public class Main {
 					ArticlesRow.WriteToFile(sites[i].articles);
 		}
 
-		closeWriters(fileName);
+		closeWriters();
+
 
 	}
 
 
 
-
+	static XSSFWorkbook workbook;
+	static FileOutputStream outputStream;
 
 	public static void startWriters(){
 		workbook = new XSSFWorkbook();
@@ -169,10 +181,13 @@ public class Main {
 		Funcs.StringArrToLastRow(cmhl, CommentsSheet);
 	}
 
-	public static void closeWriters(String fileName){
+
+
+	public static void closeWriters(){
 		try {
-			FileOutputStream outputStream = new FileOutputStream(fileName+".xlsx");
+
 			workbook.write(outputStream);
+			outputStream.close();
 			workbook.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
