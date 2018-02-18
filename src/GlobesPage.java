@@ -1,8 +1,12 @@
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -102,7 +106,7 @@ public class GlobesPage extends Page{
 			}
 			catch(Exception e){sleep(3000);if(i==4) return null;}
 		}
-		
+
 		moveTo2(driver, frame);
 		driver.switchTo().frame(frame);
 
@@ -140,41 +144,16 @@ public class GlobesPage extends Page{
 		readComments(commentList);
 
 
-		fixDates(commentList);
-		
+		try{
+			fixDates(commentList);
+		}catch(Exception e) {e.printStackTrace();}
+
 		return commentList;
 
 	}
 
 
-	private void fixDates(ArrayList<CommentRow> commentList) {
-//		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		Date cd = new Date();
 
-		if(commentList != null && commentList.size()>=1){
-			String ArticleDate="";
-			try{
-				ArticleDate = getDate();
-			}catch(Exception e){}
-
-			String ndt = ArticleDate;
-			if(!ArticleDate.isEmpty()){
-				for(int i=0; i<commentList.size(); i++){
-					String dt = commentList.get(i).date;
-					if(dt.length()<8){
-						if(dt.charAt(1)=='d'){
-							ndt =  Integer.parseInt(cd.getDay()+"")-1+"";
-							ndt = ndt+"."+cd.getMonth()+"."+cd.getYear();
-						}
-						
-						
-					}
-				}
-			}
-		}
-
-		
-	}
 
 	@Override
 	public void readComments(ArrayList<CommentRow> commentList){
@@ -263,6 +242,50 @@ public class GlobesPage extends Page{
 		return cr;
 	}
 
+	
+	
+	public void fixDates(ArrayList<CommentRow> commentList) {
+		String today = todayString();
+
+		if(commentList != null && commentList.size()>=1){
+			String ArticleDate="";
+			try{
+				ArticleDate = getDate();
+			}catch(Exception e){}
+
+			String ndt = ArticleDate;
+			if(!ArticleDate.isEmpty()){
+				for(int i=0; i<commentList.size(); i++){
+					String dt = commentList.get(i).date;
+					if(dt.length()<4){
+						if(dt.charAt(1)=='d'){
+							
+							commentList.get(i).date = addDays(today , -Integer.parseInt(""+dt.charAt(0)));
+						}
+						else{
+							commentList.get(i).date = today;
+						}
+					
+					}
+					else{
+						String[] date = dt.split(" ");
+						if(date.length==3){
+							int x= monthToInt(date[1].substring(0, date[1].length()-1));
+							commentList.get(i).date = date[0]+"."+x+"."+date[2];
+						}
+						if(date.length==2){
+							int x= monthToInt(date[1]);
+							commentList.get(i).date = date[0]+"."+x+".2018";
+						}
+
+					}
+				}
+			}
+		}
+	}
+	
+	
 }
+
 
 

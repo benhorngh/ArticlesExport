@@ -1,5 +1,13 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -247,7 +255,6 @@ public abstract class Funcs {
 				c=c-32;
 			monthStr =monthStr + (char) c;
 		}
-		//		System.out.println(month+" ->> "+monthStr);
 		if (monthStr.equals("JANUARY"))
 			return 1;
 		if (monthStr.equals("FEBRUARY"))
@@ -272,6 +279,33 @@ public abstract class Funcs {
 			return 11;
 		if (monthStr.equals("DECEMBER"))
 			return 12;
+		
+		
+		if (monthStr.contains("ינו"))
+			return 1;
+		if (monthStr.contains("פבר"))
+			return 2;
+		if (monthStr.contains("מרץ"))
+			return 3;
+		if (monthStr.contains("אפר"))
+			return 4;
+		if (monthStr.contains("מאי"))
+			return 5;
+		if (monthStr.contains("יונ"))
+			return 6;
+		if (monthStr.contains("יול"))
+			return 7;
+		if (monthStr.contains("אוג"))
+			return 8;
+		if (monthStr.contains("ספט"))
+			return 9;
+		if (monthStr.contains("אוק"))
+			return 10;
+		if (monthStr.contains("נוב"))
+			return 11;
+		if (monthStr.contains("דצ"))
+			return 12;
+		
 		return 0;
 
 	}
@@ -304,6 +338,51 @@ public abstract class Funcs {
 		}
 	}
 
+	
+	public static Date stringToDate(String date){
+		Date dt=null ; 
+		DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+		try {
+			dt = formatter.parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+   		String reportDate = df.format(dt);
+		
+		return dt;
+	}
+	
+	public static String dateToString(Date date){
+		
+		DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+   		String reportDate = df.format(date);
+		
+		return reportDate;
+	}
+	
+	public static String addDays(String date , int days){
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		Calendar c = Calendar.getInstance();
+		try {
+			c.setTime(sdf.parse(date));
+		} catch (ParseException e) {e.printStackTrace();}
+		c.add(Calendar.DATE, days);  // number of days to add
+		date = sdf.format(c.getTime());  // dt is now the new date
+		return date;
+	}
+	
+	
+	/**
+	 * 
+	 * @return today date in format dd.mm.yyyy
+	 */
+	public static String todayString(){
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+		LocalDateTime now = LocalDateTime.now();
+		return dtf.format(now);
+	}
 
 	/**
 	 * remove ',' and '\n' from text, before insert to csv file

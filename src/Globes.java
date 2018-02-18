@@ -1,8 +1,11 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 /**
  * http://www.globes.co.il/
@@ -14,7 +17,7 @@ public class Globes extends Site{
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url="http://www.globes.co.il/";
 		this.window = WindowState.Invisible;
-		this.DateRange = false;
+		this.DateRange = true;
 		this.page = new GlobesPage(window);
 	}
 
@@ -22,7 +25,7 @@ public class Globes extends Site{
 	public boolean search() {
 		String sch = "http://www.globes.co.il/news/search.aspx?author=&all=&exact=%u05DB%u05DF&any=&nowords=&ling=False&time=last%203%20month&start=2017%2f11%2f14&end=2018%2f2%2f14&count=10&nadlan=&accuracy=false&type=articles&page=0&cx=partner-pub-3457903570625953:1632854301&cof=FORID:10&ie=UTF-8&q=%D7%9B%D7%9F&sa=Search";
 		driver = startWebDriver(sch);
-		driver.get(sch);
+//		driver.get(sch);
 		sleep(10000);
 		try{
 			WebElement serachField  = driver.findElement(By.xpath("//*[@id='search_buttons']/input[@type='text']"));
@@ -43,7 +46,7 @@ public class Globes extends Site{
 			/*
 			 * open regular search. invail search (not contains only reports)
 			 */
-			
+
 			//			WebElement serachIcon  = driver.findElement(By.xpath("//*[@class='navWmainI search']"));
 			//			serachIcon.click();
 			//
@@ -66,14 +69,22 @@ public class Globes extends Site{
 		}
 		catch(Exception e){ e.printStackTrace();return false;}
 
+		if(!this.fromDate.isEmpty())
+			selectTime();
 		return true;
 	}
+
+
+
 
 	@Override
 	public void resultsPage(List<String> urls) {
 
+		driver.get(driver.getCurrentUrl());
+		
 		sleep(1000);
 
+		
 
 		for(int i=10; i<this.numOfArticles; i=i+10){
 			clickLoadMore();
@@ -119,6 +130,63 @@ public class Globes extends Site{
 		}catch(Exception e){ e.printStackTrace();return;}
 
 
+	}
+	
+
+	private void selectTime() {
+		if(this.toDate.isEmpty()){
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			LocalDateTime now = LocalDateTime.now();
+			this.toDate = dtf.format(now);
+		}
+
+
+		String [] start = this.fromDate.split("/");
+		String [] end = this.toDate.split("/");
+
+		try{
+			WebElement form = driver.findElement(By.xpath("//*[@class='searcherFormTbl']"));
+
+			WebElement sday = form.findElement(By.xpath(".//*[@id='since.date']"));
+			WebElement smonth = form.findElement(By.xpath(".//*[@id='since.month']"));
+			WebElement syear = form.findElement(By.xpath(".//*[@id='since.year']"));
+
+			WebElement eday = form.findElement(By.xpath(".//*[@id='until.date']"));
+			WebElement emonth = form.findElement(By.xpath(".//*[@id='until.month']"));
+			WebElement eyear = form.findElement(By.xpath(".//*[@id='until.year']"));
+
+
+			Select sd = new Select(sday);
+			sd.selectByValue(start[0]);
+
+			Select sm = new Select(smonth);
+			sm.selectByValue(start[1]);
+
+			Select sy = new Select(syear);
+			sy.selectByValue(start[2]);
+
+
+			Select ed = new Select(eday);
+			ed.selectByValue(end[0]);
+
+			Select em = new Select(emonth);
+			em.selectByValue(end[1]);
+
+			Select ey = new Select(eyear);
+			ey.selectByValue(end[2]);
+
+			
+			WebElement button = driver.findElement(By.xpath("//*[@class='btn btnProp ibSearch']"));
+			sleep(1500);
+
+			try{
+				moveTo2(driver, button);
+			}catch(Exception e){}
+			
+			sleep(1500);
+			button.click();
+
+		}catch(Exception e){e.printStackTrace();}
 	}
 
 	private void clickLoadMore() {

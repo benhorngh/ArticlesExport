@@ -9,7 +9,7 @@ import org.openqa.selenium.WebElement;
  * @author benho
  *
  */
-public class TheMarker extends Site implements DateRange {
+public class TheMarker extends Site {
 
 	
 	public TheMarker(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
@@ -17,7 +17,7 @@ public class TheMarker extends Site implements DateRange {
 		this.url= "http://www.themarker.com";
 		this.window = WindowState.Invisible;
 		this.page = new TheMarkerPage(window);
-		this.DateRange = true;
+		this.DateRange = false;
 	}
 
 
@@ -119,10 +119,7 @@ public class TheMarker extends Site implements DateRange {
 
 
 
-	@Override
 	public void chooseTime() {
-		fromDate = DateToFormat(this.fromDate);
-		toDate = DateToFormat(this.toDate);
 		
 		if(this.fromDate.isEmpty())
 			return;
@@ -139,14 +136,6 @@ public class TheMarker extends Site implements DateRange {
 		
 	}
 
-	
-
-	@Override
-	public String DateToFormat(String date) {
-		
-		return "";
-	}
-	
 	
 
 }

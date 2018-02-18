@@ -1,6 +1,8 @@
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -28,7 +30,8 @@ public class Main {
 		boolean blmbrg = true;
 		boolean rtrs = true;
 		boolean glbs = true;
-		boolean[] players={ynet
+		boolean[] players={
+				ynet
 				,TM
 				,blmbrg
 				,rtrs
@@ -40,8 +43,6 @@ public class Main {
 
 		starter(textToSearch,textToSearchEnglish,textToCompare,textToCompareEnglish
 				,stat,startDate,endDate,numOfArticles, players);
-
-
 	}
 
 	public static void starter(String textToSearch
@@ -54,9 +55,14 @@ public class Main {
 			,int numOfArticles
 			,boolean[] players
 			){
+
+		if(endDate.isEmpty()){
+			endDate = Funcs.todayString();
+		}
+		
 		Site[] sites = init(textToSearch,textToSearchEnglish, textToCompare, textToCompareEnglish,
 				stat, numOfArticles, startDate,endDate);
-//		boolean[] players = {ynet, TM, blmbrg, rtrs, glbs};
+		//		boolean[] players = {ynet, TM, blmbrg, rtrs, glbs};
 		//Ynet , TheMarker, Bloomberg, Reuters, Globes .
 
 		play(sites, players);

@@ -121,6 +121,7 @@ public abstract class Page extends Funcs{
 			ar.reporter = reporter;
 			ar.headLine = headline;
 			ar.subHeadLine = subheadline;
+			
 			if(bodyOnly){
 				return ar;
 			}

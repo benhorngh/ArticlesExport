@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.openqa.selenium.WebDriver;
@@ -119,21 +120,59 @@ public abstract class Site extends Funcs implements Runnable {
 	 * @return true if standing on condition by the state, false otherwise.
 	 */
 	public boolean stateHandle(String link, String title) {
+		boolean okdate = true;
+		if(!this.fromDate.isEmpty())
+			okdate = dateState(link);
+
 		if(state==SearchState.regular){
-			return true;
+			return okdate;
 		}
 		if(state==SearchState.headline){
-			return contain(title, textToCompare);
+			return okdate && contain(title, textToCompare);
 		}
 		if(state==SearchState.body){
-			return bodyState(link);
+			return okdate && bodyState(link);
 		}
 		if(state==SearchState.comment){
-			return commentState(link);
+			return okdate && commentState(link);
 		}
 		return false;
 	}
 
+
+
+	public boolean dateState(String link) {
+		if(this.DateRange) return true;
+		
+		boolean getLink=true;
+		try{
+			this.page.driver= startWebDriver(link);
+
+			try{
+				this.page.signIn();
+
+			}
+			catch(Exception e){System.err.println("can't login");}
+			
+			String date = page.urlHandler(link, true).date;
+
+
+			Date urlD = stringToDate(date);
+			Date fromD = stringToDate(this.fromDate);
+			Date toD = stringToDate(this.toDate);
+
+			if(!(urlD.after(fromD) &&  urlD.before(toD))){
+				System.err.println("next");
+				getLink = false;
+			}
+			else System.err.println("okey!!");
+			ArticlesRow.counter--;
+			page.driver.quit();
+			sleep(10000);
+		}
+		catch(Exception e){e.printStackTrace();page.driver.quit();return false;}
+		return getLink;
+	}
 
 
 	/**
@@ -162,7 +201,7 @@ public abstract class Site extends Funcs implements Runnable {
 			page.driver.close();
 			sleep(10000);
 		}
-		catch(Exception e){return false;}
+		catch(Exception e){e.printStackTrace();page.driver.quit();return false;}
 		return getLink;
 	}
 
@@ -178,19 +217,19 @@ public abstract class Site extends Funcs implements Runnable {
 			page.driver= startWebDriver(link);
 			try{
 				this.page.signIn();
-
 			}
 			catch(Exception e){System.err.println("can't login");}
+
 			String comments=CommentRow.wireAllComments(page.getComments());
 			if(!contain(comments, textToCompare)){
 				System.err.println("not Found.");
 				getLink = false;
 			}
 			else System.err.println("okey!!");
-			page.driver.close();
+			page.driver.quit();
 			sleep(10000);
 		}
-		catch(Exception e){return false;}
+		catch(Exception e){e.printStackTrace();page.driver.quit();return false;}
 		return getLink;
 	}
 

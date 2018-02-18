@@ -38,7 +38,7 @@ public class Ynet extends  Site {
 	@Override
 	public boolean search() {
 
-//		return true;
+		//		return true;
 		driver = startWebDriver(url);
 		driver.get(url);
 		sleep(10000);
@@ -76,14 +76,14 @@ public class Ynet extends  Site {
 	@Override
 	public void resultsPage(List<String> urls) {
 		//get results
-//		driver.get(url);
+		//		driver.get(url);
 		sleep(3000);
-//		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		//		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		WebElement lis=null;
 		try {
 			lis = driver.findElement(By.cssSelector("#su_w_s_search_content_list"));
 		}catch (Exception e) {e.printStackTrace(); return;}
-		
+
 
 		boolean getLink = true;
 		boolean addLink = false;
@@ -96,6 +96,7 @@ public class Ynet extends  Site {
 
 		int found=0, i=0;
 		String link="";
+		String headLine= "";
 		while(found<numOfArticles){
 
 
@@ -110,40 +111,32 @@ public class Ynet extends  Site {
 				sleep(2500);
 
 
-				if(state==SearchState.headline){
-					if((i+2)%10==0){
-						moveTo(driver, res);
-					}
 
-					String headLine= res.findElement(By.className("su_results_t_name")).getText();
-					if(contain(headLine, textToCompare)){
-						addLink=true;
-						getLink=true;
+				if((i+2)%10==0){
+					moveTo(driver, res);
 
-					}
-					else {
-						addLink=false;
-						getLink=false;
-					}
 				}
+
+				 headLine= res.findElement(By.className("su_results_t_name")).getText();
 
 
 			} catch (Exception e){ e.printStackTrace(); break;}
 
 			try{
-				if(getLink){				
-					Actions actions = new Actions(driver);
-					actions.moveToElement(res).click().perform();
-					driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-					WebElement cli = res.findElements(By.className("su_btn_link")).get(0);
-					link=cli.getAttribute("href");
-					
-					System.out.println(link);					
-				}
+
+				Actions actions = new Actions(driver);
+				actions.moveToElement(res).click().perform();
+				sleep(2000);
+				WebElement cli = res.findElements(By.className("su_btn_link")).get(0);
+				link=cli.getAttribute("href");
+
+				System.out.println(link);					
+
 
 			} catch (Exception e){ System.err.println(e); }
 
 
+			addLink = stateHandle(link , headLine);
 			if(state==SearchState.comment){
 				addLink= commentState(link);
 			}
@@ -161,11 +154,5 @@ public class Ynet extends  Site {
 			if(i==maxSearch)
 				break;
 		}
-
 	}
-
-
-
-
-
 }

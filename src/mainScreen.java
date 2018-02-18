@@ -65,6 +65,8 @@ public class mainScreen {
 	private JTextField txtstart;
 	private JTextField txtend;
 
+	private JButton btnStart;
+
 
 
 	/**
@@ -117,21 +119,21 @@ public class mainScreen {
 				ColumnSpec.decode("default:grow"),
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),},
-			new RowSpec[] {
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),}));
+				new RowSpec[] {
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"),
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"),
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"),
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"),
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"),
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"),
+						FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"),}));
 
 		JTextPane txtpnTextToSearch_1 = new JTextPane();
 		txtpnTextToSearch_1.setDisabledTextColor(Color.BLACK);
@@ -171,7 +173,7 @@ public class mainScreen {
 		txtpnTextToCompare_1.setFont(new Font("Arial", Font.PLAIN, 11));
 		txtpnTextToCompare_1.setEditable(false);
 		txtpnTextToCompare_1.setEnabled(false);
-		txtpnTextToCompare_1.setText("Text to compare");
+		txtpnTextToCompare_1.setText("Keywords");
 		panel_1.add(txtpnTextToCompare_1, "2, 6, center, center");
 
 		textField_2 = new JTextField();
@@ -187,11 +189,9 @@ public class mainScreen {
 		txtpnTextToCompare.setFont(new Font("Arial", Font.PLAIN, 11));
 		txtpnTextToCompare.setEditable(false);
 		txtpnTextToCompare.setEnabled(false);
-		txtpnTextToCompare.setText("Text to compare -english");
+		txtpnTextToCompare.setText("Keywords -english");
 		panel_1.add(txtpnTextToCompare, "2, 8, center, center");
-		
-		
-		
+
 
 		textField_1 = new JTextField();
 		panel_1.add(textField_1, "4, 8, fill, default");
@@ -208,9 +208,9 @@ public class mainScreen {
 		txtpnNumberOfReports.setText("Number of reports");
 		panel_1.add(txtpnNumberOfReports, "2, 10, center, center");
 
-		 spinner = new JSpinner();
+		spinner = new JSpinner();
 		panel_1.add(spinner, "4, 10");
-		
+
 		txtpnStartDate = new JTextPane();
 		txtpnStartDate.setDisabledTextColor(Color.BLACK);
 		txtpnStartDate.setBackground(new Color(255, 255, 255));
@@ -220,12 +220,12 @@ public class mainScreen {
 		txtpnStartDate.setEnabled(false);
 		txtpnStartDate.setText("start date (dd/mm/yyyy)");
 		panel_1.add(txtpnStartDate, "2, 12, center, center");
-		
+
 		txtstart = new JTextField();
 		txtstart.setText("");
 		panel_1.add(txtstart, "4, 12, fill, default");
 		txtstart.setColumns(10);
-		
+
 		txtpnEndDate = new JTextPane();
 		txtpnEndDate.setDisabledTextColor(Color.BLACK);
 		txtpnEndDate.setBackground(new Color(255, 255, 255));
@@ -235,7 +235,7 @@ public class mainScreen {
 		txtpnEndDate.setEnabled(false);
 		txtpnEndDate.setText("end date (dd/mm/yyyy)");
 		panel_1.add(txtpnEndDate, "2, 14, center, center");
-		
+
 		txtend = new JTextField();
 		txtend.setText("");
 		panel_1.add(txtend, "4, 14, fill, default");
@@ -293,56 +293,75 @@ public class mainScreen {
 		chckbxGlobes.setBackground(Color.WHITE);
 		panel.add(chckbxGlobes, "2, 10");
 
-		
+
 		choice = new Choice();
+		choice.setFocusable(false);
 		choice.add("Regular");
 		choice.add("Title");
 		choice.add("Body");
 		choice.add("Comments");
 		panel.add(choice, "2, 14");
 
-		JButton btnStart = new JButton("Start");
-		btnStart.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				String tts = textField_4.getText();
-				String ttse = textField_3.getText();
-				String ttc = textField_2.getText();
-				String ttce = textField_1.getText();
-				
-				
-				String selected = choice.getSelectedItem();
+		btnStart = new JButton("Start");
+		btnStart.setFocusable(false);
+		
+		
+		btnStart.addActionListener(new ActionListener()
+	    {
+	      public void actionPerformed(ActionEvent e)  {
 
-				int noa = (Integer) spinner.getValue();
-				SearchState state = SearchState.regular;
-				if(selected.equals("Regular"))
-					state = SearchState.regular;
-				if(selected.equals("Title"))
-					state = SearchState.headline;
-				if(selected.equals("Body"))
-					state = SearchState.body;
-				if(selected.equals("Comments"))
-					state = SearchState.comment;
-				
-				boolean[] sites = {chckbxYnet.isSelected()
-						,chckbxTheMarker.isSelected()
-						,chckbxBloomberg.isSelected()
-						,chckbxReuters.isSelected()
-						,chckbxGlobes.isSelected()
+				btnStart.setEnabled(false);
+
+
+				Thread thread = new Thread() {
+					public void run(){
+
+						String tts = textField_4.getText();
+						String ttse = textField_3.getText();
+						String ttc = textField_2.getText();
+						String ttce = textField_1.getText();
+						String sdt = txtstart.getText();
+						String edt = txtend.getText();
+
+
+						String selected = choice.getSelectedItem();
+
+						int noa = (Integer) spinner.getValue();
+						SearchState state = SearchState.regular;
+						if(selected.equals("Regular"))
+							state = SearchState.regular;
+						if(selected.equals("Title"))
+							state = SearchState.headline;
+						if(selected.equals("Body"))
+							state = SearchState.body;
+						if(selected.equals("Comments"))
+							state = SearchState.comment;
+
+						boolean[] sites = {chckbxYnet.isSelected()
+								,chckbxTheMarker.isSelected()
+								,chckbxBloomberg.isSelected()
+								,chckbxReuters.isSelected()
+								,chckbxGlobes.isSelected()
+						};
+
+
+						System.out.println("tts: "+tts);
+						System.out.println("ttse: "+ttse);
+						System.out.println("ttc: "+ttc);
+						System.out.println("ttce: "+ttce);
+						System.out.println("stat: "+selected);
+						System.out.println("sdt: "+sdt);
+						System.out.println("edt: "+edt);
+						System.out.println(Arrays.toString(sites));
+
+						Main.starter(tts, ttse, ttc, ttce, state, sdt, edt, noa, sites);
+					}
 				};
-				
-				
-				
-				System.out.println("tts: "+tts);
-				System.out.println("ttse: "+ttse);
-				System.out.println("ttc: "+ttc);
-				System.out.println("ttce: "+ttce);
-				System.out.println("stat: "+selected);
-				System.out.println(Arrays.toString(sites));
-				
-				Main.starter(tts, ttse, ttc, ttce, state, "", "", noa, sites);
-			}
-		});
+				thread.start();
+	      }
+	    });
+		
+	
 		panel.add(btnStart, "2, 18");
 	}
 
