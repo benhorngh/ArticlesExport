@@ -24,7 +24,7 @@ public abstract class Site extends Funcs implements Runnable {
 	int numOfArticles;
 	SearchState state;
 
-	final int maxSearch = 10000;
+	final int maxSearch = 50000;
 
 	List<ArticlesRow> articles;
 
@@ -124,83 +124,105 @@ public abstract class Site extends Funcs implements Runnable {
 	 * 
 	 * @param link -link to the article
 	 * @param title - headline of article
+	 * @param date 
 	 * @return true if standing on condition by the state, false otherwise.
 	 */
-	public boolean stateHandle(String link, String title) {
-		boolean okdate = true;
+	public boolean stateHandle(String link, String title, String date) {
 
 		if(!this.fromDate.isEmpty()){
+			return stateWithDate(link, title, date);
+		}
 
-			if(state!=SearchState.body)
-				okdate = dateState(link, false);
-			else okdate = dateState(link, true);
+		return sttwd(link, title);
+		
 
+	}
+
+	private boolean stateWithDate(String link, String title, String Adate){ 
+
+		if(this.DateRange) return true && sttwd(link, title); //built-in date range
+
+		Date fromD = stringToDate(this.fromDate);
+		Date toD = stringToDate(this.toDate);
+
+
+		if(!Adate.isEmpty()){  //if can access date from result page
+			System.out.println("befroe");
+			Date urlD = stringToDate(Adate);
+
+			if(urlD.after(toD) || urlD.before(fromD)){
+				System.err.println("next");
+				return false;
+			}
+			else return true && sttwd(link, title);
 		}
 
 
+
+		//need access to article for the date
+
+		System.out.println("after");
+		ArticlesRow ar = null;
+		String date="";
+		try{
+			this.page.driver= startWebDriver(link);
+
+			try{
+				this.page.signIn();
+			}
+			catch(Exception e){System.err.println("can't login");}
+			ar = page.urlHandler(link, true);
+			date = ar.date;
+			ArticlesRow.counter--;
+			page.driver.quit();
+			sleep(4000);
+		}
+		catch(Exception e){e.printStackTrace();page.driver.quit();return false;}
+
+		if(!date.isEmpty()){ 
+			Date urlD = stringToDate(date);
+			if(urlD.after(toD) || urlD.before(fromD)){
+				System.err.println("next");
+				return false;
+			}
+			System.err.println("okey!!");
+
+			if(this.state == SearchState.body){
+				if(!contain(ar.body, textToCompare)){
+					System.err.println("not Found.");
+					return false;
+				}
+				else {
+					System.err.println("okey!!");
+					return true;}
+
+			}
+			else return true && sttwd(link,title);
+		}		
+		return false;
+	}
+
+	private boolean sttwd(String link, String title){
 		if(state==SearchState.regular){
-			return okdate;
+			return true;
 		}
 		if(state==SearchState.headline){
-			return okdate && contain(title, textToCompare);
+			return  contain(title, textToCompare);
 		}
 		if(state==SearchState.body){
-			return okdate && bodyState(link);
+			return bodyState(link);
 		}
 		if(state==SearchState.comment){
-			return okdate && commentState(link);
+			return commentState(link);
 		}
 		return false;
 	}
 
 
 
+	//	public boolean dateState(String link, String Adate, boolean bd) {
 
-	public boolean dateState(String link, boolean bd) {
-		if(this.DateRange) return true;
-
-		boolean getLink=true;
-		ArticlesRow ar=null;
-		try{
-			this.page.driver= startWebDriver(link);
-
-			try{
-				this.page.signIn();
-
-			}
-			catch(Exception e){System.err.println("can't login");}
-
-			ar =  page.urlHandler(link, true);
-			String date = ar.date;
-			Date urlD = stringToDate(date);
-			Date fromD = stringToDate(this.fromDate);
-			Date toD = stringToDate(this.toDate);
-
-			if(!(urlD.after(fromD) &&  urlD.before(toD))){
-				System.err.println("next");
-				getLink = false;
-			}
-			else System.err.println("okey!!");
-			ArticlesRow.counter--;
-			page.driver.quit();
-			sleep(10000);
-		}
-		catch(Exception e){e.printStackTrace();page.driver.quit();return false;}
-		if(bd && getLink){
-			if(ar!=null){	
-				String body="";
-				body = ar.body;
-				if(!contain(body, textToCompare)){
-					System.err.println("not Found.");
-					getLink = false;
-				}
-				else { System.err.println("okey!!");getLink = true;}
-			}
-
-		}
-
-		return getLink;
-	}
+	//	}
 
 
 	/**

@@ -56,7 +56,6 @@ public class mainScreen {
 	private JTextField textField_4;
 	private Choice choice ;
 	private JSpinner spinner;
-
 	private JCheckBox chckbxYnet ;
 	private JCheckBox chckbxTheMarker;
 	private JCheckBox chckbxBloomberg;
@@ -198,7 +197,7 @@ public class mainScreen {
 		txtpnStartDate.setForeground(Color.WHITE);
 		txtpnStartDate.setEditable(false);
 		txtpnStartDate.setEnabled(false);
-		txtpnStartDate.setText("start date (dd/mm/yyyy)");
+		txtpnStartDate.setText("start date (dd.mm.yyyy)");
 		panel_1.add(txtpnStartDate, "2, 10, center, center");
 
 		txtstart = new JTextField();
@@ -213,7 +212,7 @@ public class mainScreen {
 		txtpnEndDate.setForeground(Color.WHITE);
 		txtpnEndDate.setEditable(false);
 		txtpnEndDate.setEnabled(false);
-		txtpnEndDate.setText("end date (dd/mm/yyyy)");
+		txtpnEndDate.setText("end date (dd.mm.yyyy)");
 		panel_1.add(txtpnEndDate, "2, 12, center, center");
 
 		txtend = new JTextField();
@@ -257,21 +256,16 @@ public class mainScreen {
 		chckbxTheMarker.setFocusable(false);
 		chckbxTheMarker.setBackground(Color.WHITE);
 		panel.add(chckbxTheMarker, "2, 4");
-
-		chckbxBloomberg = new JCheckBox("Bloomberg");
-		chckbxBloomberg.setFocusable(false);
-		chckbxBloomberg.setBackground(Color.WHITE);
-		panel.add(chckbxBloomberg, "2, 6");
+		
+				chckbxGlobes = new JCheckBox("Globes");
+				chckbxGlobes.setFocusable(false);
+				chckbxGlobes.setBackground(Color.WHITE);
+				panel.add(chckbxGlobes, "2, 6");
 
 		chckbxReuters = new JCheckBox("Reuters");
 		chckbxReuters.setFocusable(false);
 		chckbxReuters.setBackground(Color.WHITE);
 		panel.add(chckbxReuters, "2, 8");
-
-		chckbxGlobes = new JCheckBox("Globes");
-		chckbxGlobes.setFocusable(false);
-		chckbxGlobes.setBackground(Color.WHITE);
-		panel.add(chckbxGlobes, "2, 10");
 
 
 		choice = new Choice();
@@ -280,6 +274,11 @@ public class mainScreen {
 		choice.add("Title");
 		choice.add("Body");
 		choice.add("Comments");
+		
+				chckbxBloomberg = new JCheckBox("Bloomberg");
+				chckbxBloomberg.setFocusable(false);
+				chckbxBloomberg.setBackground(Color.WHITE);
+				panel.add(chckbxBloomberg, "2, 10");
 		panel.add(choice, "2, 14");
 
 		btnStart = new JButton("Start");
@@ -296,6 +295,8 @@ public class mainScreen {
 				Thread thread = new Thread() {
 					public void run(){
 
+						log.setText("");
+						
 						String tts = textField_4.getText();
 						//						String ttse = textField_3.getText();
 						String ttc = textField_2.getText();
@@ -334,6 +335,7 @@ public class mainScreen {
 						System.out.println("edt: "+edt);
 						System.out.println(Arrays.toString(sites));
 
+						//						Main.starter(tts, ttse, ttc, ttce, state, sdt, edt, noa, sites);
 						Main.starter(tts, "Trump", ttc, "Trump", state, sdt, edt, noa, sites);
 					}
 				};
@@ -360,7 +362,6 @@ public class mainScreen {
 				new RowSpec[] {
 						FormSpecs.RELATED_GAP_ROWSPEC,
 						RowSpec.decode("default:grow"),
-
 		}));
 
 
@@ -377,8 +378,6 @@ public class mainScreen {
 
 
 		/////////////////////
-
-
 
 		//		    JTextArea display = new JTextArea ( 16, 58 );
 		//		    display.setEditable ( false ); // set textArea non-editable
@@ -407,12 +406,12 @@ public class mainScreen {
 		log.setAlignmentY(Component.TOP_ALIGNMENT);
 		log.setAlignmentX(Component.LEFT_ALIGNMENT);
 		log.setDisabledTextColor(Color.BLACK);
-		log.setFont(new Font("Arial", Font.PLAIN, 11));
+		log.setFont(new Font("Arial", Font.PLAIN, 12));
 		log.setWrapStyleWord(true);
 		log.setFocusable(false);
 		log.setEnabled(false);
 		log.setEditable(false);
-		log.setDisabledTextColor(SystemColor.activeCaption);
+		//		log.setDisabledTextColor(SystemColor.activeCaption);
 		log.setText("");
 		panel_3.add(log, "2, 2, left, top");
 
@@ -424,11 +423,19 @@ public class mainScreen {
 
 	public static void addToLog(String message){
 		if(log != null){
+
 			String past = log.getText();
-			String nm = past + '\n' + message;
+			String nm="";
+			if(past == null || past.isEmpty())
+				nm = message;
+			else nm = message + '\n' + past;
+
 			log.setText(nm);
 
 			if(message.contains("Done"))
+				btnStart.setEnabled(true);	
+			
+			if(message.contains("error"))
 				btnStart.setEnabled(true);	
 		}
 	}

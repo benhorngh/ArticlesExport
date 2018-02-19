@@ -20,7 +20,7 @@ public class Bloomberg extends Site{
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url="https://www.bloomberg.com";
 		this.window = WindowState.Invisible;
-		this.DateRange = false;
+		this.DateRange = true;
 		this.page = new BloombergPage((Site)this, window);
 	}
 
@@ -44,7 +44,7 @@ public class Bloomberg extends Site{
 		int tryies = 0;
 		while(!closed){
 			try{
-				
+
 				WebElement ad = driver.findElement(By.xpath("//*[@id='chromeTout']"));
 				if(!ad.getAttribute("style").equals("display: block;")){
 					System.out.println("isClosed");
@@ -71,7 +71,7 @@ public class Bloomberg extends Site{
 		driver = startWebDriver(url);
 		sleep(2000);
 		driver.get(url);
-		
+
 		sleep(10000);
 
 		try{
@@ -101,6 +101,35 @@ public class Bloomberg extends Site{
 	@Override
 	public void resultsPage(List<String> urls) {
 
+
+		if(!this.toDate.isEmpty()){
+			try{
+				WebElement nextButton = driver.findElement(By.className("content-next-link"));
+
+				moveTo2(driver, nextButton);
+				nextButton.click();
+
+			}catch(Exception e){}
+
+
+			String curl  = driver.getCurrentUrl();
+			int index = curl.indexOf("end");
+			int indexSh = index +7;
+			String date = curl.substring(indexSh+1, indexSh+11);
+			String[] todate= toDate.split("\\.");
+
+			if(todate[0].length()==1)
+				todate[0] = "0"+todate[0];  
+			if(todate[1].length()==1)
+				todate[1] = "0"+todate[1];  
+
+			String newUrl = curl.replace(date, todate[2]+"-"+todate[1]+"-"+todate[0]);
+			System.out.println(curl);
+			System.out.println(newUrl);
+			driver.get(newUrl);
+		}
+
+
 		int found = 0;
 		String link="", title="";
 		int i=0;
@@ -112,11 +141,23 @@ public class Bloomberg extends Site{
 
 				if(i == results.size()){
 
-					WebElement nextButton = driver.findElement(By.className("content-next-link"));
-					moveTo2(driver, nextButton);
-					nextButton.click();
+					try{
+						WebElement nextButton = driver.findElement(By.className("content-next-link"));
+
+						moveTo2(driver, nextButton);
+						nextButton.click();
+
+					}catch(Exception e){
+						String pageurl = driver.getCurrentUrl();
+						int x = Integer.parseInt(pageurl.substring(pageurl.length()-3, pageurl.length()));
+						x++;
+						pageurl = pageurl.substring(0 , pageurl.length()-2) + x;
+						driver.get(pageurl);
+					}
+
 					sleep(3000);
 					results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result']"));
+
 					i=0;
 				}
 				if(!results.get(i).findElement(By.tagName("article")).getAttribute("class") 
@@ -133,7 +174,7 @@ public class Bloomberg extends Site{
 					System.out.println(link);
 					System.out.println(title);
 
-					addLink = stateHandle(link, title);
+					addLink = stateHandle(link, title,"");
 					if(addLink){
 						urls.add(link);
 						found++;

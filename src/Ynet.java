@@ -17,19 +17,20 @@ import org.openqa.selenium.interactions.Actions;
 public class Ynet extends  Site {
 
 
-	public Ynet(){
-		super();
-		this.url = "https://www.Ynet.co.il";
-		this.window = WindowState.Background;
-		this.page = new YnetPage(window);
-		this.DateRange = false;
-	}
-
 
 	public Ynet(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url = "https://www.Ynet.co.il";
 		this.window = WindowState.Background;
+		this.page = new YnetPage(window);
+		this.DateRange = false;
+	}
+	
+	
+	public Ynet(){
+		super();
+		this.url = "https://www.Ynet.co.il";
+		this.window = WindowState.Invisible;
 		this.page = new YnetPage(window);
 		this.DateRange = false;
 	}
@@ -66,7 +67,6 @@ public class Ynet extends  Site {
 		catch (NoSuchElementException e) {e.printStackTrace(); return false ;}
 
 		return true;
-
 	}
 
 
@@ -77,6 +77,7 @@ public class Ynet extends  Site {
 	public void resultsPage(List<String> urls) {
 		//get results
 		//		driver.get(url);
+
 		sleep(3000);
 		//		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		WebElement lis=null;
@@ -84,7 +85,7 @@ public class Ynet extends  Site {
 			lis = driver.findElement(By.cssSelector("#su_w_s_search_content_list"));
 		}catch (Exception e) {e.printStackTrace(); return;}
 
-
+		String date ="";
 		boolean getLink = true;
 		boolean addLink = false;
 		if(state==SearchState.regular) {
@@ -94,16 +95,34 @@ public class Ynet extends  Site {
 			getLink = false;
 		}
 
+		int count = 0;
+
 		int found=0, i=0;
 		String link="";
 		String headLine= "";
+		int again=0;
 		while(found<numOfArticles){
+			link="";headLine= "";
 
+			if(again==7) i++;
 
 			WebElement res;
 
 			try { 
-				res=lis.findElements(By.cssSelector("#search_result_id_"+i)).get(0);
+				try{
+					res=lis.findElement(By.cssSelector("#search_result_id_"+i));
+					count= 0;
+				} catch(Exception e){
+
+					res=lis.findElement(By.cssSelector("#search_result_id_"+(i-1)));
+					moveTo2(driver, res);
+					count++;
+
+					if(count==15)
+						break;
+					sleep(2000); 
+					continue;
+				}
 
 				if(i>70 && i+2%10==0){
 					sleep(5000);
@@ -116,34 +135,40 @@ public class Ynet extends  Site {
 					moveTo(driver, res);
 
 				}
-
-				 headLine= res.findElement(By.className("su_results_t_name")).getText();
-
+				headLine= res.findElement(By.className("su_results_t_name")).getText();
 
 			} catch (Exception e){ e.printStackTrace(); break;}
 
 			try{
+				//				Actions actions = new Actions(driver);
+				//				actions.moveToElement(res).click().perform();
+				moveTo2(driver, res);
+				sleep(2000);
+				try{
+					res.click();
+					again=0;
+				}catch(Exception e){again++; continue;}
+				
 
-				Actions actions = new Actions(driver);
-				actions.moveToElement(res).click().perform();
+
 				sleep(2000);
 				WebElement cli = res.findElements(By.className("su_btn_link")).get(0);
 				link=cli.getAttribute("href");
 
 				System.out.println(link);					
+			} catch (Exception e){ e.printStackTrace(); }
 
 
-			} catch (Exception e){ System.err.println(e); }
+			//*[@id='search_result_id_1']//*[@class='']
+			date = res.findElement(By.className("su_results_t_description"))
+					.findElement(By.tagName("h4"))
+					.getAttribute("title");
 
-
-			addLink = stateHandle(link , headLine);
-			if(state==SearchState.comment){
-				addLink= commentState(link);
-			}
-
-			if(state==SearchState.body){
-				addLink= bodyState(link);
-			}
+			String[] arr  = date.split(" ");
+			arr = arr[0].split("/");
+			date = arr[0]+"."+arr[1]+"."+arr[2];
+			addLink = stateHandle(link , headLine , date);
+			date="";
 
 			if(addLink){
 				found++;

@@ -219,7 +219,7 @@ public abstract class Funcs {
 	 */
 	private static void expand(String[] arr){
 		String tmp = "";
-		for(int i=0; i<arr.length; i++){
+		for(int i=0; i<arr.length-1; i++){
 			if(arr[i].length()>30000){
 				tmp = arr[i].substring(30000, arr[i].length());
 				arr[i] = arr[i].substring(0, 30000);

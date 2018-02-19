@@ -109,7 +109,7 @@ public class Globes extends Site{
 				System.out.println(link);
 				System.out.println(title);
 
-				addLink = stateHandle(link, title);
+				addLink = stateHandle(link, title,"");
 				if(addLink){
 					urls.add(link);
 					found++;
@@ -134,15 +134,9 @@ public class Globes extends Site{
 	
 
 	private void selectTime() {
-		if(this.toDate.isEmpty()){
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-			LocalDateTime now = LocalDateTime.now();
-			this.toDate = dtf.format(now);
-		}
 
-
-		String [] start = this.fromDate.split("/");
-		String [] end = this.toDate.split("/");
+		String [] start = this.fromDate.split(".");
+		String [] end = this.toDate.split(".");
 
 		try{
 			WebElement form = driver.findElement(By.xpath("//*[@class='searcherFormTbl']"));

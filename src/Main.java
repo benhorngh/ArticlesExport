@@ -3,6 +3,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -13,6 +14,15 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  */
 public class Main {
+	
+	/*TODO
+	 * ynet visability
+	 * ynet time
+	 * time but not content
+	 * some comments with time
+	 * title
+	 * no start date, no end date
+	 */
 
 	static final String fileName = "excelFile";
 
@@ -23,13 +33,13 @@ public class Main {
 		String textToSearchEnglish = "Trump";
 		String textToCompare = "טראמפ";
 		String textToCompareEnglish = "Trump";
-		SearchState stat= SearchState.body;  
-		int numOfArticles = 5;
+		SearchState stat= SearchState.regular;  
+		int numOfArticles = 3;
 		boolean ynet = true;
-		boolean TM = true;
-		boolean blmbrg = true;
-		boolean rtrs = true;
-		boolean glbs = true;
+		boolean TM = false;
+		boolean blmbrg = false;
+		boolean rtrs = false;
+		boolean glbs = false;
 		boolean[] players={
 				ynet
 				,TM
@@ -38,8 +48,8 @@ public class Main {
 				,glbs
 		};
 
-		String startDate="1/1/2017"; //currently not completed
-		String endDate="1/1/2018";
+		String startDate=""; 
+		String endDate="";
 
 		starter(textToSearch,textToSearchEnglish,textToCompare,textToCompareEnglish
 				,stat,startDate,endDate,numOfArticles, players);
@@ -56,12 +66,47 @@ public class Main {
 			,boolean[] players
 			){
 
-		mainScreen.addToLog("starting..");
+	
+//		if(!endDate.isEmpty()){
+//			endDate= endDate.replace(endDate.charAt(endDate.length()-5)+"", '.'+"");
+//		}
+//		if(!startDate.isEmpty()){
+//			startDate =startDate.replaceAll(startDate.charAt(startDate.length()-5)+"", '.'+"");
+//		}
+		
+		
+		
+		if(textToSearch.isEmpty()){
+			mainScreen.addToLog("error: 'text to search' is empty");
+			return;
+		}
+		
+
 
 		if(endDate.isEmpty()){
 			endDate = Funcs.todayString();
 		}
+		
+		if(startDate.isEmpty() && (!endDate.isEmpty())){
+			startDate = "1.1.1980";
+		}
+		
+				
+		if(Funcs.stringToDate(startDate)==null)
+			startDate ="";
+		
+		if(Funcs.stringToDate(endDate)==null)
+			endDate ="";
 
+		
+//		System.out.println("s "+startDate);
+//		System.out.println("e "+endDate);
+//		
+		
+		
+		mainScreen.addToLog("starting..");
+		
+		
 		Site[] sites = init(textToSearch,textToSearchEnglish, textToCompare, textToCompareEnglish,
 				stat, numOfArticles, startDate,endDate);
 		//		boolean[] players = {ynet, TM, blmbrg, rtrs, glbs};
@@ -71,7 +116,7 @@ public class Main {
 
 		System.out.println();
 		System.out.println("Done.");
-		mainScreen.addToLog('\n'+"Done.");
+		mainScreen.addToLog("Done."+'\n');
 	}
 
 
@@ -126,7 +171,6 @@ public class Main {
 						threads[i].start();
 					else {
 						sites[i].run();
-						outputStream.flush();
 					}
 				}
 				catch(Exception e){System.err.println("failed!");
@@ -185,7 +229,6 @@ public class Main {
 
 	public static void closeWriters(){
 		try {
-
 			workbook.write(outputStream);
 			outputStream.close();
 			workbook.close();

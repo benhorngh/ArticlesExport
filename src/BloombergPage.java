@@ -398,8 +398,21 @@ public class BloombergPage extends Page{
 				b.closeAd(driver);
 				sleep(2000);
 
-				WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
-				si.click();
+				try{
+					WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
+					si.click();
+				}catch(Exception e){
+					try{
+						sleep(1000);
+						WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
+						si.click();
+					}catch(Exception e1){
+						sleep(1000);
+						WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
+						si.click();
+					}
+				}
+
 
 				sleep(3000);
 
@@ -419,14 +432,14 @@ public class BloombergPage extends Page{
 				sleep(3000);
 				WebElement button = driver.findElement(By.className("login-register__submit"));
 				button.click();
-				
+
 				sleep(3000);
 				break;
-		
+
 			}
 			catch(Exception e) {e.printStackTrace();}			
 		}
-//		driver.navigate().refresh();
+		//		driver.navigate().refresh();
 		driver.get(driver.getCurrentUrl());
 		sleep(2000);
 	}
