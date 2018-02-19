@@ -147,7 +147,6 @@ public abstract class Site extends Funcs implements Runnable {
 
 
 		if(!Adate.isEmpty()){  //if can access date from result page
-			System.out.println("befroe");
 			Date urlD = stringToDate(Adate);
 
 			if(urlD.after(toD) || urlD.before(fromD)){
@@ -161,7 +160,6 @@ public abstract class Site extends Funcs implements Runnable {
 
 		//need access to article for the date
 
-		System.out.println("after");
 		ArticlesRow ar = null;
 		String date="";
 		try{

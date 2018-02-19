@@ -336,7 +336,7 @@ public class mainScreen {
 						System.out.println(Arrays.toString(sites));
 
 						//						Main.starter(tts, ttse, ttc, ttce, state, sdt, edt, noa, sites);
-						Main.starter(tts, "Trump", ttc, "Trump", state, sdt, edt, noa, sites);
+						Main.starter(tts, tts, ttc, ttc, state, sdt, edt, noa, sites);
 					}
 				};
 				thread.start();

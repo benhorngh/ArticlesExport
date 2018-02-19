@@ -27,7 +27,7 @@ public class Main {
 	static final String fileName = "excelFile";
 
 	public static void main(String[] args) {
-		//will replace it with GUI
+		// replaced with GUI
 
 		String textToSearch = "טראמפ";
 		String textToSearchEnglish = "Trump";
