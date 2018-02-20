@@ -28,6 +28,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
  */
 public abstract class Funcs {
 
+
 	/**
 	 *  the visibility of the webdriver window. by WindowState enum.
 	 */
@@ -58,7 +59,7 @@ public abstract class Funcs {
 	 * @param url -first url
 	 * @return new webDriver open with param url
 	 */
-	public WebDriver startVisibleWebDriver(String url){
+	private WebDriver startVisibleWebDriver(String url){
 		WebDriver driver;
 		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 		ChromeOptions options = new ChromeOptions();
@@ -86,7 +87,7 @@ public abstract class Funcs {
 	 * @param url -first url
 	 * @return new webDriver open with param url
 	 */
-	public WebDriver startHeadlessWebDriver(String url){
+	private WebDriver startHeadlessWebDriver(String url){
 
 		for(int i=0; i<3; i++){
 			try{
@@ -102,7 +103,7 @@ public abstract class Funcs {
 					return driver;
 				driver.get(url);
 				return driver;
-				
+
 			}catch(Exception e){e.printStackTrace();}
 		}
 		return null;
@@ -117,7 +118,7 @@ public abstract class Funcs {
 	 * @param url -first url
 	 * @return new webDriver open with param url
 	 */
-	public WebDriver startDistanceWebDriver(String url){
+	private WebDriver startDistanceWebDriver(String url){
 		WebDriver driver;
 		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 		ChromeOptions options = new ChromeOptions();
@@ -137,39 +138,33 @@ public abstract class Funcs {
 		return driver;
 	}
 
+	/**
+	 * use to click on invisible elements, using javaScript. not recommended but usualy working 
+	 * @param driver -webfriver
+	 * @param element -WebElement to click. 
+	 */
 	public void clickInvisible(WebDriver driver, WebElement element){
 		JavascriptExecutor js = (JavascriptExecutor)driver;
 		js.executeScript("arguments[0].click();", element);
 	}
 
+	/**
+	 * send keys to invisible elements. not recommended but working
+	 * @param driver -webfriver
+	 * @param element -WebElement field. 
+	 */
 	public void sendKeysInvisible(WebDriver driver, WebElement element){
-		//		JavascriptExecutor jse = (JavascriptExecutor)driver;
-		//		jse.executeScript("arguments[0].setAttribute('type', 'text');",element);
-		//		element.sendKeys("Ripon: body text");
-
-
 		RemoteWebDriver r=(RemoteWebDriver) driver;
 		r.executeScript("arguments[0].value='admin'",element);
 
 	}
 
 
-	/**
-	 * replase " with ' ' (space)
-	 * @param text
-	 * @return
-	 */
-	public String SearchField(String text) {
-		String newStr = text;
-		if(text.indexOf('"'+"")!=-1){
-			newStr=text.replace('"', ' ');
-		}
-		return newStr;
-	}
+
 
 
 	/**
-	 * move to element in page. 
+	 * move to element in page using Actions. 
 	 * @param driver
 	 * @param web element
 	 */
@@ -185,7 +180,7 @@ public abstract class Funcs {
 	}
 
 	/**
-	 * move to element in page. 
+	 * move to element in page using javaScript. 
 	 * @param driver
 	 * @param web element
 	 * @return false if faild.
@@ -366,6 +361,11 @@ public abstract class Funcs {
 	}
 
 
+	/**
+	 * 
+	 * @param date String that present date with format dd.MM.yyy
+	 * @return date in Date type.
+	 */
 	public static Date stringToDate(String date){
 		if(date == null || date.isEmpty()) return null;
 
@@ -377,11 +377,14 @@ public abstract class Funcs {
 			e.printStackTrace();
 		}
 
-		DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-
 		return dt;
 	}
 
+	/**
+	 * 
+	 * @param date
+	 * @return String that present the date in dd.MM.yyyy format 
+	 */
 	public static String dateToString(Date date){
 		if(date == null) return "";
 
@@ -391,6 +394,12 @@ public abstract class Funcs {
 		return reportDate;
 	}
 
+	/**
+	 * 
+	 * @param date Date 
+	 * @param days how many days to add
+	 * @return update date.
+	 */
 	public static String addDays(String date , int days){
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar c = Calendar.getInstance();
@@ -405,13 +414,28 @@ public abstract class Funcs {
 
 	/**
 	 * 
-	 * @return today date in format dd.mm.yyyy
+	 * @return today date in format dd.MM.yyyy
 	 */
 	public static String todayString(){
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 		LocalDateTime now = LocalDateTime.now();
 		return dtf.format(now);
 	}
+	
+	
+	/**
+	 * replase " with ' ' (space)
+	 * @param text
+	 * @return
+	 */
+	public String SearchField(String text) {
+		String newStr = text;
+		if(text.indexOf('"'+"")!=-1){
+			newStr=text.replace('"', ' ');
+		}
+		return newStr;
+	}
+	
 
 	/**
 	 * remove ',' and '\n' from text, before insert to csv file

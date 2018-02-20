@@ -6,6 +6,10 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebElement;
 
+/**
+ * https://www.reuters.com/
+ * @author benho
+ */
 public class Reuters extends Site {
 
 	public Reuters(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {

@@ -60,13 +60,16 @@ public class CommentRow {
 	/**
 	 * write to file one comment
 	 */
-	public void WriteToFile() {
+	private void WriteToFile() {
 		XSSFSheet sheet = Main.workbook.getSheet("comments");
-		String[] row = {ArticleNum+"", site, convNum+"" , ""+original,talkbakist,date, headline, comment};
+		String[] row = {ArticleNum+"", site, convNum+"" , ""+toInt(original),talkbakist,date, headline, comment};
 		Funcs.StringArrToLastRow(row, sheet);
 	}
 
-
+	private int toInt(boolean ok){
+		if(ok) return 1;
+		return 0;
+	}
 
 
 
@@ -90,8 +93,8 @@ public class CommentRow {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
+	
 	public void clean(){
 		headline = Funcs.clean(headline);
 		talkbakist = Funcs.clean(talkbakist);
@@ -119,8 +122,6 @@ public class CommentRow {
 			cmmts.get(i).WriteToFile();
 		}
 	}
-
-
 
 
 

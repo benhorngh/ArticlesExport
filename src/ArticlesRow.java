@@ -73,30 +73,33 @@ public class ArticlesRow {
 		for(int i=0; i<Reports.size(); i++){
 			Reports.get(i).WriteToFile();
 			CommentRow.WriteToFile(Reports.get(i).comments);
-			if(totxt){
-				writeToTxt(Reports.get(i));
+			if(totxt && Reports.get(i)!=null){
+				Reports.get(i).writeToTxt();;
 			}
 
 		}
 
 	}
 
-	private static void writeToTxt(ArticlesRow articlesRow) {
-		if(articlesRow == null) return;
+	/**
+	 * write an article to txt file.
+	 * @param articlesRow
+	 */
+	private void writeToTxt() {
 		FileWriter writer;
 		
-		if(articlesRow.headLine == null)
-			articlesRow.headLine ="";
-		if(articlesRow.subHeadLine == null)
-			articlesRow.subHeadLine ="";
-		if(articlesRow.body == null)
-			articlesRow.body ="";
+		if(this.headLine == null)
+			this.headLine ="";
+		if(this.subHeadLine == null)
+			this.subHeadLine ="";
+		if(this.body == null)
+			this.body ="";
 
 		try {
-			writer = new FileWriter(Main.folderName+"/"+articlesRow.num+".txt");
-			writer.append(articlesRow.headLine+'\n');
-			writer.append(articlesRow.subHeadLine+'\n');
-			writer.append(articlesRow.body);
+			writer = new FileWriter(Main.folderName+"/"+this.num+".txt");
+			writer.append(this.headLine+'\n');
+			writer.append(this.subHeadLine+'\n');
+			writer.append(this.body);
 			writer.flush();
 			writer.close();
 		}catch(Exception e){e.printStackTrace();}
@@ -115,6 +118,8 @@ public class ArticlesRow {
 
 	}
 
+	
+	
 
 	/**
 	 * This functions use to write to csv file, instead of using apache POI for excel
@@ -142,7 +147,6 @@ public class ArticlesRow {
 		}
 
 	}
-
 
 	public void clean(){
 		headLine = Funcs.clean(headLine);

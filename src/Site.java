@@ -119,28 +119,36 @@ public abstract class Site extends Funcs implements Runnable {
 
 
 
-
 	/**
 	 * 
 	 * @param link -link to the article
 	 * @param title - headline of article
-	 * @param date 
+	 * @param date -date of the article, if can reached from result page.
 	 * @return true if standing on condition by the state, false otherwise.
 	 */
 	public boolean stateHandle(String link, String title, String date) {
 
+		if(date == null) date ="";
+		
 		if(!this.fromDate.isEmpty()){
 			return stateWithDate(link, title, date);
 		}
 
-		return sttwd(link, title);
+		return stateWithoutDate(link, title);
 		
 
 	}
 
+	/**
+	 * state handler with date range.
+	 * @param link
+	 * @param title
+	 * @param Adate
+	 * @return
+	 */
 	private boolean stateWithDate(String link, String title, String Adate){ 
 
-		if(this.DateRange) return true && sttwd(link, title); //built-in date range
+		if(this.DateRange) return true && stateWithoutDate(link, title); //built-in date range
 
 		Date fromD = stringToDate(this.fromDate);
 		Date toD = stringToDate(this.toDate);
@@ -155,7 +163,7 @@ public abstract class Site extends Funcs implements Runnable {
 				System.err.println("next");
 				return false;
 			}
-			else return true && sttwd(link, title);
+			else return true && stateWithoutDate(link, title);
 		}
 
 
@@ -197,12 +205,18 @@ public abstract class Site extends Funcs implements Runnable {
 					return true;}
 
 			}
-			else return true && sttwd(link,title);
+			else return true && stateWithoutDate(link,title);
 		}		
 		return false;
 	}
 
-	private boolean sttwd(String link, String title){
+	/**
+	 * state handle without date range.
+	 * @param link
+	 * @param title
+	 * @return
+	 */
+	private boolean stateWithoutDate(String link, String title){
 		if(state==SearchState.regular){
 			return true;
 		}
@@ -220,9 +234,7 @@ public abstract class Site extends Funcs implements Runnable {
 
 
 
-	//	public boolean dateState(String link, String Adate, boolean bd) {
-
-	//	}
+	
 
 
 	/**
@@ -230,7 +242,7 @@ public abstract class Site extends Funcs implements Runnable {
 	 * @param link -link to the report
 	 * @return true if the body contains the text, otherwise false
 	 */
-	public boolean bodyState(String link) {
+	private boolean bodyState(String link) {
 		boolean getLink=true;
 		try{
 			this.page.driver= startWebDriver(link);
@@ -260,7 +272,7 @@ public abstract class Site extends Funcs implements Runnable {
 	 * @param link -link to the report
 	 * @return true if the comments contains the text, otherwise false
 	 */
-	public boolean commentState(String link) {
+	private boolean commentState(String link) {
 		boolean getLink=true;
 		try{
 			page.driver= startWebDriver(link);

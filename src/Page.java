@@ -75,7 +75,7 @@ public abstract class Page extends Funcs{
 	 * @param bodyOnly -true if include comments, false for only body
 	 * @return article in 'ArticleRow' type.
 	 */
-	public  ArticlesRow urlHandler(String url, boolean bodyOnly) {
+	public ArticlesRow urlHandler(String url, boolean bodyOnly) {
 
 		ArticlesRow ar = new ArticlesRow();
 		try{

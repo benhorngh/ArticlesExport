@@ -26,7 +26,7 @@ public class Globes extends Site{
 	public boolean search() {
 		String sch = "http://www.globes.co.il/news/search.aspx?author=&all=&exact=%u05DB%u05DF&any=&nowords=&ling=False&time=last%203%20month&start=2017%2f11%2f14&end=2018%2f2%2f14&count=10&nadlan=&accuracy=false&type=articles&page=0&cx=partner-pub-3457903570625953:1632854301&cof=FORID:10&ie=UTF-8&q=%D7%9B%D7%9F&sa=Search";
 		driver = startWebDriver(sch);
-//		driver.get(sch);
+		driver.get(sch);
 		sleep(10000);
 		try{
 			WebElement serachField  = driver.findElement(By.xpath("//*[@id='search_buttons']/input[@type='text']"));

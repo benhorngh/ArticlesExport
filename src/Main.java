@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -27,7 +28,7 @@ public class Main {
 	public static void main(String[] args) {
 		// replaced with GUI
 
-		
+
 		String textToSearch = "משטרה";
 		String textToSearchEnglish = "glass";
 		String textToCompare = "טראמפ";
@@ -51,13 +52,25 @@ public class Main {
 
 		String startDate="1.1.2018"; 
 		String endDate="1.2.2018";
-		
+
 		boolean toFile = true;
 
 		starter(textToSearch,textToSearchEnglish,textToCompare,textToCompareEnglish
 				,stat,startDate,endDate,numOfArticles, players, toFile);
 	}
 
+	/**
+	 * @param textToSearch -text to the search field
+	 * @param textToSearchEnglish -text to the search field in english (for websites in english.)
+	 * @param textToCompare -text to search inside the article
+	 * @param textToCompareEnglish -text to search inside the article in english (for websites in english.)
+	 * @param stat -state of search. regular, search in title, body or in the comments. 
+	 * @param startDate -starting date
+	 * @param endDate -ending date
+	 * @param numOfArticles -number of needed reports
+	 * @param players -true/false for each site.
+	 * @param toFile -true if include txt file of each article in output folder.
+	 */
 	public static void starter(String textToSearch
 			,String textToSearchEnglish
 			,String textToCompare
@@ -67,7 +80,7 @@ public class Main {
 			,String endDate
 			,int numOfArticles
 			,boolean[] players
-			,boolean toFile
+			,boolean toTxt
 			){
 
 
@@ -79,8 +92,8 @@ public class Main {
 		//		}
 
 		File directory = new File(folderName);
-	    if (! directory.exists())
-	        directory.mkdir();
+		if (! directory.exists())
+			directory.mkdir();
 
 
 
@@ -92,6 +105,28 @@ public class Main {
 			mainScreen.addToLog("error: Invaild 'Number of reports' ");
 			return;
 		}
+		if(numOfArticles<=0){
+			mainScreen.addToLog("error: Invaild 'Number of reports' ");
+			return;
+		}
+		if(!startDate.isEmpty()){
+			Date sd;
+			sd = Funcs.stringToDate(startDate);
+			if(sd == null){
+				mainScreen.addToLog("error: Invaild date");
+				return;
+			}
+		}
+		if(!endDate.isEmpty()){
+			Date ed;
+			ed = Funcs.stringToDate(endDate);
+			if(ed == null){
+				mainScreen.addToLog("error: Invaild date");
+				return;
+			}
+		}
+
+
 
 
 
@@ -124,7 +159,7 @@ public class Main {
 		//		boolean[] players = {ynet, TM, blmbrg, rtrs, glbs};
 		//Ynet , TheMarker, Bloomberg, Reuters, Globes .
 
-		play(sites, players, toFile);
+		play(sites, players, toTxt);
 
 		System.out.println();
 		System.out.println("Done.");
@@ -159,10 +194,10 @@ public class Main {
 	}
 
 	private static void play(Site[] sites, boolean[] players, boolean totxt) {
-		
-		
-		
-		
+
+
+
+
 		/*
 		 * !!warnning!!
 		 * use only for strong comuter. uncheded deeply.
@@ -172,20 +207,35 @@ public class Main {
 
 
 		startWriters();
-		
-		try {
-			outputStream = new FileOutputStream(folderName+"/"+fileName+".xlsx");
-		} catch (FileNotFoundException e1) {
-			
+
+
+
+
+		//		try {
+		//			outputStream = new FileOutputStream(folderName+"/"+fileName+".xlsx");
+		//		} catch (FileNotFoundException e1) {
+
+
+		File directory;
+		directory = new File(folderName+"/"+fileName+".xlsx");
+		if (!directory.exists()){
+			try {
+				outputStream = new FileOutputStream(folderName+"/"+fileName+".xlsx");
+			} catch (FileNotFoundException e) {}
+		}
+
+		else{
 			boolean ok = false;
-			int i=1;
-			while(ok){
-				try {
-					outputStream = new FileOutputStream(folderName+"/"+fileName+"-"+i+".xlsx");
-					ok =true;
-				} catch (FileNotFoundException e) {
-					i++;
+			int j=1;
+			while(!ok){
+				directory = new File(folderName+"/"+fileName+"-"+j+".xlsx");
+				if (!directory.exists()){
+					try {
+						outputStream = new FileOutputStream(folderName+"/"+fileName+"-"+j+".xlsx");
+						ok =true;
+					} catch (FileNotFoundException e) {}
 				}
+				j++;
 			}
 		}
 

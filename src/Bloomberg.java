@@ -36,34 +36,7 @@ public class Bloomberg extends Site{
 	private static final String password = "Bb4546662/";
 
 
-	/**
-	 * close the annoying ad about register.
-	 */
-	public void closeAd(WebDriver driver){
-		boolean closed = false;
-		int tryies = 0;
-		while(!closed){
-			try{
 
-				WebElement ad = driver.findElement(By.xpath("//*[@id='chromeTout']"));
-				if(!ad.getAttribute("style").equals("display: block;")){
-					System.out.println("isClosed");
-					closed = true;
-					continue;
-				}
-				sleep(3000);
-				WebElement x = driver.findElement(By.xpath("//*[@id='chromeTout']/button"));
-				x.click();
-				closed =  true;
-			}
-			catch(Exception e){
-				System.out.println("adf");
-				sleep(2000);
-				tryies++;
-				if(tryies == 7)
-					break;}
-		}
-	}
 
 	@Override
 	public boolean search() {
@@ -196,6 +169,35 @@ public class Bloomberg extends Site{
 		}catch(Exception e){e.printStackTrace();return;}
 	}
 
+	
+	/**
+	 * close the annoying ad about register.
+	 */
+	public void closeAd(WebDriver driver){
+		boolean closed = false;
+		int tryies = 0;
+		while(!closed){
+			try{
+
+				WebElement ad = driver.findElement(By.xpath("//*[@id='chromeTout']"));
+				if(!ad.getAttribute("style").equals("display: block;")){
+					System.out.println("isClosed");
+					closed = true;
+					continue;
+				}
+				sleep(3000);
+				WebElement x = driver.findElement(By.xpath("//*[@id='chromeTout']/button"));
+				x.click();
+				closed =  true;
+			}
+			catch(Exception e){
+				System.out.println("adf");
+				sleep(2000);
+				tryies++;
+				if(tryies == 7)
+					break;}
+		}
+	}
 
 
 }
