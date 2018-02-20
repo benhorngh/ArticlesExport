@@ -51,6 +51,17 @@ public class CNNPage extends Page{
 			catch(Exception e){
 			}
 		}
+		
+		if(!ok){
+			try{
+				ttl =  driver.findElement(By.xpath("//*[@class='PageHead__title']"));
+				if(!ttl.getText().isEmpty())
+					ok= true;
+				title = ttl.getText();
+			}
+			catch(Exception e){
+			}
+		}
 		return title;
 		
 		
@@ -119,6 +130,8 @@ public class CNNPage extends Page{
 			catch(Exception e){
 			}
 		}
+		
+		
 
 		return reporter;
 	}
@@ -158,6 +171,21 @@ public class CNNPage extends Page{
 				String day = arr[2].substring(0, arr[1].length()-1);
 				date = day +"." + monthToInt(arr[0])+"."+arr[2];
 				date = date.substring(0, date.length()-1);
+			}
+			catch(Exception e){
+			}
+		}
+		if(!ok){
+			try{
+				dt =  driver.findElement(By.xpath("//*[@class='PageHead__published']"));
+				if(!dt.getText().isEmpty())
+					ok= true;
+				date = dt.getText();
+				String[] arr= date.split(" ");
+				
+				String day = arr[arr.length-3];
+				day = day.substring(0, day.length()-3);
+				date = day+"."+monthToInt(arr[arr.length-2])+"."+arr[arr.length-1];
 			}
 			catch(Exception e){
 			}

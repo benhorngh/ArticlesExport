@@ -116,6 +116,15 @@ public class Main {
 				mainScreen.addToLog("error: Invaild date");
 				return;
 			}
+			
+			String[] arr = startDate.split("\\.");
+			try{
+				if(Integer.parseInt(arr[0])>32 || Integer.parseInt(arr[1])>12){
+					mainScreen.addToLog("error: Invaild date");
+					return;
+				}
+			}catch(Exception e){mainScreen.addToLog("error: Invaild date");
+			return;}
 		}
 		if(!endDate.isEmpty()){
 			Date ed;
@@ -124,6 +133,15 @@ public class Main {
 				mainScreen.addToLog("error: Invaild date");
 				return;
 			}
+			
+			String[] arr = startDate.split("\\.");
+			try{
+				if(Integer.parseInt(arr[0])>32 || Integer.parseInt(arr[1])>12){
+					mainScreen.addToLog("error: Invaild date");
+					return;
+				}
+			}catch(Exception e){mainScreen.addToLog("error: Invaild date");
+			return;}
 		}
 
 

@@ -95,6 +95,7 @@ public abstract class Site extends Funcs implements Runnable {
 		}
 		catch(Exception e){e.printStackTrace();}
 		try{
+			driver.close();
 			driver.quit();
 		}
 		catch(Exception e){}
@@ -129,13 +130,12 @@ public abstract class Site extends Funcs implements Runnable {
 	public boolean stateHandle(String link, String title, String date) {
 
 		if(date == null) date ="";
-		
+
 		if(!this.fromDate.isEmpty()){
 			return stateWithDate(link, title, date);
 		}
 
 		return stateWithoutDate(link, title);
-		
 
 	}
 
@@ -156,7 +156,7 @@ public abstract class Site extends Funcs implements Runnable {
 
 		if(!Adate.isEmpty()){  //if can access date from result page
 			Date urlD = stringToDate(Adate);
-			
+
 			if(urlD == null) stateWithDate(link, title, "");
 
 			if(urlD.after(toD) || urlD.before(fromD)){
@@ -182,10 +182,11 @@ public abstract class Site extends Funcs implements Runnable {
 			ar = page.urlHandler(link, true);
 			date = ar.date;
 			ArticlesRow.counter--;
+			page.driver.close();
 			page.driver.quit();
 			sleep(4000);
 		}
-		catch(Exception e){e.printStackTrace();page.driver.quit();return false;}
+		catch(Exception e){e.printStackTrace();page.driver.close();page.driver.quit();return false;}
 
 		if(!date.isEmpty()){ 
 			Date urlD = stringToDate(date);
@@ -234,7 +235,7 @@ public abstract class Site extends Funcs implements Runnable {
 
 
 
-	
+
 
 
 	/**
@@ -260,9 +261,10 @@ public abstract class Site extends Funcs implements Runnable {
 			else System.err.println("okey!!");
 			ArticlesRow.counter--;
 			page.driver.close();
+			page.driver.quit();
 			sleep(10000);
 		}
-		catch(Exception e){e.printStackTrace();page.driver.quit();return false;}
+		catch(Exception e){e.printStackTrace();page.driver.close();page.driver.quit();return false;}
 		return getLink;
 	}
 
@@ -287,10 +289,11 @@ public abstract class Site extends Funcs implements Runnable {
 				getLink = false;
 			}
 			else System.err.println("okey!!");
+			page.driver.close();
 			page.driver.quit();
 			sleep(10000);
 		}
-		catch(Exception e){e.printStackTrace();page.driver.quit();return false;}
+		catch(Exception e){e.printStackTrace();page.driver.close();page.driver.quit();return false;}
 		return getLink;
 	}
 
@@ -334,7 +337,7 @@ public abstract class Site extends Funcs implements Runnable {
 		for(int i=0; i<words.length; i++){
 			keys[i+grs.length]=words[i].trim();
 		}
-		
+
 		for (int i=0; i<keys.length; i++){
 			if(keys[i].contains("''")){
 				keys[i] = keys[i].replaceAll("''", '"'+"");
@@ -356,19 +359,34 @@ public abstract class Site extends Funcs implements Runnable {
 	 * @param urls
 	 */
 	public void removeDuplicate(List<String> urls){
-
-		String url1, url2;
-		for(int i=0; i<urls.size()-1; i++){
-			url1 = urls.get(i);
-			url2 = urls.get(i+1);
-			url1 = url1.substring(url1.indexOf("://"), url1.length());
-			url2 = url2.substring(url2.indexOf("://"), url2.length());
-			if(url1.equals(url2)){
-				if(url1.contains("https"))
-					urls.remove(i+1);
-				else urls.remove(i);	
+		{//remove idenical urls.
+			for(int i=0; i<urls.size()-1; i++){
+				for (int j=i+1; j<urls.size(); j++){
+					if(urls.get(i).equals(urls.get(j))){
+						urls.remove(urls.get(j));
+						j--;
+					}
+				}
 			}
 		}
+		
+		{//remove http and https for same article
+			String url1, url2;
+			for(int i=0; i<urls.size()-1; i++){
+				url1 = urls.get(i);
+				url2 = urls.get(i+1);
+				url1 = url1.substring(url1.indexOf("://"), url1.length());
+				url2 = url2.substring(url2.indexOf("://"), url2.length());
+				if(url1.equals(url2)){
+					if(url1.contains("https")||url1.contains("Https"))
+						urls.remove(i+1);
+					else urls.remove(i);	
+				}
+			}
+		}
+		
+
+
 	}
 
 	/**
@@ -395,6 +413,7 @@ public abstract class Site extends Funcs implements Runnable {
 	@Override
 	protected void finalize(){
 		try{
+			page.driver.close();
 			this.driver.quit();
 		}catch(Exception e){}
 	}

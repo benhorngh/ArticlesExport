@@ -57,6 +57,7 @@ public abstract class Page extends Funcs{
 //			mainScreen.addToLog("finish URL..");
 			
 		}
+		driver.close();
 		driver.quit();
 		System.err.println("finish "+SiteName);
 		
@@ -199,6 +200,7 @@ public abstract class Page extends Funcs{
 	@Override
 	protected void finalize(){
 		try{
+			driver.close();
 			this.driver.quit();
 		}catch(Exception e){}
 	}

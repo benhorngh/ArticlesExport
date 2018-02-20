@@ -20,6 +20,10 @@ public class CNN extends Site{
 
 	@Override
 	public boolean search() {
+		
+		if(this.state == SearchState.comment)
+			return false;
+		
 		driver = startWebDriver(url);
 		//		driver.get(url);
 

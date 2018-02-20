@@ -80,7 +80,8 @@ public class GlobesPage extends Page{
 			for(int i=0; i<body.size(); i++){
 				str += body.get(i).getText();
 			}
-			ok =true;
+			if(!str.isEmpty())
+				ok =true;
 		}
 		catch(Exception e){};
 
@@ -88,7 +89,8 @@ public class GlobesPage extends Page{
 			try{
 				WebElement body = driver.findElement(By.xpath("//*[@class='articleInner']"));
 				str = body.getText();
-				ok =true;
+				if(!str.isEmpty())
+					ok =true;
 			}catch(Exception e){};
 		}
 
@@ -258,7 +260,7 @@ public class GlobesPage extends Page{
 
 			for(int i=0; i<commentList.size(); i++){
 				String dt = commentList.get(i).date;
-//				System.out.println(dt);
+				//				System.out.println(dt);
 				if(dt.length()<4  &&  dt.length()>1){
 					if(dt.charAt(1)=='d'){
 						commentList.get(i).date = addDays(today , -Integer.parseInt(""+dt.charAt(0)));
@@ -280,7 +282,7 @@ public class GlobesPage extends Page{
 					}
 
 				}
-//				System.out.println(dt+ "  " + commentList.get(i).date);
+				//				System.out.println(dt+ "  " + commentList.get(i).date);
 			}
 
 

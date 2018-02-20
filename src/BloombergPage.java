@@ -88,6 +88,17 @@ public class BloombergPage extends Page{
 			catch(Exception e){
 			}
 		}
+		if(!ok){
+			try{
+				ttl =  driver.findElement(By.xpath(s+"//*[@class='not-quite-full-width-image-lede-text-above__hed']"));
+				if(!ttl.getText().isEmpty())
+					ok= true;
+			}
+			catch(Exception e){
+			}
+		}
+		
+		
 
 
 		return ttl.getText();		
@@ -158,7 +169,18 @@ public class BloombergPage extends Page{
 			}
 			catch(Exception e){}
 		}
+		if(!ok){
+			try{
+				WebElement sub = driver.findElement(By.xpath(s+"//*[@class='not-quite-full-width-image-lede-text-above__dek']"));
+				subs = sub.getText();
+				if(!subs.isEmpty()){
+					ok=true;
+				}
+			}
+			catch(Exception e){}
+		}
 
+		
 		//		
 		return subs;
 	}
