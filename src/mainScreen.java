@@ -71,6 +71,8 @@ public class mainScreen {
 	private JPanel panel_3;
 
 	private static JTextArea log;
+	private JCheckBox chckbxCnn;
+	private JCheckBox chckbxToTxt;
 
 
 
@@ -105,7 +107,7 @@ public class mainScreen {
 
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setBounds(100, 100, 800, 360);
+		frame.setBounds(100, 100, 800, 393);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
@@ -226,26 +228,28 @@ public class mainScreen {
 		frame.getContentPane().add(panel, "4, 2, fill, fill");
 		panel.setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
 				FormSpecs.DEFAULT_COLSPEC,},
-				new RowSpec[] {
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						FormSpecs.DEFAULT_ROWSPEC,
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						FormSpecs.DEFAULT_ROWSPEC,
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						FormSpecs.DEFAULT_ROWSPEC,
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						FormSpecs.DEFAULT_ROWSPEC,
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						FormSpecs.DEFAULT_ROWSPEC,
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						FormSpecs.DEFAULT_ROWSPEC,
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						FormSpecs.DEFAULT_ROWSPEC,
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						FormSpecs.DEFAULT_ROWSPEC,
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						FormSpecs.DEFAULT_ROWSPEC,}));
+			new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,}));
 
 		chckbxYnet = new JCheckBox("Ynet");
 		chckbxYnet.setFocusable(false);
@@ -256,11 +260,11 @@ public class mainScreen {
 		chckbxTheMarker.setFocusable(false);
 		chckbxTheMarker.setBackground(Color.WHITE);
 		panel.add(chckbxTheMarker, "2, 4");
-		
-				chckbxGlobes = new JCheckBox("Globes");
-				chckbxGlobes.setFocusable(false);
-				chckbxGlobes.setBackground(Color.WHITE);
-				panel.add(chckbxGlobes, "2, 6");
+
+		chckbxGlobes = new JCheckBox("Globes");
+		chckbxGlobes.setFocusable(false);
+		chckbxGlobes.setBackground(Color.WHITE);
+		panel.add(chckbxGlobes, "2, 6");
 
 		chckbxReuters = new JCheckBox("Reuters");
 		chckbxReuters.setFocusable(false);
@@ -274,11 +278,16 @@ public class mainScreen {
 		choice.add("Title");
 		choice.add("Body");
 		choice.add("Comments");
+
+		chckbxBloomberg = new JCheckBox("Bloomberg");
+		chckbxBloomberg.setFocusable(false);
+		chckbxBloomberg.setBackground(Color.WHITE);
+		panel.add(chckbxBloomberg, "2, 10");
 		
-				chckbxBloomberg = new JCheckBox("Bloomberg");
-				chckbxBloomberg.setFocusable(false);
-				chckbxBloomberg.setBackground(Color.WHITE);
-				panel.add(chckbxBloomberg, "2, 10");
+		chckbxCnn = new JCheckBox("CNN");
+		chckbxCnn.setBackground(Color.WHITE);
+		chckbxCnn.setFocusable(false);
+		panel.add(chckbxCnn, "2, 12");
 		panel.add(choice, "2, 14");
 
 		btnStart = new JButton("Start");
@@ -296,7 +305,7 @@ public class mainScreen {
 					public void run(){
 
 						log.setText("");
-						
+
 						String tts = textField_4.getText();
 						//						String ttse = textField_3.getText();
 						String ttc = textField_2.getText();
@@ -318,11 +327,14 @@ public class mainScreen {
 						if(selected.equals("Comments"))
 							state = SearchState.comment;
 
+						boolean totxt = chckbxToTxt.isSelected();
+						
 						boolean[] sites = {chckbxYnet.isSelected()
 								,chckbxTheMarker.isSelected()
 								,chckbxBloomberg.isSelected()
 								,chckbxReuters.isSelected()
 								,chckbxGlobes.isSelected()
+								,chckbxCnn.isSelected()
 						};
 
 
@@ -334,14 +346,20 @@ public class mainScreen {
 						System.out.println("sdt: "+sdt);
 						System.out.println("edt: "+edt);
 						System.out.println(Arrays.toString(sites));
+						
 
 						//						Main.starter(tts, ttse, ttc, ttce, state, sdt, edt, noa, sites);
-						Main.starter(tts, tts, ttc, ttc, state, sdt, edt, noa, sites);
+						Main.starter(tts, tts, ttc, ttc, state, sdt, edt, noa, sites, totxt);
 					}
 				};
 				thread.start();
 			}
 		});
+		
+		chckbxToTxt = new JCheckBox("to txt");
+		chckbxToTxt.setFocusable(false);
+		chckbxToTxt.setBackground(Color.WHITE);
+		panel.add(chckbxToTxt, "4, 14");
 
 		panel.add(btnStart, "2, 18");
 
@@ -434,7 +452,7 @@ public class mainScreen {
 
 			if(message.contains("Done"))
 				btnStart.setEnabled(true);	
-			
+
 			if(message.contains("error"))
 				btnStart.setEnabled(true);	
 		}

@@ -148,6 +148,8 @@ public abstract class Site extends Funcs implements Runnable {
 
 		if(!Adate.isEmpty()){  //if can access date from result page
 			Date urlD = stringToDate(Adate);
+			
+			if(urlD == null) stateWithDate(link, title, "");
 
 			if(urlD.after(toD) || urlD.before(fromD)){
 				System.err.println("next");
@@ -319,6 +321,12 @@ public abstract class Site extends Funcs implements Runnable {
 		}
 		for(int i=0; i<words.length; i++){
 			keys[i+grs.length]=words[i].trim();
+		}
+		
+		for (int i=0; i<keys.length; i++){
+			if(keys[i].contains("''")){
+				keys[i] = keys[i].replaceAll("''", '"'+"");
+			}
 		}
 
 		for(int i=0; i<keys.length; i++){

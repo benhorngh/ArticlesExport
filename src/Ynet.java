@@ -167,7 +167,11 @@ public class Ynet extends  Site {
 			String[] arr  = date.split(" ");
 			arr = arr[0].split("/");
 			date = arr[0]+"."+arr[1]+"."+arr[2];
-			addLink = stateHandle(link , headLine , date);
+			
+			try{
+				addLink = stateHandle(link, headLine, date);
+			}catch(Exception e){e.printStackTrace();addLink=false;}
+			
 			date="";
 
 			if(addLink){

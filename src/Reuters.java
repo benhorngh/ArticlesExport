@@ -77,7 +77,10 @@ public class Reuters extends Site {
 				System.out.println(link);
 				System.out.println(title);
 
-				addLink = stateHandle(link, title,"");
+				try{
+					addLink = stateHandle(link, title, "");
+				}catch(Exception e){e.printStackTrace();addLink=false;}
+				
 				if(addLink){
 					urls.add(link);
 					found++;

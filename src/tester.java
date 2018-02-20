@@ -8,7 +8,7 @@ public class tester {
 
 
 	@Test
-	public void testContinFunc() {
+	public void testContainFunc() {
 		Site funcs= new Ynet();
 
 		assertTrue(funcs.contain("", ""));
@@ -18,7 +18,8 @@ public class tester {
 		assertTrue(funcs.contain("word", ""));
 
 
-		String bigText = "big text in here, long big text. is it gonna work? maybe. hope so.";
+		String bigText = "big text in here, long big text. is it gonna work? maybe. hope so. us"+'"'+"a is awsome";
+		System.out.println(bigText);
 		String text = "text in";
 		assertTrue(funcs.contain(bigText, text));
 
@@ -42,6 +43,19 @@ public class tester {
 
 		text = '"'+"gonna work"+'"'+" is text "+'"'+"hope so"+'"';	//"gonna work" is text "hope so"
 		assertTrue(funcs.contain(bigText, text));
+		
+		text = "us''a";				//us''a
+		assertTrue(funcs.contain(bigText, text));
+		
+		text = "us''a hope";				//us''a hope
+		assertTrue(funcs.contain(bigText, text));
+		
+		text = '"'+"us''a hope"+'"';				//"us''a hope"
+		assertFalse(funcs.contain(bigText, text));
+		
+		text = '"'+"us''a is"+'"';				//"us''a hope"
+		assertTrue(funcs.contain(bigText, text));
+		
 	}
 
 

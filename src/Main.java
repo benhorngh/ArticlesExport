@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,45 +15,47 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  */
 public class Main {
-	
+
 	/*TODO
-	 * ynet visability
-	 * ynet time
+	 * rename file
 	 * time but not content
-	 * some comments with time
-	 * title
-	 * no start date, no end date
 	 */
 
 	static final String fileName = "excelFile";
+	static final String folderName ="output";
 
 	public static void main(String[] args) {
 		// replaced with GUI
 
-		String textToSearch = "טראמפ";
-		String textToSearchEnglish = "Trump";
+		
+		String textToSearch = "משטרה";
+		String textToSearchEnglish = "glass";
 		String textToCompare = "טראמפ";
-		String textToCompareEnglish = "Trump";
-		SearchState stat= SearchState.regular;  
-		int numOfArticles = 3;
-		boolean ynet = true;
+		String textToCompareEnglish = "the";
+		SearchState stat= SearchState.body;  
+		int numOfArticles = 15;
+		boolean ynet = false;
 		boolean TM = false;
 		boolean blmbrg = false;
 		boolean rtrs = false;
 		boolean glbs = false;
+		boolean CNN = true;
 		boolean[] players={
 				ynet
 				,TM
 				,blmbrg
 				,rtrs
 				,glbs
+				,CNN
 		};
 
-		String startDate=""; 
-		String endDate="";
+		String startDate="1.1.2018"; 
+		String endDate="1.2.2018";
+		
+		boolean toFile = true;
 
 		starter(textToSearch,textToSearchEnglish,textToCompare,textToCompareEnglish
-				,stat,startDate,endDate,numOfArticles, players);
+				,stat,startDate,endDate,numOfArticles, players, toFile);
 	}
 
 	public static void starter(String textToSearch
@@ -64,55 +67,64 @@ public class Main {
 			,String endDate
 			,int numOfArticles
 			,boolean[] players
+			,boolean toFile
 			){
 
-	
-//		if(!endDate.isEmpty()){
-//			endDate= endDate.replace(endDate.charAt(endDate.length()-5)+"", '.'+"");
-//		}
-//		if(!startDate.isEmpty()){
-//			startDate =startDate.replaceAll(startDate.charAt(startDate.length()-5)+"", '.'+"");
-//		}
-		
-		
-		
-		if(textToSearch.isEmpty()){
+
+		//		if(!endDate.isEmpty()){
+		//			endDate= endDate.replace(endDate.charAt(endDate.length()-5)+"", '.'+"");
+		//		}
+		//		if(!startDate.isEmpty()){
+		//			startDate =startDate.replaceAll(startDate.charAt(startDate.length()-5)+"", '.'+"");
+		//		}
+
+		File directory = new File(folderName);
+	    if (! directory.exists())
+	        directory.mkdir();
+
+
+
+		if(textToSearch.isEmpty() && textToSearchEnglish.isEmpty()){
 			mainScreen.addToLog("error: 'text to search' is empty");
 			return;
 		}
-		
+		if(numOfArticles<=0){
+			mainScreen.addToLog("error: Invaild 'Number of reports' ");
+			return;
+		}
 
 
-		if(endDate.isEmpty()){
+
+
+		if(endDate.isEmpty() &&  (!startDate.isEmpty())){
 			endDate = Funcs.todayString();
 		}
-		
+
 		if(startDate.isEmpty() && (!endDate.isEmpty())){
 			startDate = "1.1.1980";
 		}
-		
-				
+
 		if(Funcs.stringToDate(startDate)==null)
 			startDate ="";
-		
+
 		if(Funcs.stringToDate(endDate)==null)
 			endDate ="";
 
-		
-//		System.out.println("s "+startDate);
-//		System.out.println("e "+endDate);
-//		
-		
-		
+
+		//		System.out.println("s "+startDate);
+		//		System.out.println("e "+endDate);
+		//		
+
+
 		mainScreen.addToLog("starting..");
-		
-		
+
+
 		Site[] sites = init(textToSearch,textToSearchEnglish, textToCompare, textToCompareEnglish,
 				stat, numOfArticles, startDate,endDate);
 		//		boolean[] players = {ynet, TM, blmbrg, rtrs, glbs};
 		//Ynet , TheMarker, Bloomberg, Reuters, Globes .
 
-		play(sites, players);
+		play(sites, players, toFile);
 
 		System.out.println();
 		System.out.println("Done.");
@@ -135,26 +147,46 @@ public class Main {
 	 */
 	private static Site[] init(String tts, String etts, String ttc, String ettc, 
 			SearchState stat, int noa, String sd,String ed){
-		Site[] sites = new Site[5];
+		Site[] sites = new Site[6];
 		sites[0]=new Ynet     (tts, ttc, noa, stat, sd,ed);
 		sites[1]=new TheMarker(tts, ttc, noa, stat, sd,ed);
 		sites[2]=new Bloomberg(etts, ettc, noa, stat, sd,ed);
 		sites[3]=new Reuters(etts, ettc, noa, stat, sd,ed);
 		sites[4]=new Globes(tts, ttc, noa, stat, sd,ed);
+		sites[5]=new CNN(etts, ettc, noa, stat, sd,ed);
 
 		return sites;
 	}
 
-	private static void play(Site[] sites, boolean[] players) {
-
+	private static void play(Site[] sites, boolean[] players, boolean totxt) {
+		
+		
+		
+		
+		/*
+		 * !!warnning!!
+		 * use only for strong comuter. uncheded deeply.
+		 * !!warnning!!
+		 */
 		boolean useThreads = false;
 
 
 		startWriters();
+		
 		try {
-			outputStream = new FileOutputStream(fileName+".xlsx");
+			outputStream = new FileOutputStream(folderName+"/"+fileName+".xlsx");
 		} catch (FileNotFoundException e1) {
-			e1.printStackTrace(); return;
+			
+			boolean ok = false;
+			int i=1;
+			while(ok){
+				try {
+					outputStream = new FileOutputStream(folderName+"/"+fileName+"-"+i+".xlsx");
+					ok =true;
+				} catch (FileNotFoundException e) {
+					i++;
+				}
+			}
 		}
 
 
@@ -196,14 +228,13 @@ public class Main {
 		for(int i=0; i<sites.length; i++){
 			if(players[i]==true)
 				if(sites[i].articles!=null && sites[i].articles.size()!=0)
-					ArticlesRow.WriteToFile(sites[i].articles);
+					ArticlesRow.WriteToFile(sites[i].articles,  totxt);
 		}
 
 		closeWriters();
 
 
 	}
-
 
 
 	static XSSFWorkbook workbook;

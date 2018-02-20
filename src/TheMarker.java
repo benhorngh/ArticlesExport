@@ -96,7 +96,9 @@ public class TheMarker extends Site {
 				date = dt.getText();
 			}catch(Exception e){e.printStackTrace();}
 
-			addLink = stateHandle(link, title, date);
+			try{
+				addLink = stateHandle(link, title, date);
+			}catch(Exception e){e.printStackTrace();addLink=false;}
 
 			if(link.contains("LIVE")){addLink=false;}
 			

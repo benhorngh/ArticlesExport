@@ -18,6 +18,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 
 /**
@@ -86,18 +87,26 @@ public abstract class Funcs {
 	 * @return new webDriver open with param url
 	 */
 	public WebDriver startHeadlessWebDriver(String url){
-		WebDriver driver;
-		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--headless");
-		options.addArguments("--start-maximized");
-		options.addArguments("--mute-audio");
-		driver = new ChromeDriver(options);
 
-		if(url.isEmpty() || url.equals(""))
-			return driver;
-		driver.get(url);
-		return driver;
+		for(int i=0; i<3; i++){
+			try{
+				WebDriver driver;
+				System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+				ChromeOptions options = new ChromeOptions();
+				options.addArguments("--headless");
+				options.addArguments("--start-maximized");
+				options.addArguments("--mute-audio");
+				driver = new ChromeDriver(options);
+
+				if(url.isEmpty() || url.equals(""))
+					return driver;
+				driver.get(url);
+				return driver;
+				
+			}catch(Exception e){e.printStackTrace();}
+		}
+		return null;
+
 	}
 
 
@@ -131,6 +140,17 @@ public abstract class Funcs {
 	public void clickInvisible(WebDriver driver, WebElement element){
 		JavascriptExecutor js = (JavascriptExecutor)driver;
 		js.executeScript("arguments[0].click();", element);
+	}
+
+	public void sendKeysInvisible(WebDriver driver, WebElement element){
+		//		JavascriptExecutor jse = (JavascriptExecutor)driver;
+		//		jse.executeScript("arguments[0].setAttribute('type', 'text');",element);
+		//		element.sendKeys("Ripon: body text");
+
+
+		RemoteWebDriver r=(RemoteWebDriver) driver;
+		r.executeScript("arguments[0].value='admin'",element);
+
 	}
 
 
@@ -193,6 +213,13 @@ public abstract class Funcs {
 	 * @param sheet
 	 */
 	public static void StringArrToLastRow(String[] arr, XSSFSheet sheet) {
+		if(arr == null) return;
+
+		for(int i=0; i<arr.length; i++){
+			if(arr[i] == null)
+				arr[i]="";
+		}
+
 		Row row = sheet.getRow(sheet.getLastRowNum());
 		if(row==null)
 			row = sheet.createRow(sheet.getLastRowNum());
@@ -255,32 +282,32 @@ public abstract class Funcs {
 				c=c-32;
 			monthStr =monthStr + (char) c;
 		}
-		if (monthStr.equals("JANUARY"))
+		if (monthStr.contains("JAN"))
 			return 1;
-		if (monthStr.equals("FEBRUARY"))
+		if (monthStr.contains("FEB"))
 			return 2;
-		if (monthStr.equals("MARCH"))
+		if (monthStr.contains("MAR"))
 			return 3;
-		if (monthStr.equals("APRIL"))
+		if (monthStr.contains("APR"))
 			return 4;
-		if (monthStr.equals("MAY"))
+		if (monthStr.contains("MAY"))
 			return 5;
-		if (monthStr.equals("JUNE"))
+		if (monthStr.contains("JUN"))
 			return 6;
-		if (monthStr.equals("JULY"))
+		if (monthStr.contains("JUL"))
 			return 7;
-		if (monthStr.equals("AUGUST"))
+		if (monthStr.contains("AUG"))
 			return 8;
-		if (monthStr.equals("SEPTEMBER"))
+		if (monthStr.contains("SEP"))
 			return 9;
-		if (monthStr.equals("OCTOBER"))
+		if (monthStr.contains("OCT"))
 			return 10;
-		if (monthStr.equals("NOVEMBER"))
+		if (monthStr.contains("NOV"))
 			return 11;
-		if (monthStr.equals("DECEMBER"))
+		if (monthStr.contains("DEC"))
 			return 12;
-		
-		
+
+
 		if (monthStr.contains("ינו"))
 			return 1;
 		if (monthStr.contains("פבר"))
@@ -305,7 +332,7 @@ public abstract class Funcs {
 			return 11;
 		if (monthStr.contains("דצ"))
 			return 12;
-		
+
 		return 0;
 
 	}
@@ -338,8 +365,10 @@ public abstract class Funcs {
 		}
 	}
 
-	
+
 	public static Date stringToDate(String date){
+		if(date == null || date.isEmpty()) return null;
+
 		Date dt=null ; 
 		DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
 		try {
@@ -349,18 +378,19 @@ public abstract class Funcs {
 		}
 
 		DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-   		
+
 		return dt;
 	}
-	
+
 	public static String dateToString(Date date){
-		
+		if(date == null) return "";
+
 		DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-   		String reportDate = df.format(date);
-		
+		String reportDate = df.format(date);
+
 		return reportDate;
 	}
-	
+
 	public static String addDays(String date , int days){
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar c = Calendar.getInstance();
@@ -371,8 +401,8 @@ public abstract class Funcs {
 		date = sdf.format(c.getTime());  // dt is now the new date
 		return date;
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @return today date in format dd.mm.yyyy

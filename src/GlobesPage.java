@@ -97,6 +97,11 @@ public class GlobesPage extends Page{
 
 	@Override
 	public ArrayList<CommentRow> commentSecction() {
+		String ArticleDate="";
+		try{
+			ArticleDate = getDate();
+		}catch(Exception e){}
+
 		WebElement frame = null;
 
 		for(int i=0; i<5; i++){
@@ -145,7 +150,7 @@ public class GlobesPage extends Page{
 
 
 		try{
-			fixDates(commentList);
+			fixDates(commentList, ArticleDate);
 		}catch(Exception e) {e.printStackTrace();}
 
 		return commentList;
@@ -242,49 +247,48 @@ public class GlobesPage extends Page{
 		return cr;
 	}
 
-	
-	
-	public void fixDates(ArrayList<CommentRow> commentList) {
+
+
+	public void fixDates(ArrayList<CommentRow> commentList, String ArticleDate) {
 		String today = todayString();
 
 		if(commentList != null && commentList.size()>=1){
-			String ArticleDate="";
-			try{
-				ArticleDate = getDate();
-			}catch(Exception e){}
 
-			String ndt = ArticleDate;
-			if(!ArticleDate.isEmpty()){
-				for(int i=0; i<commentList.size(); i++){
-					String dt = commentList.get(i).date;
-					if(dt.length()<4){
-						if(dt.charAt(1)=='d'){
-							
-							commentList.get(i).date = addDays(today , -Integer.parseInt(""+dt.charAt(0)));
-						}
-						else{
-							commentList.get(i).date = today;
-						}
-					
+
+
+			for(int i=0; i<commentList.size(); i++){
+				String dt = commentList.get(i).date;
+//				System.out.println(dt);
+				if(dt.length()<4  &&  dt.length()>1){
+					if(dt.charAt(1)=='d'){
+						commentList.get(i).date = addDays(today , -Integer.parseInt(""+dt.charAt(0)));
 					}
 					else{
-						String[] date = dt.split(" ");
-						if(date.length==3){
-							int x= monthToInt(date[1].substring(0, date[1].length()-1));
-							commentList.get(i).date = date[0]+"."+x+"."+date[2];
-						}
-						if(date.length==2){
-							int x= monthToInt(date[1]);
-							commentList.get(i).date = date[0]+"."+x+".2018";
-						}
-
+						commentList.get(i).date = today;
 					}
+
 				}
+				else{
+					String[] date = dt.split(" ");
+					if(date.length==3){
+						int x= monthToInt(date[1].substring(0, date[1].length()-1));
+						commentList.get(i).date = date[0]+"."+x+"."+date[2];
+					}
+					if(date.length==2){
+						int x= monthToInt(date[1]);
+						commentList.get(i).date = date[0]+"."+x+".2018";
+					}
+
+				}
+//				System.out.println(dt+ "  " + commentList.get(i).date);
 			}
+
+
 		}
+
 	}
-	
-	
+
+
 }
 
 

@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class ArticlesRow {
 
 	public static int counter=1;
 
-	
+
 
 	public ArticlesRow(){
 		this.num=counter;
@@ -44,7 +45,7 @@ public class ArticlesRow {
 		comments=new ArrayList<CommentRow>() ;
 		numOfWords=0;
 	}
-	
+
 	/**
 	 * @return all comment's title+body connected.
 	 */
@@ -62,17 +63,43 @@ public class ArticlesRow {
 		String[] row = {num+"", site, URL, date, reporter, numOfWords+"", headLine, subHeadLine, body,"","", getCommentsString(),"","","",""};
 		Funcs.StringArrToLastRow(row, sheet);
 	}
-	
+
 	/**
 	 * write list of articles to file  
 	 * @param Reports -list with ArticlesRow objects
+	 * @param totxt 
 	 */
-	public static void WriteToFile(List<ArticlesRow> Reports) {
+	public static void WriteToFile(List<ArticlesRow> Reports, boolean totxt) {
 		for(int i=0; i<Reports.size(); i++){
 			Reports.get(i).WriteToFile();
 			CommentRow.WriteToFile(Reports.get(i).comments);
+			if(totxt){
+				writeToTxt(Reports.get(i));
+			}
+
 		}
 
+	}
+
+	private static void writeToTxt(ArticlesRow articlesRow) {
+		if(articlesRow == null) return;
+		FileWriter writer;
+		
+		if(articlesRow.headLine == null)
+			articlesRow.headLine ="";
+		if(articlesRow.subHeadLine == null)
+			articlesRow.subHeadLine ="";
+		if(articlesRow.body == null)
+			articlesRow.body ="";
+
+		try {
+			writer = new FileWriter(Main.folderName+"/"+articlesRow.num+".txt");
+			writer.append(articlesRow.headLine+'\n');
+			writer.append(articlesRow.subHeadLine+'\n');
+			writer.append(articlesRow.body);
+			writer.flush();
+			writer.close();
+		}catch(Exception e){e.printStackTrace();}
 	}
 
 	/**
@@ -85,7 +112,7 @@ public class ArticlesRow {
 			cmmts.get(i).ArticleNum = this.num;
 		}
 		this.comments = cmmts;
-		
+
 	}
 
 
@@ -106,7 +133,6 @@ public class ArticlesRow {
 
 			Funcs.apeandComments(writer, getCommentsString());
 
-
 			writer.append('\n');
 
 			writer.flush();
@@ -125,10 +151,10 @@ public class ArticlesRow {
 		date = Funcs.clean(date);
 	}
 
-		
-	
 
-	
+
+
+
 
 
 

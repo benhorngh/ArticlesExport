@@ -106,6 +106,8 @@ public class CommentRow {
 	 */
 	public static String wireAllComments(ArrayList<CommentRow> cmmts) {
 		String allc="";
+		
+		if(cmmts == null) return allc;
 
 		for(int i=0; i<cmmts.size(); i++){
 			allc+=cmmts.get(i).headline+" . "+cmmts.get(i).comment;

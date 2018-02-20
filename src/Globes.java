@@ -13,6 +13,7 @@ import org.openqa.selenium.support.ui.Select;
  *
  */
 public class Globes extends Site{
+	
 	public Globes(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url="http://www.globes.co.il/";
@@ -109,7 +110,10 @@ public class Globes extends Site{
 				System.out.println(link);
 				System.out.println(title);
 
-				addLink = stateHandle(link, title,"");
+				try{
+					addLink = stateHandle(link, title, "");
+				}catch(Exception e){e.printStackTrace();addLink=false;}
+				
 				if(addLink){
 					urls.add(link);
 					found++;
@@ -135,8 +139,8 @@ public class Globes extends Site{
 
 	private void selectTime() {
 
-		String [] start = this.fromDate.split(".");
-		String [] end = this.toDate.split(".");
+		String [] start = this.fromDate.split("//.");
+		String [] end = this.toDate.split("//.");
 
 		try{
 			WebElement form = driver.findElement(By.xpath("//*[@class='searcherFormTbl']"));
