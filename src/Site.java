@@ -28,7 +28,7 @@ public abstract class Site extends Funcs implements Runnable {
 
 	List<ArticlesRow> articles;
 
-	@Override
+//	@Override
 	public void run(){
 		this.articles = Start();
 	}
