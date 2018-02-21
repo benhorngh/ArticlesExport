@@ -1,6 +1,7 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -13,7 +14,7 @@ import org.openqa.selenium.support.ui.Select;
  *
  */
 public class Globes extends Site{
-	
+
 	public Globes(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url="http://www.globes.co.il/";
@@ -82,10 +83,10 @@ public class Globes extends Site{
 	public void resultsPage(List<String> urls) {
 
 		driver.get(driver.getCurrentUrl());
-		
+
 		sleep(1000);
 
-		
+
 
 		for(int i=10; i<this.numOfArticles; i=i+10){
 			clickLoadMore();
@@ -101,26 +102,28 @@ public class Globes extends Site{
 		try{
 			while(found < numOfArticles){
 
-				WebElement head = results.get(i)
-						.findElement(By.className("left_side")).findElement(By.tagName("a"));
+				if(i<results.size()){
+					WebElement head = results.get(i)
+							.findElement(By.className("left_side")).findElement(By.tagName("a"));
 
-				title = head.getText();
-				link = head.getAttribute("href");
+					title = head.getText();
+					link = head.getAttribute("href");
 
-				System.out.println(link);
-				System.out.println(title);
+					System.out.println(link);
+					System.out.println(title);
 
-				try{
-					addLink = stateHandle(link, title, "");
-				}catch(Exception e){e.printStackTrace();addLink=false;}
-				
-				if(addLink){
-					urls.add(link);
-					found++;
+					try{
+						addLink = stateHandle(link, title, "");
+					}catch(Exception e){e.printStackTrace();addLink=false;}
 
-					addLink=false;
+					if(addLink){
+						urls.add(link);
+						found++;
+
+						addLink=false;
+					}
+					i++;
 				}
-				i++;
 				checks++;
 
 				if(i>=results.size()){
@@ -135,12 +138,15 @@ public class Globes extends Site{
 
 
 	}
-	
+
 
 	private void selectTime() {
 
-		String [] start = this.fromDate.split("//.");
-		String [] end = this.toDate.split("//.");
+		System.out.println("F "+fromDate);
+		System.out.println("T "+toDate);
+
+		String [] start = this.fromDate.split("\\.");
+		String [] end = this.toDate.split("\\.");
 
 		try{
 			WebElement form = driver.findElement(By.xpath("//*[@class='searcherFormTbl']"));
@@ -153,6 +159,9 @@ public class Globes extends Site{
 			WebElement emonth = form.findElement(By.xpath(".//*[@id='until.month']"));
 			WebElement eyear = form.findElement(By.xpath(".//*[@id='until.year']"));
 
+
+			System.out.println(Arrays.toString(start));
+			System.out.println(Arrays.toString(end));
 
 			Select sd = new Select(sday);
 			sd.selectByValue(start[0]);
@@ -173,14 +182,14 @@ public class Globes extends Site{
 			Select ey = new Select(eyear);
 			ey.selectByValue(end[2]);
 
-			
+
 			WebElement button = driver.findElement(By.xpath("//*[@class='btn btnProp ibSearch']"));
 			sleep(1500);
 
 			try{
 				moveTo2(driver, button);
 			}catch(Exception e){}
-			
+
 			sleep(1500);
 			button.click();
 

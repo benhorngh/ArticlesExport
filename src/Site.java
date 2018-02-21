@@ -136,7 +136,6 @@ public abstract class Site extends Funcs implements Runnable {
 		}
 
 		return stateWithoutDate(link, title);
-
 	}
 
 	/**
@@ -153,12 +152,14 @@ public abstract class Site extends Funcs implements Runnable {
 		Date fromD = stringToDate(this.fromDate);
 		Date toD = stringToDate(this.toDate);
 
+		
 
 		if(!Adate.isEmpty()){  //if can access date from result page
 			Date urlD = stringToDate(Adate);
 
 			if(urlD == null) stateWithDate(link, title, "");
-
+			
+			
 			if(urlD.after(toD) || urlD.before(fromD)){
 				System.err.println("next");
 				return false;

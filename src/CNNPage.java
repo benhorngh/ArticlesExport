@@ -260,6 +260,23 @@ public class CNNPage extends Page{
 			catch(Exception e){
 			}
 		}
+		if(!ok){
+			try{
+				bd =  driver.findElements(By.xpath("//*[@class='BasicArticle__main']//*[starts-with(@class,'BasicArticle__paragraph')]"));
+				// size suppose to be 0.
+				for(int i=0; i<bd.size(); i++){
+					body += bd.get(i).getText();
+				}
+
+				if(!body.isEmpty())
+					ok= true;
+			}
+			catch(Exception e){
+			}
+		}
+		
+		
+		
 		
 		return body;
 	}

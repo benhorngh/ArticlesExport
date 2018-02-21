@@ -30,17 +30,17 @@ public class Main {
 
 
 		String textToSearch = "משטרה";
-		String textToSearchEnglish = "glass";
-		String textToCompare = "טראמפ";
+		String textToSearchEnglish = "price";
+		String textToCompare = "שוטר";
 		String textToCompareEnglish = "the";
-		SearchState stat= SearchState.body;  
-		int numOfArticles = 15;
-		boolean ynet = false;
-		boolean TM = false;
+		SearchState stat= SearchState.headline; 
+		int numOfArticles = 5;
+		boolean ynet = true;
+		boolean TM = true;
 		boolean blmbrg = false;
 		boolean rtrs = false;
-		boolean glbs = false;
-		boolean CNN = true;
+		boolean glbs = true;
+		boolean CNN = false;
 		boolean[] players={
 				ynet
 				,TM
@@ -50,8 +50,8 @@ public class Main {
 				,CNN
 		};
 
-		String startDate="1.1.2018"; 
-		String endDate="1.2.2018";
+		String startDate="1.1.2016"; 
+		String endDate="1.1.2018";
 
 		boolean toFile = true;
 
@@ -82,6 +82,8 @@ public class Main {
 			,boolean[] players
 			,boolean toTxt
 			){
+		
+		
 
 
 		//		if(!endDate.isEmpty()){
@@ -120,12 +122,13 @@ public class Main {
 			String[] arr = startDate.split("\\.");
 			try{
 				if(Integer.parseInt(arr[0])>32 || Integer.parseInt(arr[1])>12){
-					mainScreen.addToLog("error: Invaild date");
+					mainScreen.addToLog("error: Invaild start date");
 					return;
 				}
-			}catch(Exception e){mainScreen.addToLog("error: Invaild date");
+			}catch(Exception e){mainScreen.addToLog("error: Invaild start date");
 			return;}
 		}
+		
 		if(!endDate.isEmpty()){
 			Date ed;
 			ed = Funcs.stringToDate(endDate);
@@ -134,13 +137,13 @@ public class Main {
 				return;
 			}
 			
-			String[] arr = startDate.split("\\.");
+			String[] arr = endDate.split("\\.");
 			try{
 				if(Integer.parseInt(arr[0])>32 || Integer.parseInt(arr[1])>12){
-					mainScreen.addToLog("error: Invaild date");
+					mainScreen.addToLog("error: Invaild end date");
 					return;
 				}
-			}catch(Exception e){mainScreen.addToLog("error: Invaild date");
+			}catch(Exception e){mainScreen.addToLog("error: Invaild end date");
 			return;}
 		}
 
@@ -171,6 +174,23 @@ public class Main {
 
 		mainScreen.addToLog("starting..");
 
+		System.out.println();
+		System.out.println("tts: "+textToSearch +" || "+textToSearchEnglish);
+		System.out.println("ttc: "+textToCompare+" || " + textToCompareEnglish);
+		System.out.println("stat: "+stat);
+		System.out.println("start d: "+startDate);
+		System.out.println("end d: "+endDate);
+		System.out.println("noa: "+numOfArticles);
+		System.out.println("totxt: "+toTxt);
+		System.out.print("players: ");
+		if(players[0]) System.out.print("Ynet ");
+		if(players[1]) System.out.print("TheMarker ");
+		if(players[2]) System.out.print("Bloomberg ");
+		if(players[3]) System.out.print("Reuters ");
+		if(players[4]) System.out.print("Globes ");
+		if(players[5]) System.out.print("CNN ");
+		System.out.println();
+		System.out.println();
 
 		Site[] sites = init(textToSearch,textToSearchEnglish, textToCompare, textToCompareEnglish,
 				stat, numOfArticles, startDate,endDate);
@@ -225,13 +245,6 @@ public class Main {
 
 
 		startWriters();
-
-
-
-
-		//		try {
-		//			outputStream = new FileOutputStream(folderName+"/"+fileName+".xlsx");
-		//		} catch (FileNotFoundException e1) {
 
 
 		File directory;

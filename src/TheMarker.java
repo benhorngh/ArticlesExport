@@ -83,35 +83,36 @@ public class TheMarker extends Site {
 			link=""; title=""; date="";
 
 
-			WebElement ttl = resutls.get(i).findElement(By.className("caption"));
-			link = ttl.getAttribute("href");
-			
-			System.out.println(link);
+			if(i<resutls.size()){
+				WebElement ttl = resutls.get(i).findElement(By.className("caption"));
+				link = ttl.getAttribute("href");
 
-			title = ttl.getText();
-			System.out.println(title);
+				System.out.println(link);
 
-			try{
-				WebElement dt = resutls.get(i).findElement(By.className("authorBarElement"));
-				date = dt.getText();
-			}catch(Exception e){e.printStackTrace();}
+				title = ttl.getText();
+				System.out.println(title);
 
-			try{
-				addLink = stateHandle(link, title, date);
-			}catch(Exception e){e.printStackTrace();addLink=false;}
+				try{
+					WebElement dt = resutls.get(i).findElement(By.className("authorBarElement"));
+					date = dt.getText();
+				}catch(Exception e){e.printStackTrace();}
 
-			if(link.contains("LIVE")){addLink=false;}
-			
-			if(addLink){
-				urls.add(link);
-				found++;
+				try{
+					addLink = stateHandle(link, title, date);
+				}catch(Exception e){e.printStackTrace();addLink=false;}
+
+				if(link.contains("LIVE")){addLink=false;}
+
+				if(addLink){
+					urls.add(link);
+					found++;
+				}
+				addLink=false;
+
+				i++;
+				
 			}
-			addLink=false;
-
-			i++;
-			checks++;
-
-			if(i==6){
+			if(i >=resutls.size()){
 				i=0;
 				WebElement pagination = driver.findElement(By.className("pagination"));
 				moveTo(driver, pagination);
@@ -122,6 +123,7 @@ public class TheMarker extends Site {
 
 				resutls = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
 			}
+			checks++;
 			if(checks == maxSearch)
 				return;
 		}
