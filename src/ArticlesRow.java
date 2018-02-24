@@ -59,7 +59,7 @@ public class ArticlesRow {
 	public void WriteToFile() {
 		XSSFSheet sheet = Main.workbook.getSheet("Articles");
 		numOfWords=body.split(" ").length;
-		String[] row = {num+"", site, URL, date, reporter, numOfWords+"", headLine, subHeadLine, body,"","", getCommentsString(),"","","",""};
+		String[] row = {num+"", site, URL, date, reporter, numOfWords+"", headLine, subHeadLine, body,"","", getCommentsString(),"","","","",""};
 		Funcs.StringArrToLastRow(row, sheet);
 	}
 
@@ -70,10 +70,16 @@ public class ArticlesRow {
 	 */
 	public static void WriteToFile(List<ArticlesRow> Reports, boolean totxt) {
 		for(int i=0; i<Reports.size(); i++){
-			Reports.get(i).WriteToFile();
-			CommentRow.WriteToFile(Reports.get(i).comments);
+			try {
+				Reports.get(i).WriteToFile();
+				CommentRow.WriteToFile(Reports.get(i).comments);
+			}catch(Exception e) {e.printStackTrace();}
+			
 			if(totxt && Reports.get(i)!=null){
-				Reports.get(i).writeToTxt();;
+				
+				try {
+				Reports.get(i).writeToTxt();
+				}catch(Exception e) {e.printStackTrace();}
 			}
 
 		}
@@ -86,7 +92,7 @@ public class ArticlesRow {
 	 */
 	private void writeToTxt() {
 		FileWriter writer;
-		
+
 		if(this.headLine == null)
 			this.headLine ="";
 		if(this.subHeadLine == null)
@@ -117,8 +123,8 @@ public class ArticlesRow {
 
 	}
 
-	
-	
+
+
 
 	/**
 	 * This functions use to write to csv file, instead of using apache POI for excel

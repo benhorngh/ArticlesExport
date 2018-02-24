@@ -24,6 +24,8 @@ public enum SearchState {
 	/**
 	 * take only the article that contain 'textToCompare' string in his comments.
 	 */
-	comment
+	comment,
+	
+	everywhere
 
 }

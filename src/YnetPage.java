@@ -73,6 +73,12 @@ public class YnetPage extends Page  {
 		for(int l=0; l <allPh.size(); l++){
 			str+=allPh.get(l).getText();
 		}
+		
+		if(str==null || str.isEmpty()) {
+			WebElement bdy = driver.findElement(By.xpath("//*[@class='text14']/span"));
+			str = bdy.getText();
+		}
+		
 		return str;
 	}
 

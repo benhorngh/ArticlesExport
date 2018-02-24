@@ -25,8 +25,8 @@ public class Ynet extends  Site {
 		this.page = new YnetPage(window);
 		this.DateRange = false;
 	}
-	
-	
+
+
 	public Ynet(){
 		super();
 		this.url = "https://www.Ynet.co.il";
@@ -112,23 +112,33 @@ public class Ynet extends  Site {
 				try{
 					res=lis.findElement(By.cssSelector("#search_result_id_"+i));
 					count= 0;
-				} catch(Exception e){
 
-					res=lis.findElement(By.cssSelector("#search_result_id_"+(i-1)));
-					moveTo2(driver, res);
-					count++;
+				} catch(Exception e){sleep(2000);
+				try{
+					res=lis.findElement(By.cssSelector("#search_result_id_"+i));
+					count= 0;
+				} catch(Exception e1){sleep(2000);
+				try{
+					res=lis.findElement(By.cssSelector("#search_result_id_"+i));
+					count= 0;
+				} catch(Exception e2){sleep(2000);
+				}
 
-					if(count==15)
-						break;
-					sleep(2000); 
-					continue;
+				res=lis.findElement(By.cssSelector("#search_result_id_"+(i-1)));
+				moveTo2(driver, res);
+				count++;
+
+				if(count==15)
+					break;
+				sleep(2000); 
+				continue;
 				}
 
 				if(i>70 && i+2%10==0){
 					sleep(5000);
 				}
 				sleep(2500);
-
+				}
 
 
 				if((i+2)%10==0){
@@ -148,7 +158,7 @@ public class Ynet extends  Site {
 					res.click();
 					again=0;
 				}catch(Exception e){again++; continue;}
-				
+
 
 
 				sleep(2000);
@@ -167,11 +177,11 @@ public class Ynet extends  Site {
 			String[] arr  = date.split(" ");
 			arr = arr[0].split("/");
 			date = arr[0]+"."+arr[1]+"."+arr[2];
-			
+
 			try{
 				addLink = stateHandle(link, headLine, date);
 			}catch(Exception e){e.printStackTrace();addLink=false;}
-			
+
 			date="";
 
 			if(addLink){

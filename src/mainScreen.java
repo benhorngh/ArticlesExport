@@ -278,6 +278,7 @@ public class mainScreen {
 		choice.add("Title");
 		choice.add("Body");
 		choice.add("Comments");
+		choice.add("Everywhere");
 
 		chckbxBloomberg = new JCheckBox("Bloomberg");
 		chckbxBloomberg.setFocusable(false);
@@ -326,6 +327,8 @@ public class mainScreen {
 							state = SearchState.body;
 						if(selected.equals("Comments"))
 							state = SearchState.comment;
+						if(selected.equals("Everywhere"))
+							state = SearchState.everywhere;
 
 						boolean totxt = chckbxToTxt.isSelected();
 						

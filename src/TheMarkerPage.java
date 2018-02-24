@@ -119,8 +119,11 @@ public class TheMarkerPage extends Page {
 		if(str.isEmpty()){
 			WebElement dt = driver.findElement(By.xpath("//*[@class='t-byline h-tac']//time"));
 			str=dt.getText();
-			str = str.split(" ")[1];
 		}
+		
+		str = str.trim();
+		if(str.contains(" "))
+			str = str.split(" ")[0];
 		return str;
 	}
 

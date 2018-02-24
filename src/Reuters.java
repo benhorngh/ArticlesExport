@@ -61,7 +61,7 @@ public class Reuters extends Site {
 		}
 
 		int found = 0;
-		String link="", title="";
+		String link="", title="", date="";
 		int i=0;
 		int  checks = 0;
 		boolean addLink=false;
@@ -70,29 +70,47 @@ public class Reuters extends Site {
 		try{
 			WebElement head = null;
 			while(found < numOfArticles){
+				link=""; title=""; date="";
+
 
 				if(i < results.size()){
-					 head = results.get(i)
-					.findElement(By.className("search-result-title")).findElement(By.tagName("a"));
+					head = results.get(i)
+							.findElement(By.className("search-result-title")).findElement(By.tagName("a"));
 
-				title = head.getText();
-				link = head.getAttribute("href");
+					title = head.getText();
+					link = head.getAttribute("href");
 
-				System.out.println(link);
-				System.out.println(title);
+					System.out.println(link);
+					System.out.println(title);
 
-				try{
-					addLink = stateHandle(link, title, "");
-				}catch(Exception e){e.printStackTrace();addLink=false;}
-				
-				if(addLink){
-					urls.add(link);
-					found++;
 
-					addLink=false;
-				}
-				i++;
-				checks++;
+					try {//September 27, 2017 12:23pm EDT
+						WebElement dt = results.get(i)
+								.findElement(By.className("search-result-timestamp"));
+
+						date = dt.getText();
+						
+						String[] arr = date.split(" ");
+						arr[1] = arr[1].substring(0, arr[1].length()-1);
+						arr[0] = ""+monthToInt(arr[0]);
+						
+						date = arr[1]+"."+arr[0]+"."+arr[2];
+						
+					}catch(Exception e){e.printStackTrace();}
+
+
+					try{
+						addLink = stateHandle(link, title, date);
+					}catch(Exception e){e.printStackTrace();addLink=false;}
+
+					if(addLink){
+						urls.add(link);
+						found++;
+
+						addLink=false;
+					}
+					i++;
+					checks++;
 				}
 				if(i>=results.size()){
 					clickLoadMore();

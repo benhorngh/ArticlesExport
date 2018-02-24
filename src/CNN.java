@@ -20,10 +20,10 @@ public class CNN extends Site{
 
 	@Override
 	public boolean search() {
-		
+
 		if(this.state == SearchState.comment)
 			return false;
-		
+
 		driver = startWebDriver(url);
 		//		driver.get(url);
 
@@ -123,23 +123,35 @@ public class CNN extends Site{
 
 				if(i>=resutls.size()){
 					i=0;
-					WebElement pagination = driver.findElement(By.xpath("//*[@class='pagination-bar']//*[@class='pagination-arrow pagination-arrow-right cnnSearchPageLink text-active']"));
-					moveTo(driver, pagination);
-					sleep(1000);
+					for(int o=0; o<5; o++) {
+						try {
+							
+							WebElement pagination = driver.findElement(By.xpath("//*[@class='pagination-arrow pagination-arrow-right cnnSearchPageLink text-active']"));
+							moveTo(driver, pagination);
+							sleep(1000);
 
+							pagination.click();
 
-					pagination.click();
+							sleep(1000);
 
-					sleep(1000);
-
+							break;
+						}
+						catch(Exception e) {e.printStackTrace();sleep(3000);}
+					}
 					resutls = driver.findElements(By.xpath("//*[@class='cnn-search__results-list']/div"));
-
 				}
 				if(checks == maxSearch)
 					return;
 			}
 		}
 		catch(Exception e){e.printStackTrace();}
+	}
+
+	private boolean clicknext() {
+		
+
+		return true;
+
 	}
 
 }

@@ -17,6 +17,7 @@ public class BloombergPage extends Page{
 	@Override
 	public String getTitle() {
 		boolean ok = false;
+		String str ="";
 		WebElement ttl = null;
 		try{
 			ttl =  driver.findElement(By.xpath(s+"//*[@class='lede-text-only__highlight']"));
@@ -97,9 +98,6 @@ public class BloombergPage extends Page{
 			catch(Exception e){
 			}
 		}
-		
-		
-
 
 		return ttl.getText();		
 	}

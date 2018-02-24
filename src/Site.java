@@ -28,7 +28,7 @@ public abstract class Site extends Funcs implements Runnable {
 
 	List<ArticlesRow> articles;
 
-//	@Override
+//		@Override
 	public void run(){
 		this.articles = Start();
 	}
@@ -128,7 +128,6 @@ public abstract class Site extends Funcs implements Runnable {
 	 * @return true if standing on condition by the state, false otherwise.
 	 */
 	public boolean stateHandle(String link, String title, String date) {
-
 		if(date == null) date ="";
 
 		if(!this.fromDate.isEmpty()){
@@ -152,14 +151,14 @@ public abstract class Site extends Funcs implements Runnable {
 		Date fromD = stringToDate(this.fromDate);
 		Date toD = stringToDate(this.toDate);
 
-		
+
 
 		if(!Adate.isEmpty()){  //if can access date from result page
 			Date urlD = stringToDate(Adate);
 
 			if(urlD == null) stateWithDate(link, title, "");
-			
-			
+
+
 			if(urlD.after(toD) || urlD.before(fromD)){
 				System.err.println("next");
 				return false;
@@ -231,12 +230,51 @@ public abstract class Site extends Funcs implements Runnable {
 		if(state==SearchState.comment){
 			return commentState(link);
 		}
+		
+		if(state==SearchState.everywhere){
+			return everywhereState(link);
+		}
+		
 		return false;
 	}
 
 
 
 
+
+
+	private boolean everywhereState(String link) {
+		boolean getLink=true;
+		try{
+			this.page.driver= startWebDriver(link);
+			try{
+				this.page.signIn();
+			}
+			catch(Exception e){System.err.println("can't login");}
+			String text="";
+			ArticlesRow ar = page.urlHandler(link, true);
+			String comments=CommentRow.wireAllComments(page.getComments());
+			
+			if(ar == null) return false;
+			if(ar.headLine==null) ar.headLine="";
+			if(ar.subHeadLine == null) ar.subHeadLine ="";
+			if(ar.body == null) ar.body = "";
+			if(comments == null) comments = "";
+			text = ar.headLine+" "+ar.subHeadLine+" "+ar.body+" "+comments;
+			
+			if(!contain(text, textToCompare)){
+				System.err.println("not Found.");
+				getLink = false;
+			}
+			else System.err.println("okey!!");
+			ArticlesRow.counter--;
+			page.driver.close();
+			page.driver.quit();
+			sleep(10000);
+		}
+		catch(Exception e){e.printStackTrace();page.driver.close();page.driver.quit();return false;}
+		return getLink;
+	}
 
 
 	/**
@@ -278,7 +316,10 @@ public abstract class Site extends Funcs implements Runnable {
 	private boolean commentState(String link) {
 		boolean getLink=true;
 		try{
+			WindowState w = this.window;
+			this.window = page.window;
 			page.driver= startWebDriver(link);
+			this.window = w;
 			try{
 				this.page.signIn();
 			}
@@ -370,7 +411,7 @@ public abstract class Site extends Funcs implements Runnable {
 				}
 			}
 		}
-		
+
 		{//remove http and https for same article
 			String url1, url2;
 			for(int i=0; i<urls.size()-1; i++){
@@ -385,7 +426,7 @@ public abstract class Site extends Funcs implements Runnable {
 				}
 			}
 		}
-		
+
 
 
 	}

@@ -223,7 +223,12 @@ public abstract class Funcs {
 		for(int i=0 ;i<arr.length; i++){
 			if(arr[i].length()>30000){
 				expand(arr);
-				break;
+			}
+		}
+
+		for(int i=0 ;i<arr.length; i++){
+			if(arr[i].length()>30000){
+				expand(arr);
 			}
 		}
 
@@ -231,7 +236,9 @@ public abstract class Funcs {
 		Cell cell;
 		for(i=0; i<arr.length; i++){
 			cell = row.createCell(i);
-			cell.setCellValue(arr[i]);
+			try {
+				cell.setCellValue(arr[i]);
+			}catch(Exception e) {e.printStackTrace();}
 		}
 	}
 
@@ -247,6 +254,7 @@ public abstract class Funcs {
 				arr[i] = arr[i].substring(0, 30000);
 				arr[i+1] = tmp;
 			}
+			tmp="";
 		}
 	}
 
@@ -421,8 +429,8 @@ public abstract class Funcs {
 		LocalDateTime now = LocalDateTime.now();
 		return dtf.format(now);
 	}
-	
-	
+
+
 	/**
 	 * replase " with ' ' (space)
 	 * @param text
@@ -435,7 +443,7 @@ public abstract class Funcs {
 		}
 		return newStr;
 	}
-	
+
 
 	/**
 	 * remove ',' and '\n' from text, before insert to csv file
