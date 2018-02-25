@@ -315,8 +315,25 @@ public class Main {
 		}
 
 		closeWriters();
+		
+		
+		closeAllChrome();
 
 
+	}
+	
+	private static void closeAllChrome() {
+		try {
+			Runtime.
+			   getRuntime().
+//			   exec("cmd /c start \"\" closeOpenChromeD.bat");
+			   exec("taskkill /im chromedriver.exe /f");
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch(Exception e) {e.printStackTrace();}
 	}
 
 

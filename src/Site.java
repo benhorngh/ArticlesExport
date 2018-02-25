@@ -272,7 +272,11 @@ public abstract class Site extends Funcs implements Runnable {
 			page.driver.quit();
 			sleep(10000);
 		}
-		catch(Exception e){e.printStackTrace();page.driver.close();page.driver.quit();return false;}
+		catch(Exception e){
+			try {
+			e.printStackTrace();page.driver.close();page.driver.quit();return false;
+			}catch(Exception e2) {}
+			}
 		return getLink;
 	}
 

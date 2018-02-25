@@ -30,7 +30,7 @@ public class Ynet extends  Site {
 	public Ynet(){
 		super();
 		this.url = "https://www.Ynet.co.il";
-		this.window = WindowState.Invisible;
+		this.window = WindowState.Background;
 		this.page = new YnetPage(window);
 		this.DateRange = false;
 	}
@@ -121,10 +121,10 @@ public class Ynet extends  Site {
 				try{
 					res=lis.findElement(By.cssSelector("#search_result_id_"+i));
 					count= 0;
-				} catch(Exception e2){sleep(2000);
+				} catch(Exception e2){sleep(2000);res=lis.findElement(By.cssSelector("#search_result_id_"+(i-1)));
 				}
 
-				res=lis.findElement(By.cssSelector("#search_result_id_"+(i-1)));
+				
 				moveTo2(driver, res);
 				count++;
 

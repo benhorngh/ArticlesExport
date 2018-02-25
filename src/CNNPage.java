@@ -130,6 +130,17 @@ public class CNNPage extends Page{
 			catch(Exception e){
 			}
 		}
+		if(!ok){
+			try{
+				rptr =  driver.findElement(By.xpath("//*[@class='Article__subtitle']"));
+				if(!rptr.getText().isEmpty())
+					ok= true;
+				reporter = rptr.getText();
+				reporter = reporter.split(" ")[0]+reporter.split(" ")[1];
+			}
+			catch(Exception e){
+			}
+		}
 		
 		
 
@@ -190,6 +201,26 @@ public class CNNPage extends Page{
 			catch(Exception e){
 			}
 		}
+		if(!ok){
+			try{
+				dt =  driver.findElement(By.xpath("//*[@class='Article__subtitle']"));
+				if(!dt.getText().isEmpty())
+					ok= true;
+				date = dt.getText();
+				
+				String[] arr = date.split(" ");
+				String day = arr[arr.length-3];
+				day = day.substring(0, day.length()-2);
+				String month = ""+monthToInt(arr[arr.length-2]);
+				date = day+"."+month+"."+arr[arr.length-1];
+			}
+			
+			catch(Exception e){
+			}
+		}
+		
+		
+		
 		return date;
 
 	}
