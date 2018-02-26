@@ -155,6 +155,7 @@ public class Bloomberg extends Site{
 					if(addLink){
 						urls.add(link);
 						found++;
+						mainScreen.addToLog(found+"/"+this.numOfArticles);
 					}
 					addLink=false;
 				}

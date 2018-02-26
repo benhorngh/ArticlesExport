@@ -187,6 +187,7 @@ public class Ynet extends  Site {
 			if(addLink){
 				found++;
 				urls.add(link);
+				mainScreen.addToLog(found+"/"+this.numOfArticles);
 			}
 
 			i++;

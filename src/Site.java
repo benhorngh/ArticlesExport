@@ -71,8 +71,8 @@ public abstract class Site extends Funcs implements Runnable {
 		}catch(Exception e){e.printStackTrace();}
 
 		if(articles!=null && !articles.isEmpty()){
-			System.out.println("find "+ articles.size() +" articles in "+this.page.SiteName);
-			mainScreen.addToLog("find "+ articles.size() +" articles in "+this.page.SiteName);
+			System.out.println("found "+ articles.size() +" articles in "+this.page.SiteName);
+			mainScreen.addToLog("found "+ articles.size() +" articles in "+this.page.SiteName);
 			return page.linksToList(articles);
 		}
 		else System.err.println(this.page.SiteName+" fail");
@@ -354,6 +354,9 @@ public abstract class Site extends Funcs implements Runnable {
 	 * @return true if contains, false otherwise
 	 */
 	public boolean contain(String bigText, String text) {
+		
+		bigText = bigText.toLowerCase();
+		text = text.toLowerCase();
 
 		text= text.trim();
 		int index =0;

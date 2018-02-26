@@ -48,6 +48,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.awt.SystemColor;
+import net.miginfocom.swing.MigLayout;
+import com.jgoodies.forms.layout.Sizes;
 
 public class mainScreen {
 
@@ -73,6 +75,7 @@ public class mainScreen {
 	private static JTextArea log;
 	private JCheckBox chckbxCnn;
 	private JCheckBox chckbxToTxt;
+	private JTextPane txtpnState;
 
 
 
@@ -131,22 +134,22 @@ public class mainScreen {
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),
 				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("default:grow"),},
-				new RowSpec[] {
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"),
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"),
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"),
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"),
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"),
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"),
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"),}));
+				ColumnSpec.decode("max(50dlu;default):grow"),},
+			new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),}));
 
 		JTextPane txtpnTextToSearch_1 = new JTextPane();
 		txtpnTextToSearch_1.setDisabledTextColor(Color.BLACK);
@@ -157,11 +160,18 @@ public class mainScreen {
 		txtpnTextToSearch_1.setEditable(false);
 		txtpnTextToSearch_1.setEnabled(false);
 		txtpnTextToSearch_1.setText("Text to search");
+		
+		
 		panel_1.add(txtpnTextToSearch_1, "2, 2, center, center");
 
 		textField_4 = new JTextField();
-		panel_1.add(textField_4, "4, 2, fill, default");
+		panel_1.add(textField_4, "3, 2, 2, 1, fill, default");
 		textField_4.setColumns(10);
+		
+
+		textField_4.setToolTipText("Text for the search field in the site");
+		
+		
 
 		JTextPane txtpnTextToCompare_1 = new JTextPane();
 		txtpnTextToCompare_1.setDisabledTextColor(Color.BLACK);
@@ -175,8 +185,10 @@ public class mainScreen {
 		panel_1.add(txtpnTextToCompare_1, "2, 4, center, center");
 
 		textField_2 = new JTextField();
-		panel_1.add(textField_2, "4, 4, fill, default");
+		panel_1.add(textField_2, "3, 4, 2, 1, fill, default");
 		textField_2.setColumns(10);
+		
+		textField_2.setToolTipText("Keywords to compare with, inside the article.");
 
 		JTextPane txtpnNumberOfReports = new JTextPane();
 		txtpnNumberOfReports.setDisabledTextColor(Color.BLACK);
@@ -190,7 +202,7 @@ public class mainScreen {
 		panel_1.add(txtpnNumberOfReports, "2, 6, center, center");
 
 		spinner = new JSpinner();
-		panel_1.add(spinner, "4, 6");
+		panel_1.add(spinner, "3, 6, 2, 1");
 
 		txtpnStartDate = new JTextPane();
 		txtpnStartDate.setDisabledTextColor(Color.BLACK);
@@ -204,7 +216,7 @@ public class mainScreen {
 
 		txtstart = new JTextField();
 		txtstart.setText("");
-		panel_1.add(txtstart, "4, 10, fill, default");
+		panel_1.add(txtstart, "3, 10, 2, 1, fill, default");
 		txtstart.setColumns(10);
 
 		txtpnEndDate = new JTextPane();
@@ -219,7 +231,7 @@ public class mainScreen {
 
 		txtend = new JTextField();
 		txtend.setText("");
-		panel_1.add(txtend, "4, 12, fill, default");
+		panel_1.add(txtend, "3, 12, 2, 1, fill, default");
 		txtend.setColumns(10);
 
 
@@ -228,9 +240,11 @@ public class mainScreen {
 		frame.getContentPane().add(panel, "4, 2, fill, fill");
 		panel.setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
-				FormSpecs.DEFAULT_COLSPEC,
+				ColumnSpec.decode("max(90px;default)"),
 				FormSpecs.RELATED_GAP_COLSPEC,
-				FormSpecs.DEFAULT_COLSPEC,},
+				FormSpecs.GROWING_BUTTON_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("default:grow"),},
 			new RowSpec[] {
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
@@ -245,7 +259,7 @@ public class mainScreen {
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
+				RowSpec.decode("default:grow"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
@@ -270,15 +284,9 @@ public class mainScreen {
 		chckbxReuters.setFocusable(false);
 		chckbxReuters.setBackground(Color.WHITE);
 		panel.add(chckbxReuters, "2, 8");
-
-
-		choice = new Choice();
-		choice.setFocusable(false);
-		choice.add("Regular");
-		choice.add("Title");
-		choice.add("Body");
-		choice.add("Comments");
-		choice.add("Everywhere");
+		
+		
+	
 
 		chckbxBloomberg = new JCheckBox("Bloomberg");
 		chckbxBloomberg.setFocusable(false);
@@ -289,7 +297,6 @@ public class mainScreen {
 		chckbxCnn.setBackground(Color.WHITE);
 		chckbxCnn.setFocusable(false);
 		panel.add(chckbxCnn, "2, 12");
-		panel.add(choice, "2, 14");
 
 		btnStart = new JButton("Start");
 		btnStart.setFocusable(false);
@@ -358,11 +365,28 @@ public class mainScreen {
 				thread.start();
 			}
 		});
+				
+				txtpnState = new JTextPane();
+				txtpnState.setText("state");
+				panel.add(txtpnState, "2, 14, right, center");
+				
+				txtpnState.setToolTipText("type of search. if set to body, the program ill search the keywords in the body of the article."+'\n'+"regular will ignore the keywords and take all articles in result page.");
+				
+		
+		
+				choice = new Choice();
+				panel.add(choice, "4, 14");
+				choice.setFocusable(false);
+				choice.add("Regular");
+				choice.add("Title");
+				choice.add("Body");
+				choice.add("Comments");
+				choice.add("Everywhere");
 		
 		chckbxToTxt = new JCheckBox("to txt");
 		chckbxToTxt.setFocusable(false);
 		chckbxToTxt.setBackground(Color.WHITE);
-		panel.add(chckbxToTxt, "4, 14");
+		panel.add(chckbxToTxt, "6, 14");
 
 		panel.add(btnStart, "2, 18");
 

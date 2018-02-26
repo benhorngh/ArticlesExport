@@ -30,17 +30,18 @@ public class Main {
 
 
 		String textToSearch = "משטרה";
-		String textToSearchEnglish = "price";
+		String textToSearchEnglish = "stock";
 		String textToCompare = "שוטר";
-		String textToCompareEnglish = "the";
-		SearchState stat= SearchState.headline; 
-		int numOfArticles = 5;
-		boolean ynet = true;
-		boolean TM = true;
+		String textToCompareEnglish = "money";
+		SearchState stat= SearchState.everywhere; 
+		int numOfArticles = 200;
+		boolean ynet = false;
+		boolean TM = false;
 		boolean blmbrg = false;
 		boolean rtrs = false;
-		boolean glbs = true;
+		boolean glbs = false;
 		boolean CNN = false;
+		boolean BBC = true;
 		boolean[] players={
 				ynet
 				,TM
@@ -48,10 +49,11 @@ public class Main {
 				,rtrs
 				,glbs
 				,CNN
+				,BBC
 		};
 
-		String startDate="1.1.2016"; 
-		String endDate="1.1.2018";
+		String startDate=""; 
+		String endDate="";
 
 		boolean toFile = true;
 
@@ -191,6 +193,7 @@ public class Main {
 		if(players[3]) System.out.print("Reuters ");
 		if(players[4]) System.out.print("Globes ");
 		if(players[5]) System.out.print("CNN ");
+//		if(players[6]) System.out.print("BBC ");
 		System.out.println();
 		System.out.println();
 
@@ -229,6 +232,7 @@ public class Main {
 		sites[3]=new Reuters(etts, ettc, noa, stat, sd,ed);
 		sites[4]=new Globes(tts, ttc, noa, stat, sd,ed);
 		sites[5]=new CNN(etts, ettc, noa, stat, sd,ed);
+//		sites[6]=new BBC(etts, ettc, noa, stat, sd,ed);
 
 		return sites;
 	}

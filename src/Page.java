@@ -34,6 +34,7 @@ public abstract class Page extends Funcs{
 	 */
 	public List<ArticlesRow> linksToList(List<String> urls){
 		String url="";
+		mainScreen.addToLog("Start exporting to excel");
 		driver = startWebDriver("http://google.com");
 		List<ArticlesRow> reports = new ArrayList<ArticlesRow>();
 		for(int i=0; i<urls.size(); i++){
