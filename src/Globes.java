@@ -46,7 +46,7 @@ public class Globes extends Site{
 
 
 			/*
-			 * open regular search. invail search (not contains only reports)
+			 * open regular search. invaild search (not contains reports only)
 			 */
 
 			//			WebElement serachIcon  = driver.findElement(By.xpath("//*[@class='navWmainI search']"));
@@ -94,14 +94,13 @@ public class Globes extends Site{
 
 		ArrayList<WebElement> results  = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='results_list']//div[@class='item']"));
 
-		int found = 0;
 		String link="", title="";
 		int i=0;
 		int  checks = 0;
 		boolean addLink=false;
 		try{
-			while(found < numOfArticles){
-
+			while(urls.size() < numOfArticles){
+				link=""; title="";
 				if(i<results.size()){
 					WebElement head = results.get(i)
 							.findElement(By.className("left_side")).findElement(By.tagName("a"));
@@ -113,13 +112,16 @@ public class Globes extends Site{
 					System.out.println(title);
 
 					try{
+						String s = toDate;
 						addLink = stateHandle(link, title, "");
+						if(!s.equals(toDate))
+							selectTime();
 					}catch(Exception e){e.printStackTrace();addLink=false;}
 
 					if(addLink){
 						urls.add(link);
-						found++;
-						mainScreen.addToLog(found+"/"+this.numOfArticles);
+						removeDuplicate(urls);
+						mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
 
 						addLink=false;
 					}

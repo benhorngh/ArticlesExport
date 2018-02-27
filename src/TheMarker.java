@@ -73,12 +73,11 @@ public class TheMarker extends Site {
 
 		List<WebElement> resutls = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
 
-		int found = 0;
 		String link="", title="", date="";
 		int i=0;
 		int  checks = 0;
 		boolean addLink=false;
-		while(found < numOfArticles){
+		while(urls.size() < numOfArticles){
 
 			link=""; title=""; date="";
 
@@ -105,8 +104,8 @@ public class TheMarker extends Site {
 
 				if(addLink){
 					urls.add(link);
-					found++;
-					mainScreen.addToLog(found+"/"+this.numOfArticles);
+					removeDuplicate(urls);
+					mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
 				}
 				addLink=false;
 

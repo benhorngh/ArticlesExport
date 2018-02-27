@@ -1,55 +1,29 @@
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import java.awt.Component;
-import javax.swing.Box;
-import java.awt.BorderLayout;
-import java.awt.TextArea;
-import javax.swing.JList;
-import java.awt.Color;
-import javax.swing.JSpinner;
-import java.awt.GridLayout;
-import java.awt.FlowLayout;
-import javax.swing.JButton;
-import javax.swing.JTextPane;
-import javax.swing.JSplitPane;
-import javax.swing.JPanel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JSeparator;
-import javax.swing.BoxLayout;
-import javax.swing.SwingConstants;
-import javax.swing.JFormattedTextField;
-import javax.swing.JMenuItem;
-import javax.swing.AbstractListModel;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.layout.FormSpecs;
-import javax.swing.JCheckBox;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JSlider;
-import javax.swing.JPopupMenu;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Arrays;
 import java.awt.Choice;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Button;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.Font;
-import javax.swing.JProgressBar;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.Arrays;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
-import java.awt.SystemColor;
-import net.miginfocom.swing.MigLayout;
-import com.jgoodies.forms.layout.Sizes;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
+import com.jgoodies.forms.layout.RowSpec;
 
 public class mainScreen {
 
@@ -69,13 +43,15 @@ public class mainScreen {
 	private JTextField txtend;
 
 	private static JButton btnStart;
-	private JPanel panel_2;
-	private JPanel panel_3;
 
 	private static JTextArea log;
 	private JCheckBox chckbxCnn;
 	private JCheckBox chckbxToTxt;
 	private JTextPane txtpnState;
+	private JScrollPane scrollPane;
+	private JCheckBox chckbxBbc;
+	private JCheckBox chckbxUsatoday;
+	private JPanel panel_2;
 
 
 
@@ -110,32 +86,34 @@ public class mainScreen {
 
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setBounds(100, 100, 800, 393);
+		frame.setBounds(100, 100, 840, 465);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("default:grow"),
+				FormSpecs.DEFAULT_COLSPEC,
 				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("default:grow"),},
+				ColumnSpec.decode("max(200dlu;min):grow"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("min(70dlu;default):grow"),},
 				new RowSpec[] {
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"),
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"),
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"),
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"),}));
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),}));
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.WHITE);
-		frame.getContentPane().add(panel_1, "2, 2, fill, fill");
+		frame.getContentPane().add(panel_1, "4, 2, 2, 1, fill, fill");
 		panel_1.setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("default:grow"),
+				ColumnSpec.decode("max(60dlu;min):grow"),
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("max(50dlu;default):grow"),},
-			new RowSpec[] {
+				new RowSpec[] {
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
@@ -160,18 +138,18 @@ public class mainScreen {
 		txtpnTextToSearch_1.setEditable(false);
 		txtpnTextToSearch_1.setEnabled(false);
 		txtpnTextToSearch_1.setText("Text to search");
-		
-		
+
+
 		panel_1.add(txtpnTextToSearch_1, "2, 2, center, center");
 
 		textField_4 = new JTextField();
 		panel_1.add(textField_4, "3, 2, 2, 1, fill, default");
 		textField_4.setColumns(10);
-		
+
 
 		textField_4.setToolTipText("Text for the search field in the site");
-		
-		
+
+
 
 		JTextPane txtpnTextToCompare_1 = new JTextPane();
 		txtpnTextToCompare_1.setDisabledTextColor(Color.BLACK);
@@ -187,7 +165,8 @@ public class mainScreen {
 		textField_2 = new JTextField();
 		panel_1.add(textField_2, "3, 4, 2, 1, fill, default");
 		textField_2.setColumns(10);
-		
+		textField_2.setEditable(false);
+
 		textField_2.setToolTipText("Keywords to compare with, inside the article.");
 
 		JTextPane txtpnNumberOfReports = new JTextPane();
@@ -237,7 +216,7 @@ public class mainScreen {
 
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
-		frame.getContentPane().add(panel, "4, 2, fill, fill");
+		frame.getContentPane().add(panel, "6, 2, fill, fill");
 		panel.setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("max(90px;default)"),
@@ -245,7 +224,7 @@ public class mainScreen {
 				FormSpecs.GROWING_BUTTON_COLSPEC,
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),},
-			new RowSpec[] {
+				new RowSpec[] {
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
@@ -259,7 +238,7 @@ public class mainScreen {
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),
+				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
@@ -284,21 +263,103 @@ public class mainScreen {
 		chckbxReuters.setFocusable(false);
 		chckbxReuters.setBackground(Color.WHITE);
 		panel.add(chckbxReuters, "2, 8");
-		
-		
-	
+
+
+
 
 		chckbxBloomberg = new JCheckBox("Bloomberg");
 		chckbxBloomberg.setFocusable(false);
 		chckbxBloomberg.setBackground(Color.WHITE);
 		panel.add(chckbxBloomberg, "2, 10");
-		
+
 		chckbxCnn = new JCheckBox("CNN");
 		chckbxCnn.setBackground(Color.WHITE);
 		chckbxCnn.setFocusable(false);
 		panel.add(chckbxCnn, "2, 12");
 
+		chckbxBbc = new JCheckBox("BBC");
+		chckbxBbc.setBackground(Color.WHITE);
+		chckbxBbc.setFocusable(false);
+		panel.add(chckbxBbc, "2, 14");
+
+		chckbxUsatoday = new JCheckBox("USAtoday");
+		chckbxUsatoday.setBackground(Color.WHITE);
+		panel.add(chckbxUsatoday, "2, 16");
+
+
+		JTextPane jtp = new JTextPane();
+		frame.getContentPane().add(jtp, "2, 4");
+		jtp.setDisabledTextColor(Color.BLACK);
+		jtp.setCaretColor(Color.BLACK);
+		jtp.setBackground(new Color(255, 255, 255));
+		jtp.setForeground(new Color(0, 0, 0));
+		jtp.setFont(new Font("Arial", Font.PLAIN, 11));
+		jtp.setEditable(false);
+		jtp.setEnabled(false);
+		jtp.setText("log:");
+
+		scrollPane = new JScrollPane();
+		frame.getContentPane().add(scrollPane, "4, 4, 1, 5, fill, fill");
+
+		log = new JTextArea(8, 40);
+		scrollPane.setViewportView(log);
+		log.setAlignmentY(Component.TOP_ALIGNMENT);
+		log.setAlignmentX(Component.LEFT_ALIGNMENT);
+		log.setDisabledTextColor(Color.BLACK);
+		log.setFont(new Font("Arial", Font.PLAIN, 12));
+		log.setWrapStyleWord(true);
+		log.setFocusable(false);
+		log.setEnabled(false);
+		log.setEditable(false);
+		//		log.setDisabledTextColor(SystemColor.activeCaption);
+		log.setText("");
+
+		panel_2 = new JPanel();
+		panel_2.setBackground(Color.WHITE);
+		frame.getContentPane().add(panel_2, "6, 4, 1, 5, fill, fill");
+		panel_2.setLayout(null);
+
+
+
+		choice = new Choice();
+		choice.setBounds(100, 10, 158, 20);
+		panel_2.add(choice);
+		choice.setFocusable(false);
+		choice.add("Regular");
+		choice.add("Title");
+		choice.add("Body");
+		choice.add("Comments");
+		choice.add("Everywhere");
+		// Add item listener
+		choice.addItemListener(new ItemListener(){
+
+			@SuppressWarnings("deprecation")
+			public void itemStateChanged(ItemEvent arg0) {
+				if(choice.getSelectedItem().equals("Regular")){
+					textField_2.setEditable(false);
+				}
+				else textField_2.setEditable(true);
+			}
+		});
+
+		txtpnState = new JTextPane();
+		txtpnState.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		txtpnState.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		txtpnState.setBounds(10, 10, 121, 20);
+		panel_2.add(txtpnState);
+		txtpnState.setText("state");
+
+		txtpnState.setToolTipText("type of search. if set to body, the program ill search the keywords in the body of the article."+'\n'+"regular will ignore the keywords and take all articles in result page.");
+
+		chckbxToTxt = new JCheckBox("to txt");
+		chckbxToTxt.setBounds(100, 36, 121, 23);
+		panel_2.add(chckbxToTxt);
+		chckbxToTxt.setFocusable(false);
+		chckbxToTxt.setBackground(Color.WHITE);
+
 		btnStart = new JButton("Start");
+		btnStart.setBounds(144, 92, 121, 23);
+		panel_2.add(btnStart);
 		btnStart.setFocusable(false);
 
 
@@ -338,13 +399,15 @@ public class mainScreen {
 							state = SearchState.everywhere;
 
 						boolean totxt = chckbxToTxt.isSelected();
-						
+
 						boolean[] sites = {chckbxYnet.isSelected()
 								,chckbxTheMarker.isSelected()
 								,chckbxBloomberg.isSelected()
 								,chckbxReuters.isSelected()
 								,chckbxGlobes.isSelected()
 								,chckbxCnn.isSelected()
+								,chckbxBbc.isSelected()
+								,chckbxUsatoday.isSelected()
 						};
 
 
@@ -356,7 +419,7 @@ public class mainScreen {
 						System.out.println("sdt: "+sdt);
 						System.out.println("edt: "+edt);
 						System.out.println(Arrays.toString(sites));
-						
+
 
 						//						Main.starter(tts, ttse, ttc, ttce, state, sdt, edt, noa, sites);
 						Main.starter(tts, tts, ttc, ttc, state, sdt, edt, noa, sites, totxt);
@@ -365,105 +428,7 @@ public class mainScreen {
 				thread.start();
 			}
 		});
-				
-				txtpnState = new JTextPane();
-				txtpnState.setText("state");
-				panel.add(txtpnState, "2, 14, right, center");
-				
-				txtpnState.setToolTipText("type of search. if set to body, the program ill search the keywords in the body of the article."+'\n'+"regular will ignore the keywords and take all articles in result page.");
-				
-		
-		
-				choice = new Choice();
-				panel.add(choice, "4, 14");
-				choice.setFocusable(false);
-				choice.add("Regular");
-				choice.add("Title");
-				choice.add("Body");
-				choice.add("Comments");
-				choice.add("Everywhere");
-		
-		chckbxToTxt = new JCheckBox("to txt");
-		chckbxToTxt.setFocusable(false);
-		chckbxToTxt.setBackground(Color.WHITE);
-		panel.add(chckbxToTxt, "6, 14");
 
-		panel.add(btnStart, "2, 18");
-
-
-
-		panel_2 = new JPanel();
-		panel_2.setFocusable(false);
-		panel_2.setDoubleBuffered(false);
-		panel_2.setEnabled(false);
-		panel_2.setBackground(Color.WHITE);
-		//		frame.getContentPane().add(panel_2, "2, 3, 1, 6, fill, fill");
-		frame.getContentPane().add(panel_2, "2, 4, 1, 5, right, top");
-		panel_2.setLayout(new FormLayout(new ColumnSpec[] {
-
-				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("default:grow"),
-		},
-				new RowSpec[] {
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"),
-		}));
-
-
-		JTextPane jtp = new JTextPane();
-		jtp.setDisabledTextColor(Color.BLACK);
-		jtp.setCaretColor(Color.BLACK);
-		jtp.setBackground(new Color(255, 255, 255));
-		jtp.setForeground(new Color(0, 0, 0));
-		jtp.setFont(new Font("Arial", Font.PLAIN, 11));
-		jtp.setEditable(false);
-		jtp.setEnabled(false);
-		jtp.setText("log:");
-		panel_2.add(jtp, "2, 2, center, center");
-
-
-		/////////////////////
-
-		//		    JTextArea display = new JTextArea ( 16, 58 );
-		//		    display.setEditable ( false ); // set textArea non-editable
-
-
-		// My code
-		//		    JFrame frame = new JFrame ();
-		//		    frame.add ( panel_3 );
-		//		    frame.pack ();
-		//		    frame.setLocationRelativeTo ( null );
-		//		    frame.setVisible ( true );
-
-
-
-		panel_3 = new JPanel();
-		//		frame.getContentPane().add(panel_2, "2, 3, 1, 6, fill, fill");
-		frame.getContentPane().add(panel_3, "4, 4, 1, 2, left, top");
-		panel_3.setLayout(new FormLayout(new ColumnSpec[] {
-				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("default:grow"),},
-				new RowSpec[] {
-						FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"),}));
-
-		log = new JTextArea(3, 20 );
-		log.setAlignmentY(Component.TOP_ALIGNMENT);
-		log.setAlignmentX(Component.LEFT_ALIGNMENT);
-		log.setDisabledTextColor(Color.BLACK);
-		log.setFont(new Font("Arial", Font.PLAIN, 12));
-		log.setWrapStyleWord(true);
-		log.setFocusable(false);
-		log.setEnabled(false);
-		log.setEditable(false);
-		//		log.setDisabledTextColor(SystemColor.activeCaption);
-		log.setText("");
-		panel_3.add(log, "2, 2, left, top");
-
-
-		JScrollPane scroll = new JScrollPane ( log );
-		scroll.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
-		panel_3.add(scroll, "2, 2, left, top");
 	}
 
 	public static void addToLog(String message){

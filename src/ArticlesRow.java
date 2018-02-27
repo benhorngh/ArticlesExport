@@ -74,11 +74,11 @@ public class ArticlesRow {
 				Reports.get(i).WriteToFile();
 				CommentRow.WriteToFile(Reports.get(i).comments);
 			}catch(Exception e) {e.printStackTrace();}
-			
+
 			if(totxt && Reports.get(i)!=null){
-				
+
 				try {
-				Reports.get(i).writeToTxt();
+					Reports.get(i).writeToTxt();
 				}catch(Exception e) {e.printStackTrace();}
 			}
 
@@ -108,6 +108,18 @@ public class ArticlesRow {
 			writer.flush();
 			writer.close();
 		}catch(Exception e){e.printStackTrace();}
+
+		if((getCommentsString()!= null)&&(!getCommentsString().isEmpty())){
+			try {
+				writer = new FileWriter(Main.folderName+"/"+Main.commentFolder+"/"+this.num+".txt");
+				writer.append(getCommentsString());
+				writer.flush();
+				writer.close();
+			}catch(Exception e){e.printStackTrace();}
+		}
+
+
+
 	}
 
 	/**

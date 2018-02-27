@@ -57,7 +57,7 @@ public class BBC extends Site{
 
 	@Override
 	public void resultsPage(List<String> urls) {
-
+		
 
 		WebElement searchcontent = driver.findElement(By.className("search-content"));
 
@@ -68,13 +68,13 @@ public class BBC extends Site{
 		ArrayList<WebElement> results  = (ArrayList<WebElement>) 
 				searchcontent.findElements(By.xpath(".//*[@class='search-results results']/li"));
 
-		int found = 0;
+		
 		String link="", title="" , date="";
 		int i=0;
 		int  checks = 0;
 		boolean addLink=false;
 		try{
-			while(found < numOfArticles){
+			while(urls.size() < numOfArticles){
 				link=""; title=""; date="";
 
 				if(i<results.size()){
@@ -99,7 +99,7 @@ public class BBC extends Site{
 					WebElement tp  = results.get(i).findElement(By.tagName("article"));
 					String type = tp.getAttribute("class");
 
-					if(!type.contains("video")) {
+					if((!type.contains("video"))||(url.contains("live"))) {
 						try{
 							addLink = stateHandle(link, title, date);
 						}catch(Exception e){e.printStackTrace();addLink=false;}
@@ -107,8 +107,8 @@ public class BBC extends Site{
 					else addLink=false;
 					if(addLink){
 						urls.add(link);
-						found++;
-
+						removeDuplicate(urls);
+						mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
 						addLink=false;
 					}
 					i++;
@@ -129,9 +129,6 @@ public class BBC extends Site{
 					return;
 			}
 		}catch(Exception e){ e.printStackTrace();return;}
-
-
-
 	}
 
 

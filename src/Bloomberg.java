@@ -45,7 +45,6 @@ public class Bloomberg extends Site{
 		sleep(2000);
 		driver.get(url);
 
-		sleep(10000);
 
 		try{
 			closeAd(driver);
@@ -74,7 +73,97 @@ public class Bloomberg extends Site{
 	@Override
 	public void resultsPage(List<String> urls) {
 
+		System.out.println("srefrfeferf");
+		changeTime();
 
+		sleep(3000);
+
+		String link="", title="";
+		int i=0;
+		int  checks = 0;
+		boolean addLink=false;
+
+		System.out.println("srefrfeferf");
+		try{
+			ArrayList<WebElement> results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result']"));
+			
+			while(urls.size() < numOfArticles){
+
+				if(i >= results.size()){
+
+					try{
+						WebElement nextButton = driver.findElement(By.className("content-next-link"));
+
+						moveTo2(driver, nextButton);
+						nextButton.click();
+
+					}catch(Exception e){
+						e.printStackTrace();
+						String pageurl = driver.getCurrentUrl();
+						int x = Integer.parseInt(pageurl.substring(pageurl.length()-3, pageurl.length()));
+						x++;
+						pageurl = pageurl.substring(0 , pageurl.length()-2) + x;
+						driver.get(pageurl);
+					}
+
+					sleep(3000);
+					results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result']"));
+
+					i=0;
+				}
+
+				try{
+					if(!results.get(i).findElement(By.tagName("article")).getAttribute("class") 
+							.equals("search-result-story type-video")&&
+							!results.get(i).findElement(By.tagName("article")).getAttribute("class") 
+							.equals("search-result-story type-audio")){
+						WebElement ttl = results.get(i).findElement(By.className("search-result-story__headline"));
+
+						WebElement titl = ttl.findElement(By.tagName("a"));
+						link = titl.getAttribute("href");
+
+						title = ttl.getText();
+
+						System.out.println(link);
+						System.out.println(title);
+
+						try{
+							String s = toDate;
+							addLink = stateHandle(link, title, "");
+
+							if(!s.equals(toDate)){
+								changeTime(); i=results.size()+1;
+							}
+
+
+						}catch(Exception e){e.printStackTrace();addLink=false;}
+					}
+				}catch(Exception e){e.printStackTrace();addLink=false;}
+
+				if(addLink){
+
+					urls.add(link);
+					removeDuplicate(urls);
+					mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
+				}
+				addLink=false;
+
+				i++;
+				checks++;
+
+
+				if(checks == maxSearch)
+					return;
+			}
+
+		}catch(Exception e){e.printStackTrace();}
+
+	}
+
+	private void changeTime(){
+
+		sleep(2000);
+		
 		if(!this.toDate.isEmpty()){
 			try{
 				WebElement nextButton = driver.findElement(By.className("content-next-link"));
@@ -82,7 +171,7 @@ public class Bloomberg extends Site{
 				moveTo2(driver, nextButton);
 				nextButton.click();
 
-			}catch(Exception e){}
+			}catch(Exception e){e.printStackTrace();}
 
 
 			String curl  = driver.getCurrentUrl();
@@ -97,80 +186,24 @@ public class Bloomberg extends Site{
 				todate[1] = "0"+todate[1];  
 
 			String newUrl = curl.replace(date, todate[2]+"-"+todate[1]+"-"+todate[0]);
+
+
+			try{
+				int pindex =newUrl.lastIndexOf("=");
+				//				String p = newUrl.substring(pindex+1, newUrl.length());
+				//				p = ""+ (Integer.parseInt(p)-1);
+				newUrl = newUrl.substring(0, pindex+1);
+				newUrl = newUrl+"1";
+			}catch(Exception e){e.printStackTrace();}
+
 			System.out.println(curl);
 			System.out.println(newUrl);
+
 			driver.get(newUrl);
 		}
 
-
-		int found = 0;
-		String link="", title="";
-		int i=0;
-		int  checks = 0;
-		boolean addLink=false;
-		ArrayList<WebElement> results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result']"));
-		try{
-			while(found < numOfArticles){
-
-				if(i == results.size()){
-
-					try{
-						WebElement nextButton = driver.findElement(By.className("content-next-link"));
-
-						moveTo2(driver, nextButton);
-						nextButton.click();
-
-					}catch(Exception e){
-						String pageurl = driver.getCurrentUrl();
-						int x = Integer.parseInt(pageurl.substring(pageurl.length()-3, pageurl.length()));
-						x++;
-						pageurl = pageurl.substring(0 , pageurl.length()-2) + x;
-						driver.get(pageurl);
-					}
-
-					sleep(3000);
-					results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result']"));
-
-					i=0;
-				}
-				if(!results.get(i).findElement(By.tagName("article")).getAttribute("class") 
-						.equals("search-result-story type-video")&&
-						!results.get(i).findElement(By.tagName("article")).getAttribute("class") 
-						.equals("search-result-story type-audio")){
-					WebElement ttl = results.get(i).findElement(By.className("search-result-story__headline"));
-
-					WebElement titl = ttl.findElement(By.tagName("a"));
-					link = titl.getAttribute("href");
-
-					title = ttl.getText();
-
-					System.out.println(link);
-					System.out.println(title);
-
-					try{
-						addLink = stateHandle(link, title, "");
-					}catch(Exception e){e.printStackTrace();addLink=false;}
-					
-					
-					if(addLink){
-						urls.add(link);
-						found++;
-						mainScreen.addToLog(found+"/"+this.numOfArticles);
-					}
-					addLink=false;
-				}
-				i++;
-				checks++;
-
-
-				if(checks == maxSearch)
-					return;
-			}
-
-		}catch(Exception e){e.printStackTrace();return;}
 	}
 
-	
 	/**
 	 * close the annoying ad about register.
 	 */

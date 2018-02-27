@@ -55,15 +55,15 @@ public abstract class Page extends Funcs{
 			}
 			reports.add(urlHandler(url, false));
 			System.out.println("finish URL");
-//			mainScreen.addToLog("finish URL..");
-			
+			mainScreen.addToLog("finish url ."+i);
+
 		}
 		driver.close();
 		driver.quit();
 		System.err.println("finish "+SiteName);
-		
+
 		mainScreen.addToLog("finish "+SiteName);
-		
+
 		return reports;
 	}
 
@@ -129,12 +129,16 @@ public abstract class Page extends Funcs{
 			ar.reporter = reporter;
 			ar.headLine = headline;
 			ar.subHeadLine = subheadline;
-			
+
 			if(bodyOnly){
 				return ar;
 			}
 
-			ArrayList<CommentRow> cmmts = getComments();
+			ArrayList<CommentRow> cmmts = null;
+			try{
+				cmmts = getComments();
+			}catch(Exception e){e.printStackTrace();}
+
 			ar.setComments(cmmts);
 
 		}catch (Exception e){
@@ -196,8 +200,8 @@ public abstract class Page extends Funcs{
 	 * @param commentsArr -list of comments
 	 */
 	public abstract void readComments(ArrayList<CommentRow> commentsList);
-	
-	
+
+
 	@Override
 	protected void finalize(){
 		try{

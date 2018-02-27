@@ -153,9 +153,9 @@ public abstract class Funcs {
 	 * @param driver -webfriver
 	 * @param element -WebElement field. 
 	 */
-	public void sendKeysInvisible(WebDriver driver, WebElement element){
+	public void sendKeysInvisible(WebDriver driver, WebElement element, String text){
 		RemoteWebDriver r=(RemoteWebDriver) driver;
-		r.executeScript("arguments[0].value='admin'",element);
+		r.executeScript("arguments[0].value='"+text+"'",element);
 
 	}
 
@@ -278,36 +278,37 @@ public abstract class Funcs {
 	 */
 	public static int monthToInt(String month){
 		String monthStr = "";
-		int c ='\0';
-		for(int i=0;i<month.length(); i++){
-			c= month.charAt(i);
-			if(c>=97 && c<=122)
-				c=c-32;
-			monthStr =monthStr + (char) c;
-		}
-		if (monthStr.contains("JAN"))
+//		int c ='\0';
+//		for(int i=0;i<month.length(); i++){
+//			c= month.charAt(i);
+//			if(c>=97 && c<=122)
+//				c=c-32;
+//			monthStr =monthStr + (char) c;
+//		}
+		monthStr = month.toLowerCase();
+		if (monthStr.contains("jan"))
 			return 1;
-		if (monthStr.contains("FEB"))
+		if (monthStr.contains("feb"))
 			return 2;
-		if (monthStr.contains("MAR"))
+		if (monthStr.contains("mar"))
 			return 3;
-		if (monthStr.contains("APR"))
+		if (monthStr.contains("apr"))
 			return 4;
-		if (monthStr.contains("MAY"))
+		if (monthStr.contains("may"))
 			return 5;
-		if (monthStr.contains("JUN"))
+		if (monthStr.contains("jun"))
 			return 6;
-		if (monthStr.contains("JUL"))
+		if (monthStr.contains("jul"))
 			return 7;
-		if (monthStr.contains("AUG"))
+		if (monthStr.contains("aug"))
 			return 8;
-		if (monthStr.contains("SEP"))
+		if (monthStr.contains("sep"))
 			return 9;
-		if (monthStr.contains("OCT"))
+		if (monthStr.contains("oct"))
 			return 10;
-		if (monthStr.contains("NOV"))
+		if (monthStr.contains("nov"))
 			return 11;
-		if (monthStr.contains("DEC"))
+		if (monthStr.contains("dec"))
 			return 12;
 
 

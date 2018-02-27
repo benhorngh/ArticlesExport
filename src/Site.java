@@ -28,7 +28,7 @@ public abstract class Site extends Funcs implements Runnable {
 
 	List<ArticlesRow> articles;
 
-//		@Override
+	//		@Override
 	public void run(){
 		this.articles = Start();
 	}
@@ -76,16 +76,18 @@ public abstract class Site extends Funcs implements Runnable {
 			return page.linksToList(articles);
 		}
 		else System.err.println(this.page.SiteName+" fail");
-		mainScreen.addToLog(this.page.SiteName+" fail");
+		mainScreen.addToLog(this.page.SiteName+" failed");
 		return null;
 	}
 
 
+
+	List<String> urls;
 	/**
 	 * @return List of all links to the reports
 	 */
 	public List<String> findLinks(){
-		List<String> urls = new ArrayList<String>();
+		urls = new ArrayList<String>();
 		try{
 			boolean search = search();
 			if(search) {
@@ -136,6 +138,22 @@ public abstract class Site extends Funcs implements Runnable {
 
 		return stateWithoutDate(link, title);
 	}
+	
+	private void updateToDate(){
+		int numoffound =urls.size();
+		try{
+			int yearRange = Integer.parseInt(this.toDate.split("\\.")[2])
+					- Integer.parseInt(this.fromDate.split("\\.")[2]);
+
+			int urlsToYear = this.numOfArticles / yearRange;
+			if(urlsToYear==numoffound)
+				toDate = toDate.substring(0,toDate.length()-2)
+				+(Integer.parseInt(toDate.substring(toDate.length()-2, toDate.length()))-1);
+			System.out.println(toDate);
+		}catch(Exception e){e.printStackTrace();}
+	}
+	
+	
 
 	/**
 	 * state handler with date range.
@@ -145,7 +163,9 @@ public abstract class Site extends Funcs implements Runnable {
 	 * @return
 	 */
 	private boolean stateWithDate(String link, String title, String Adate){ 
+		updateToDate();
 
+		
 		if(this.DateRange) return true && stateWithoutDate(link, title); //built-in date range
 
 		Date fromD = stringToDate(this.fromDate);
@@ -230,11 +250,11 @@ public abstract class Site extends Funcs implements Runnable {
 		if(state==SearchState.comment){
 			return commentState(link);
 		}
-		
+
 		if(state==SearchState.everywhere){
 			return everywhereState(link);
 		}
-		
+
 		return false;
 	}
 
@@ -254,14 +274,14 @@ public abstract class Site extends Funcs implements Runnable {
 			String text="";
 			ArticlesRow ar = page.urlHandler(link, true);
 			String comments=CommentRow.wireAllComments(page.getComments());
-			
+
 			if(ar == null) return false;
 			if(ar.headLine==null) ar.headLine="";
 			if(ar.subHeadLine == null) ar.subHeadLine ="";
 			if(ar.body == null) ar.body = "";
 			if(comments == null) comments = "";
 			text = ar.headLine+" "+ar.subHeadLine+" "+ar.body+" "+comments;
-			
+
 			if(!contain(text, textToCompare)){
 				System.err.println("not Found.");
 				getLink = false;
@@ -274,9 +294,9 @@ public abstract class Site extends Funcs implements Runnable {
 		}
 		catch(Exception e){
 			try {
-			e.printStackTrace();page.driver.close();page.driver.quit();return false;
+				e.printStackTrace();page.driver.close();page.driver.quit();return false;
 			}catch(Exception e2) {}
-			}
+		}
 		return getLink;
 	}
 
@@ -354,7 +374,7 @@ public abstract class Site extends Funcs implements Runnable {
 	 * @return true if contains, false otherwise
 	 */
 	public boolean contain(String bigText, String text) {
-		
+
 		bigText = bigText.toLowerCase();
 		text = text.toLowerCase();
 

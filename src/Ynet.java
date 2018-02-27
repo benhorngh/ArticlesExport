@@ -97,12 +97,12 @@ public class Ynet extends  Site {
 
 		int count = 0;
 
-		int found=0, i=0;
+		int i=0;
 		String link="";
 		String headLine= "";
 		int again=0;
-		while(found<numOfArticles){
-			link="";headLine= "";
+		while(urls.size()<numOfArticles){
+			link=""; headLine= "";
 
 			if(again==7) i++;
 
@@ -124,7 +124,7 @@ public class Ynet extends  Site {
 				} catch(Exception e2){sleep(2000);res=lis.findElement(By.cssSelector("#search_result_id_"+(i-1)));
 				}
 
-				
+
 				moveTo2(driver, res);
 				count++;
 
@@ -185,9 +185,9 @@ public class Ynet extends  Site {
 			date="";
 
 			if(addLink){
-				found++;
 				urls.add(link);
-				mainScreen.addToLog(found+"/"+this.numOfArticles);
+				removeDuplicate(urls);
+				mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
 			}
 
 			i++;

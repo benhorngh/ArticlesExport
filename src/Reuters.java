@@ -60,7 +60,6 @@ public class Reuters extends Site {
 			clickLoadMore();
 		}
 
-		int found = 0;
 		String link="", title="", date="";
 		int i=0;
 		int  checks = 0;
@@ -69,7 +68,7 @@ public class Reuters extends Site {
 		System.out.println(results.size());
 		try{
 			WebElement head = null;
-			while(found < numOfArticles){
+			while(urls.size() < numOfArticles){
 				link=""; title=""; date="";
 
 
@@ -105,8 +104,8 @@ public class Reuters extends Site {
 
 					if(addLink){
 						urls.add(link);
-						found++;
-						mainScreen.addToLog(found+"/"+this.numOfArticles);
+						removeDuplicate(urls);
+						mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
 
 						addLink=false;
 					}

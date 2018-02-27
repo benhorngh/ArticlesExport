@@ -23,25 +23,27 @@ public class Main {
 	 */
 
 	static final String fileName = "excelFile";
-	static final String folderName ="output";
+	static final String commentFolder = "comments";
+	static String folderName ="output";
 
 	public static void main(String[] args) {
 		// replaced with GUI
 
 
 		String textToSearch = "משטרה";
-		String textToSearchEnglish = "stock";
+		String textToSearchEnglish = "company stock";
 		String textToCompare = "שוטר";
-		String textToCompareEnglish = "money";
-		SearchState stat= SearchState.everywhere; 
-		int numOfArticles = 200;
+		String textToCompareEnglish = "";
+		SearchState stat= SearchState.regular; 
+		int numOfArticles = 5000;
 		boolean ynet = false;
 		boolean TM = false;
 		boolean blmbrg = false;
 		boolean rtrs = false;
 		boolean glbs = false;
 		boolean CNN = false;
-		boolean BBC = true;
+		boolean BBC = false;
+		boolean USAt = true;
 		boolean[] players={
 				ynet
 				,TM
@@ -50,6 +52,7 @@ public class Main {
 				,glbs
 				,CNN
 				,BBC
+				,USAt
 		};
 
 		String startDate=""; 
@@ -84,8 +87,8 @@ public class Main {
 			,boolean[] players
 			,boolean toTxt
 			){
-		
-		
+
+
 
 
 		//		if(!endDate.isEmpty()){
@@ -95,9 +98,26 @@ public class Main {
 		//			startDate =startDate.replaceAll(startDate.charAt(startDate.length()-5)+"", '.'+"");
 		//		}
 
-		File directory = new File(folderName);
-		if (! directory.exists())
-			directory.mkdir();
+		boolean ok =false;
+		int i=1;
+		while(!ok){
+			File directory = new File(folderName+"-"+i);
+			if (! directory.exists()){
+				directory.mkdir();
+				ok=true;
+				folderName = folderName+"-"+i;
+			}
+			i++;
+		}
+
+
+		File commentsFold = new File(folderName+"/comments");
+		if (! commentsFold.exists())
+			commentsFold.mkdir();
+
+
+
+
 
 
 
@@ -120,7 +140,7 @@ public class Main {
 				mainScreen.addToLog("error: Invaild date");
 				return;
 			}
-			
+
 			String[] arr = startDate.split("\\.");
 			try{
 				if(Integer.parseInt(arr[0])>32 || Integer.parseInt(arr[1])>12){
@@ -130,9 +150,9 @@ public class Main {
 			}catch(Exception e){mainScreen.addToLog("error: Invaild start date");
 			return;}
 		}
-		
-		
-		
+
+
+
 		if(!endDate.isEmpty()){
 			Date ed;
 			ed = Funcs.stringToDate(endDate);
@@ -140,7 +160,7 @@ public class Main {
 				mainScreen.addToLog("error: Invaild date");
 				return;
 			}
-			
+
 			String[] arr = endDate.split("\\.");
 			try{
 				if(Integer.parseInt(arr[0])>32 || Integer.parseInt(arr[1])>12){
@@ -193,7 +213,7 @@ public class Main {
 		if(players[3]) System.out.print("Reuters ");
 		if(players[4]) System.out.print("Globes ");
 		if(players[5]) System.out.print("CNN ");
-//		if(players[6]) System.out.print("BBC ");
+		if(players[6]) System.out.print("BBC ");
 		System.out.println();
 		System.out.println();
 
@@ -202,8 +222,9 @@ public class Main {
 		//		boolean[] players = {ynet, TM, blmbrg, rtrs, glbs};
 		//Ynet , TheMarker, Bloomberg, Reuters, Globes .
 
-		play(sites, players, toTxt);
-
+		try{
+			play(sites, players, toTxt);
+		}catch(Exception e){}
 		System.out.println();
 		System.out.println("Done.");
 		mainScreen.addToLog("Done."+'\n');
@@ -225,14 +246,15 @@ public class Main {
 	 */
 	private static Site[] init(String tts, String etts, String ttc, String ettc, 
 			SearchState stat, int noa, String sd,String ed){
-		Site[] sites = new Site[6];
+		Site[] sites = new Site[8];
 		sites[0]=new Ynet     (tts, ttc, noa, stat, sd,ed);
 		sites[1]=new TheMarker(tts, ttc, noa, stat, sd,ed);
 		sites[2]=new Bloomberg(etts, ettc, noa, stat, sd,ed);
 		sites[3]=new Reuters(etts, ettc, noa, stat, sd,ed);
 		sites[4]=new Globes(tts, ttc, noa, stat, sd,ed);
 		sites[5]=new CNN(etts, ettc, noa, stat, sd,ed);
-//		sites[6]=new BBC(etts, ettc, noa, stat, sd,ed);
+		sites[6]=new BBC(etts, ettc, noa, stat, sd,ed);
+		sites[7]=new USAtoday(etts, ettc, noa, stat, sd,ed);
 
 		return sites;
 	}
@@ -319,20 +341,20 @@ public class Main {
 		}
 
 		closeWriters();
-		
-		
+
+
 		closeAllChrome();
 
 
 	}
-	
+
 	private static void closeAllChrome() {
 		try {
 			Runtime.
-			   getRuntime().
-//			   exec("cmd /c start \"\" closeOpenChromeD.bat");
-			   exec("taskkill /im chromedriver.exe /f");
-			
+			getRuntime().
+			//			   exec("cmd /c start \"\" closeOpenChromeD.bat");
+			exec("taskkill /im chromedriver.exe /f");
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

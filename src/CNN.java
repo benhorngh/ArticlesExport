@@ -42,7 +42,7 @@ public class CNN extends Site{
 			sleep(1000);
 			//			field.clear();
 			//			field.sendKeys(this.textToSearch);
-			sendKeysInvisible(driver,field );
+			sendKeysInvisible(driver,field , this.textToSearch);
 			sleep(1000);
 
 			WebElement button = ssection.findElement(By.xpath(".//button"));
@@ -68,8 +68,6 @@ public class CNN extends Site{
 	public void resultsPage(List<String> urls) {
 		//		cnn-search__results-list
 
-
-
 		List<WebElement> resutls = driver.findElements(By.xpath("//*[@class='cnn-search__results-list']/div"));
 
 
@@ -79,14 +77,14 @@ public class CNN extends Site{
 			return;
 		}
 
-		int found = 0;
+		
 		String link="", title="", date="";
 		int i=0;
 		int  checks = 0;
 		boolean addLink=false;
 		try{
-			while(found < numOfArticles){
-
+			while(urls.size() < numOfArticles){
+				addLink=false;
 				link=""; title=""; date="";
 
 
@@ -114,8 +112,8 @@ public class CNN extends Site{
 
 				if(addLink){
 					urls.add(link);
-					found++;
-					mainScreen.addToLog(found+"/"+this.numOfArticles);
+					removeDuplicate(urls);
+					mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
 				}
 				addLink=false;
 
@@ -148,11 +146,6 @@ public class CNN extends Site{
 		catch(Exception e){e.printStackTrace();}
 	}
 
-	private boolean clicknext() {
-		
-
-		return true;
-
-	}
+	
 
 }
