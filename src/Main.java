@@ -31,19 +31,19 @@ public class Main {
 
 
 		String textToSearch = "משטרה";
-		String textToSearchEnglish = "company stock";
+		String textToSearchEnglish = "teca";
 		String textToCompare = "שוטר";
 		String textToCompareEnglish = "";
 		SearchState stat= SearchState.regular; 
-		int numOfArticles = 5000;
+		int numOfArticles = 20;
 		boolean ynet = false;
 		boolean TM = false;
 		boolean blmbrg = false;
-		boolean rtrs = false;
+		boolean rtrs = true;
 		boolean glbs = false;
 		boolean CNN = false;
 		boolean BBC = false;
-		boolean USAt = true;
+		boolean USAt = false;
 		boolean[] players={
 				ynet
 				,TM
@@ -55,8 +55,8 @@ public class Main {
 				,USAt
 		};
 
-		String startDate=""; 
-		String endDate="";
+		String startDate="1.1.2016"; 
+		String endDate="1.1.2018";
 
 		boolean toFile = true;
 

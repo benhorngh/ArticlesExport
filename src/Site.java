@@ -13,6 +13,7 @@ import org.openqa.selenium.WebDriver;
 
 public abstract class Site extends Funcs implements Runnable {
 
+	//	private static final String fromDate = null;
 	String url="";
 	WebDriver driver;
 	Page page;
@@ -24,7 +25,7 @@ public abstract class Site extends Funcs implements Runnable {
 	int numOfArticles;
 	SearchState state;
 
-	final int maxSearch = 50000;
+	final int maxSearch = 500000;
 
 	List<ArticlesRow> articles;
 
@@ -132,28 +133,39 @@ public abstract class Site extends Funcs implements Runnable {
 	public boolean stateHandle(String link, String title, String date) {
 		if(date == null) date ="";
 
+		System.out.println("st:"+fromDate+'\n'+" tDD"+ toDate);
+
+		if((link == null)||(link.isEmpty())) return false;
+
 		if(!this.fromDate.isEmpty()){
 			return stateWithDate(link, title, date);
 		}
 
 		return stateWithoutDate(link, title);
 	}
-	
+
 	private void updateToDate(){
 		int numoffound =urls.size();
+		System.out.println(numoffound);
+		if(numoffound==0) return;
+
 		try{
 			int yearRange = Integer.parseInt(this.toDate.split("\\.")[2])
 					- Integer.parseInt(this.fromDate.split("\\.")[2]);
 
+			if(yearRange<=0) return;
 			int urlsToYear = this.numOfArticles / yearRange;
-			if(urlsToYear==numoffound)
-				toDate = toDate.substring(0,toDate.length()-2)
-				+(Integer.parseInt(toDate.substring(toDate.length()-2, toDate.length()))-1);
-			System.out.println(toDate);
+			System.out.println("yr: "+yearRange+'\n'+"uty: "+urlsToYear);
+			for(int i=1; i<=yearRange; i++){
+				if(numoffound/i==urlsToYear)
+					toDate = toDate.substring(0,toDate.length()-2)
+					+(Integer.parseInt(toDate.substring(toDate.length()-2, toDate.length()))-1);
+			}
+			System.out.println("td:"+toDate);
 		}catch(Exception e){e.printStackTrace();}
 	}
-	
-	
+
+
 
 	/**
 	 * state handler with date range.
@@ -165,7 +177,7 @@ public abstract class Site extends Funcs implements Runnable {
 	private boolean stateWithDate(String link, String title, String Adate){ 
 		updateToDate();
 
-		
+
 		if(this.DateRange) return true && stateWithoutDate(link, title); //built-in date range
 
 		Date fromD = stringToDate(this.fromDate);

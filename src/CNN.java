@@ -77,7 +77,7 @@ public class CNN extends Site{
 			return;
 		}
 
-		
+
 		String link="", title="", date="";
 		int i=0;
 		int  checks = 0;
@@ -87,18 +87,19 @@ public class CNN extends Site{
 				addLink=false;
 				link=""; title=""; date="";
 
-
-				WebElement ttl = resutls.get(i).findElement(By.xpath(".//*[@class='cnn-search__result-headline']/*"));
-				link = ttl.getAttribute("href");
-
-				System.out.println(link);
-
-				title = ttl.getText();
-				System.out.println(title);
-
-
-
 				try{
+
+					WebElement ttl = resutls.get(i).findElement(By.xpath(".//*[@class='cnn-search__result-headline']/*"));
+					link = ttl.getAttribute("href");
+
+					System.out.println(link);
+
+					title = ttl.getText();
+					System.out.println(title);
+
+
+
+
 					WebElement dt = resutls.get(i).findElement(By.className("cnn-search__result-publish-date"));
 					date = dt.getText();
 					String arr[] = date.split(" ");
@@ -124,7 +125,7 @@ public class CNN extends Site{
 					i=0;
 					for(int o=0; o<5; o++) {
 						try {
-							
+
 							WebElement pagination = driver.findElement(By.xpath("//*[@class='pagination-arrow pagination-arrow-right cnnSearchPageLink text-active']"));
 							moveTo(driver, pagination);
 							sleep(1000);
@@ -146,6 +147,6 @@ public class CNN extends Site{
 		catch(Exception e){e.printStackTrace();}
 	}
 
-	
+
 
 }

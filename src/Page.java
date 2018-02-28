@@ -55,7 +55,7 @@ public abstract class Page extends Funcs{
 			}
 			reports.add(urlHandler(url, false));
 			System.out.println("finish URL");
-			mainScreen.addToLog("finish url ."+i);
+			mainScreen.addToLog("finish url ."+(i+1));
 
 		}
 		driver.close();

@@ -95,11 +95,11 @@ public class mainScreen {
 				ColumnSpec.decode("max(200dlu;min):grow"),
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("min(70dlu;default):grow"),},
-				new RowSpec[] {
+			new RowSpec[] {
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),
+				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
@@ -107,13 +107,13 @@ public class mainScreen {
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.WHITE);
-		frame.getContentPane().add(panel_1, "4, 2, 2, 1, fill, fill");
+		frame.getContentPane().add(panel_1, "1, 2, 5, 1, fill, fill");
 		panel_1.setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("max(60dlu;min):grow"),
+				ColumnSpec.decode("min(50dlu;min):grow"),
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("max(50dlu;default):grow"),},
-				new RowSpec[] {
+			new RowSpec[] {
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
@@ -247,6 +247,7 @@ public class mainScreen {
 		chckbxYnet = new JCheckBox("Ynet");
 		chckbxYnet.setFocusable(false);
 		chckbxYnet.setBackground(Color.WHITE);
+		
 		panel.add(chckbxYnet, "2, 2");
 
 		chckbxTheMarker = new JCheckBox("The Marker");
@@ -262,6 +263,7 @@ public class mainScreen {
 		chckbxReuters = new JCheckBox("Reuters");
 		chckbxReuters.setFocusable(false);
 		chckbxReuters.setBackground(Color.WHITE);
+		chckbxReuters.setToolTipText("no comments");
 		panel.add(chckbxReuters, "2, 8");
 
 
@@ -275,15 +277,18 @@ public class mainScreen {
 		chckbxCnn = new JCheckBox("CNN");
 		chckbxCnn.setBackground(Color.WHITE);
 		chckbxCnn.setFocusable(false);
+		chckbxCnn.setToolTipText("no comments");
 		panel.add(chckbxCnn, "2, 12");
 
 		chckbxBbc = new JCheckBox("BBC");
 		chckbxBbc.setBackground(Color.WHITE);
 		chckbxBbc.setFocusable(false);
+		chckbxBbc.setToolTipText("no comments");
 		panel.add(chckbxBbc, "2, 14");
 
 		chckbxUsatoday = new JCheckBox("USAtoday");
 		chckbxUsatoday.setBackground(Color.WHITE);
+		chckbxUsatoday.setToolTipText("no comments");
 		panel.add(chckbxUsatoday, "2, 16");
 
 
@@ -301,7 +306,7 @@ public class mainScreen {
 		scrollPane = new JScrollPane();
 		frame.getContentPane().add(scrollPane, "4, 4, 1, 5, fill, fill");
 
-		log = new JTextArea(8, 40);
+		log = new JTextArea(7, 40);
 		scrollPane.setViewportView(log);
 		log.setAlignmentY(Component.TOP_ALIGNMENT);
 		log.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -345,11 +350,11 @@ public class mainScreen {
 		txtpnState = new JTextPane();
 		txtpnState.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		txtpnState.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		txtpnState.setBounds(10, 10, 121, 20);
+		txtpnState.setBounds(57, 10, 37, 20);
 		panel_2.add(txtpnState);
 		txtpnState.setText("state");
 
-		txtpnState.setToolTipText("type of search. if set to body, the program ill search the keywords in the body of the article."+'\n'+"regular will ignore the keywords and take all articles in result page.");
+		txtpnState.setToolTipText("type of search. ");
 
 		chckbxToTxt = new JCheckBox("to txt");
 		chckbxToTxt.setBounds(100, 36, 121, 23);

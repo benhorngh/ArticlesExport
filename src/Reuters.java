@@ -88,13 +88,13 @@ public class Reuters extends Site {
 								.findElement(By.className("search-result-timestamp"));
 
 						date = dt.getText();
-						
+
 						String[] arr = date.split(" ");
 						arr[1] = arr[1].substring(0, arr[1].length()-1);
 						arr[0] = ""+monthToInt(arr[0]);
-						
+
 						date = arr[1]+"."+arr[0]+"."+arr[2];
-						
+
 					}catch(Exception e){e.printStackTrace();}
 
 
@@ -113,8 +113,11 @@ public class Reuters extends Site {
 					checks++;
 				}
 				if(i>=results.size()){
+					int tmp = results.size();
 					clickLoadMore();
 					results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result-indiv']"));
+					if(tmp == results.size()) 
+						break;
 				}
 
 				if(checks == maxSearch)
@@ -125,15 +128,20 @@ public class Reuters extends Site {
 	}
 
 	private void clickLoadMore() {
-		WebElement loadMore = null;
-		loadMore = driver.findElement(By.xpath("//*[@class='search-result-more-txt']"));
-		moveTo2(driver,loadMore);
-		sleep(3000);
-		loadMore = driver.findElement(By.xpath("//*[@class='search-result-more-txt']"));
-		loadMore.click();
-		System.out.println("click");
-		sleep(2000);
+		for(int i=0; i<4; i++){
 
+			try{
+				WebElement loadMore = null;
+				loadMore = driver.findElement(By.xpath("//*[@class='search-result-more-txt']"));
+				moveTo2(driver,loadMore);
+				sleep(3000);
+				loadMore = driver.findElement(By.xpath("//*[@class='search-result-more-txt']"));
+				loadMore.click();
+				System.out.println("click");
+				sleep(2000);
+				break;
+			}catch(Exception e){sleep(2000);}
+		}
 	}
 
 }
