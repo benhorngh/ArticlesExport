@@ -237,6 +237,9 @@ public class USAtodayPage extends Page{
 
 		ArrayList<CommentRow> cmmts = new ArrayList<CommentRow>();
 
+		if(true)
+			return cmmts;
+
 		try{
 			WebElement sec = null;
 			try{
@@ -248,17 +251,17 @@ public class USAtodayPage extends Page{
 			moveTo2(driver, sec);
 			sleep(1500);
 			sec.click();
-			
+
 			WebElement frame = driver.findElement(By.xpath("//*[@title='Facebook Social Plugin']"));
-			
+
 			driver.switchTo().frame(frame.getAttribute("name"));
-			
+
 		}catch(Exception e){e.printStackTrace();}
-//title="Facebook Social Plugin"
-		
-		
-		
-		
+		//title="Facebook Social Plugin"
+
+
+
+
 
 
 		return cmmts;

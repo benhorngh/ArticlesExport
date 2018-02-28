@@ -5,12 +5,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 
-
-/**
- * https://www.usatoday.com/
- * @author benho
- *
- */
 public class USAtoday extends Site{
 
 	public USAtoday(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
@@ -24,8 +18,6 @@ public class USAtoday extends Site{
 
 	@Override
 	public boolean search() {
-
-
 
 		driver = startWebDriver(url);
 		try{
@@ -158,5 +150,8 @@ public class USAtoday extends Site{
 		}catch(Exception e){ e.printStackTrace();return;}
 
 	}
+
+
+	
 
 }

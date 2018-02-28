@@ -144,17 +144,21 @@ public abstract class Site extends Funcs implements Runnable {
 		return stateWithoutDate(link, title);
 	}
 
+	private int yearRange;
+	private int urlsToYear = this.numOfArticles;
 	private void updateToDate(){
 		int numoffound =urls.size();
 		System.out.println(numoffound);
-		if(numoffound==0) return;
-
-		try{
-			int yearRange = Integer.parseInt(this.toDate.split("\\.")[2])
+		if(numoffound==0) {
+			yearRange = Integer.parseInt(this.toDate.split("\\.")[2])
 					- Integer.parseInt(this.fromDate.split("\\.")[2]);
 
 			if(yearRange<=0) return;
-			int urlsToYear = this.numOfArticles / yearRange;
+			urlsToYear = this.numOfArticles / yearRange;
+		}
+
+		try{
+
 			System.out.println("yr: "+yearRange+'\n'+"uty: "+urlsToYear);
 			for(int i=1; i<=yearRange; i++){
 				if(numoffound/i==urlsToYear)

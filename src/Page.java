@@ -19,7 +19,7 @@ public abstract class Page extends Funcs{
 
 	public Page() {
 	}
-
+ 
 	public Page(Site site) {
 		this.site = site;
 	}
@@ -34,7 +34,7 @@ public abstract class Page extends Funcs{
 	 */
 	public List<ArticlesRow> linksToList(List<String> urls){
 		String url="";
-		mainScreen.addToLog("Start exporting to excel");
+		mainScreen.addToLog("Start open URLs");
 		driver = startWebDriver("http://google.com");
 		List<ArticlesRow> reports = new ArrayList<ArticlesRow>();
 		for(int i=0; i<urls.size(); i++){

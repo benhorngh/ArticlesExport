@@ -98,6 +98,8 @@ public class Main {
 		//			startDate =startDate.replaceAll(startDate.charAt(startDate.length()-5)+"", '.'+"");
 		//		}
 
+		
+		if(folderName.equals("output")){
 		boolean ok =false;
 		int i=1;
 		while(!ok){
@@ -108,6 +110,7 @@ public class Main {
 				folderName = folderName+"-"+i;
 			}
 			i++;
+		}
 		}
 
 
@@ -214,6 +217,7 @@ public class Main {
 		if(players[4]) System.out.print("Globes ");
 		if(players[5]) System.out.print("CNN ");
 		if(players[6]) System.out.print("BBC ");
+		if(players[7]) System.out.print("USAtoday ");
 		System.out.println();
 		System.out.println();
 
@@ -334,6 +338,7 @@ public class Main {
 			}catch(Exception e){};
 		}
 
+		mainScreen.addToLog("start exporting to excel..");
 		for(int i=0; i<sites.length; i++){
 			if(players[i]==true)
 				if(sites[i].articles!=null && sites[i].articles.size()!=0)
