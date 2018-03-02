@@ -114,8 +114,12 @@ public class Globes extends Site{
 					try{
 						String s = toDate;
 						addLink = stateHandle(link, title, "");
-						if(!s.equals(toDate))
+						if(!s.equals(toDate)){
 							selectTime();
+							results  = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='results_list']//div[@class='item']"));		
+							i=0;
+						}
+							
 					}catch(Exception e){e.printStackTrace();addLink=false;}
 
 					if(addLink){

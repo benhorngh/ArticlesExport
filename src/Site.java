@@ -89,6 +89,8 @@ public abstract class Site extends Funcs implements Runnable {
 	 */
 	public List<String> findLinks(){
 		urls = new ArrayList<String>();
+
+		raanges();
 		try{
 			boolean search = search();
 			if(search) {
@@ -133,7 +135,6 @@ public abstract class Site extends Funcs implements Runnable {
 	public boolean stateHandle(String link, String title, String date) {
 		if(date == null) date ="";
 
-		System.out.println("st:"+fromDate+'\n'+" tDD"+ toDate);
 
 		if((link == null)||(link.isEmpty())) return false;
 
@@ -144,29 +145,56 @@ public abstract class Site extends Funcs implements Runnable {
 		return stateWithoutDate(link, title);
 	}
 
-	private int yearRange;
-	private int urlsToYear = this.numOfArticles;
-	private void updateToDate(){
-		int numoffound =urls.size();
-		System.out.println(numoffound);
-		if(numoffound==0) {
+
+	public void raanges(){
+
+		if(!toDate.isEmpty() && !fromDate.isEmpty()){
 			yearRange = Integer.parseInt(this.toDate.split("\\.")[2])
 					- Integer.parseInt(this.fromDate.split("\\.")[2]);
 
 			if(yearRange<=0) return;
-			urlsToYear = this.numOfArticles / yearRange;
+			System.out.println(this.numOfArticles / yearRange);
+			System.out.println((int) Math.ceil( this.numOfArticles / yearRange));
+			urlsToYear =(int) Math.ceil( this.numOfArticles / yearRange);
+			if(urlsToYear ==0)
+				urlsToYear++;
+			
+			
+			String[] arr= toDate.split("\\.");
+			String[] arr2= fromDate.split("\\.");
+			int year = Integer.parseInt(arr[2]);
+			fromDate = arr2[0]+"."+arr2[1]+"."+(year-1);
+			
 		}
 
-		try{
+	}
 
+	private int i=1;
+	private int yearRange;
+	private int urlsToYear = this.numOfArticles;
+	
+	private void updateToDate(){
+		int numoffound =urls.size();
+		System.out.println(numoffound);
+
+		try{
 			System.out.println("yr: "+yearRange+'\n'+"uty: "+urlsToYear);
-			for(int i=1; i<=yearRange; i++){
-				if(numoffound/i==urlsToYear)
-					toDate = toDate.substring(0,toDate.length()-2)
-					+(Integer.parseInt(toDate.substring(toDate.length()-2, toDate.length()))-1);
+
+			if(i*urlsToYear == numoffound){
+				String[] arr= toDate.split("\\.");
+				String[] arr2= fromDate.split("\\.");
+				int year = Integer.parseInt(arr[2]);
+				year --;
+				toDate = arr[0]+"."+arr[1]+"."+year;
+				i++;
+
+
+				int year2 = Integer.parseInt(arr2[2]);
+				fromDate = arr2[0]+"."+arr2[1]+"."+(year-1);
 			}
-			System.out.println("td:"+toDate);
+
 		}catch(Exception e){e.printStackTrace();}
+		System.out.println("td: "+toDate+'\n'+"st:"+fromDate);
 	}
 
 
@@ -180,9 +208,6 @@ public abstract class Site extends Funcs implements Runnable {
 	 */
 	private boolean stateWithDate(String link, String title, String Adate){ 
 		updateToDate();
-
-
-		if(this.DateRange) return true && stateWithoutDate(link, title); //built-in date range
 
 		Date fromD = stringToDate(this.fromDate);
 		Date toD = stringToDate(this.toDate);
@@ -201,8 +226,6 @@ public abstract class Site extends Funcs implements Runnable {
 			}
 			else return true && stateWithoutDate(link, title);
 		}
-
-
 
 		//need access to article for the date
 

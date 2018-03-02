@@ -107,7 +107,8 @@ public class BBCPage extends Page{
 		
 		if(!ok) {
 			try {
-				bdy = (ArrayList)driver.findElements(By.xpath("//*[@class='story-body__inner']/p"));
+				bdy = (ArrayList <WebElement>)
+						driver.findElements(By.xpath("//*[@class='story-body__inner']/p"));
 				
 
 				for(int i=1; i<bdy.size(); i++) {
@@ -119,6 +120,26 @@ public class BBCPage extends Page{
 			}
 			catch(Exception e) {}
 		}
+		
+		if(!ok) {
+			try {
+				bdy = (ArrayList <WebElement>)
+						driver.findElements(By.xpath("//*[@itemprop='articleBody']/p"));
+				
+
+				for(int i=1; i<bdy.size(); i++) {
+					str += bdy.get(i).getText();
+				}
+				
+				if(!str.isEmpty())
+					ok = true;
+			}
+			catch(Exception e) {}
+		}
+		
+		
+		
+		
 		return str;
 	}
 

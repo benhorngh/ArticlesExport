@@ -20,6 +20,8 @@ public class USAtoday extends Site{
 	public boolean search() {
 
 		driver = startWebDriver(url);
+		//		driver.get(url);
+		//		sleep(2000);
 		try{
 
 			WebElement search = driver.findElement(By.xpath("//*[@class='site-nav-inner-wrap']"));
@@ -48,11 +50,11 @@ public class USAtoday extends Site{
 
 		driver.get(driver.getCurrentUrl());
 		try{
-//			sleep(1000);
+			//			sleep(1000);
 			WebElement listview = driver.findElement(By.xpath("//*[@class='ui-btn list-btn']"));
-//			listview.click();
+			//			listview.click();
 			clickInvisible(driver, listview);
-			
+
 		}catch(Exception e){e.printStackTrace(); return false;}
 		sleep(2000);
 
@@ -69,6 +71,7 @@ public class USAtoday extends Site{
 
 		String link="", title="" , date="";
 		int i=0;
+		int tries= 0;
 		int  checks = 0;
 		boolean addLink=false;
 		try{
@@ -126,21 +129,28 @@ public class USAtoday extends Site{
 						mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
 					}
 					i++;
+					checks++;
 				}
-				checks++;
 
-				if(i+3>=results.size()){
+
+				if(i>=results.size()){
 
 					int tmp = results.size();
-					
+
 					moveTo2(driver, results.get(results.size()-3));
-					sleep(2000);
+					moveTo(driver,results.get(results.size()-3));
+					sleep(2500);
 					results  = (ArrayList<WebElement>) 
 							driver.findElements(By.xpath("//*[@class='clearfix search-results-list']/li"));
 
-					
+
 					if(results.size()==tmp)
+						tries++;
+					else tries=0;
+
+					if(tries == 10)
 						break;
+
 
 				}
 
@@ -152,6 +162,6 @@ public class USAtoday extends Site{
 	}
 
 
-	
+
 
 }

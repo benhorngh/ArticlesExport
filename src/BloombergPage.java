@@ -28,6 +28,7 @@ public class BloombergPage extends Page{
 		if(!ok){
 			try{
 				ttl =  driver.findElement(By.xpath(s+"//*[@class='lede-large-content__highlight']"));
+//				str = 
 				if(!ttl.getText().isEmpty())
 					ok= true;
 			}

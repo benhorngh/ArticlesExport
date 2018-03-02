@@ -73,12 +73,11 @@ public class Bloomberg extends Site{
 	@Override
 	public void resultsPage(List<String> urls) {
 
-		System.out.println("srefrfeferf");
 		changeTime();
 
 		sleep(3000);
 
-		String link="", title="";
+		String date="",link="", title="";
 		int i=0;
 		int  checks = 0;
 		boolean addLink=false;
@@ -86,10 +85,11 @@ public class Bloomberg extends Site{
 		System.out.println("srefrfeferf");
 		try{
 			ArrayList<WebElement> results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result']"));
-			
+
 			while(urls.size() < numOfArticles){
 
 				if(i >= results.size()){
+					date ="";link=""; title="";
 
 					try{
 						WebElement nextButton = driver.findElement(By.className("content-next-link"));
@@ -100,7 +100,7 @@ public class Bloomberg extends Site{
 					}catch(Exception e){
 						e.printStackTrace();
 						String pageurl = driver.getCurrentUrl();
-						int x = Integer.parseInt(pageurl.substring(pageurl.length()-3, pageurl.length()));
+						int x = Integer.parseInt(pageurl.substring(pageurl.lastIndexOf("=")+1, pageurl.length()));
 						x++;
 						pageurl = pageurl.substring(0 , pageurl.length()-2) + x;
 						driver.get(pageurl);
@@ -124,12 +124,23 @@ public class Bloomberg extends Site{
 
 						title = ttl.getText();
 
+						try{
+							WebElement dt = results.get(i).findElement(By.className("published-at"));
+
+
+							String[] arr = dt.getText().split(" ");
+							arr[0] = ""+ monthToInt(arr[0]);
+							arr[1] = arr[1].substring(0, arr[1].length()-1);
+							 date = arr[1]+"."+arr[0]+"."+arr[2];
+
+						}catch(Exception e){e.printStackTrace();}
+						
 						System.out.println(link);
 						System.out.println(title);
 
 						try{
 							String s = toDate;
-							addLink = stateHandle(link, title, "");
+							addLink = stateHandle(link, title, date);
 
 							if(!s.equals(toDate)){
 								changeTime(); i=results.size()+1;
@@ -163,7 +174,7 @@ public class Bloomberg extends Site{
 	private void changeTime(){
 
 		sleep(2000);
-		
+
 		if(!this.toDate.isEmpty()){
 			try{
 				WebElement nextButton = driver.findElement(By.className("content-next-link"));

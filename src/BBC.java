@@ -99,7 +99,7 @@ public class BBC extends Site{
 					WebElement tp  = results.get(i).findElement(By.tagName("article"));
 					String type = tp.getAttribute("class");
 
-					if((!type.contains("video"))||(url.contains("live"))) {
+					if((!type.contains("video"))&&(!url.contains("live"))) {
 						try{
 							addLink = stateHandle(link, title, date);
 						}catch(Exception e){e.printStackTrace();addLink=false;}

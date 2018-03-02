@@ -30,17 +30,17 @@ public class Main {
 		// replaced with GUI
 
 
-		String textToSearch = "משטרה";
+		String textToSearch = "טראמפ";
 		String textToSearchEnglish = "teca";
 		String textToCompare = "שוטר";
 		String textToCompareEnglish = "";
 		SearchState stat= SearchState.regular; 
-		int numOfArticles = 20;
+		int numOfArticles = 100;
 		boolean ynet = false;
 		boolean TM = false;
 		boolean blmbrg = false;
-		boolean rtrs = true;
-		boolean glbs = false;
+		boolean rtrs = false;
+		boolean glbs = true;
 		boolean CNN = false;
 		boolean BBC = false;
 		boolean USAt = false;
@@ -55,7 +55,7 @@ public class Main {
 				,USAt
 		};
 
-		String startDate="1.1.2016"; 
+		String startDate="1.1.2013"; 
 		String endDate="1.1.2018";
 
 		boolean toFile = true;
@@ -180,7 +180,7 @@ public class Main {
 
 
 		if(endDate.isEmpty() &&  (!startDate.isEmpty())){
-			endDate = Funcs.todayString();
+			endDate = "1.1.2019";
 		}
 
 		if(startDate.isEmpty() && (!endDate.isEmpty())){
