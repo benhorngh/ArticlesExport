@@ -1,4 +1,5 @@
 import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
@@ -16,7 +17,7 @@ public class TheMarker extends Site {
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url= "http://www.themarker.com";
 		this.window = WindowState.Invisible;
-		this.page = new TheMarkerPage(window);
+		this.page = new TheMarkerPage(window ,this);
 		this.DateRange = false;
 	}
 
@@ -25,7 +26,7 @@ public class TheMarker extends Site {
 
 	@Override
 	public boolean search() {
-
+ 
 		driver = startWebDriver(url);
 		sleep(10000);
 		//search
@@ -55,102 +56,116 @@ public class TheMarker extends Site {
 		catch (NoSuchFrameException e) {e.printStackTrace(); return false;}
 		catch (NoSuchElementException e) {e.printStackTrace(); return false;}
 
-		chooseTime();
 
-		return true;
+		return true; 
 	}
 
 
 
 
 
+	/*
+	 * (non-Javadoc)
+	 * @see Site#resultsPage(java.util.List)
+	 * results in separated pages.
+	 */
 
 
 
 	@Override
 	public void resultsPage(List<String> urls) {
-		//		WebElement box = driver.findElement(By.xpath("//*[contains(@class, 'border-box no-border-box list')]"));
+	
+		List<WebElement> results = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
 
-		List<WebElement> resutls = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
-
+		this.firstPage = driver.getCurrentUrl();
+		
 		String link="", title="", date="";
 		int i=0;
-		int  checks = 0;
+		int checks = 0;
 		boolean addLink=false;
+		int res=0;
 		while(urls.size() < numOfArticles){
 
 			link=""; title=""; date="";
+			addLink=false;
+			checks++;
+			if(checks == maxSearch)
+				return;
 
+			if(i<results.size()){
+				try{
+					WebElement ttl = results.get(i).findElement(By.className("caption"));
+					link = ttl.getAttribute("href");
 
-			if(i<resutls.size()){
-				WebElement ttl = resutls.get(i).findElement(By.className("caption"));
-				link = ttl.getAttribute("href");
+					title = ttl.getText();
+
+				}catch(Exception e){e.printStackTrace();}
 
 				System.out.println(link);
-
-				title = ttl.getText();
 				System.out.println(title);
 
 				try{
-					WebElement dt = resutls.get(i).findElement(By.className("authorBarElement"));
+					WebElement dt = results.get(i).findElement(By.className("authorBarElement"));
 					date = dt.getText();
 				}catch(Exception e){e.printStackTrace();}
 
 				try{
+					String s = toDate;
 					addLink = stateHandle(link, title, date);
+					if(!s.equals(toDate)){
+						driver.get(firstPage);
+						results = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
+						i=0;
+					}
 				}catch(Exception e){e.printStackTrace();addLink=false;}
 
-				if(link.contains("LIVE")){addLink=false;}
+				if(!link.contains("LIVE")){
 
-				if(addLink){
-					urls.add(link);
-					removeDuplicate(urls);
-					mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
+					if(addLink){
+						urls.add(link);
+						removeDuplicate(urls);
+						mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
+					}
 				}
-				addLink=false;
 
 				i++;
-				
+
 			}
-			if(i >=resutls.size()){
+			if(i >=results.size()){
 				i=0;
-				WebElement pagination = driver.findElement(By.className("pagination"));
-				moveTo(driver, pagination);
+				try{
+					WebElement pagination = driver.findElement(By.className("pagination"));
+					moveTo(driver, pagination);
 
-				WebElement nextButton = pagination.findElement(By.className("next"));
-				nextButton.click();
-				sleep(1000);
+					WebElement nextButton = pagination.findElement(By.className("next"));
+					nextButton.click();
+					sleep(1000);
 
-				resutls = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
+				}catch(Exception e){e.printStackTrace();}
+				
+				results = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
+				
+				if(results.size() ==0){
+					sleep(2000);
+					res++;
+				}else res =0;
+				
+				if(res >= 10){
+					String s = this.toDate;
+					updateToDate(true);
+					if(s.equals(this.toDate))
+						break;
+					res = 0;
+					driver.get(firstPage);
+				}
+			
 			}
-			checks++;
-			if(checks == maxSearch)
-				return;
+
 		}
 
 
 	}
 
-
-
-
-	public void chooseTime() {
-
-		if(this.fromDate.isEmpty())
-			return;
-
-		WebElement tof = driver.findElement(By.className("textOnlySearchForm"));
-		WebElement bttn = tof.findElement(By.cssSelector("#advancedFormOpenBtn"));
-		moveTo2(driver, bttn);
-		sleep(1000);
-		bttn.click();
-
-		//		WebElement st = driver.findElement(By.xpath("//*[@name='startDate']"));
-		//startDate
-
-
-	}
-
-
+	
 
 }

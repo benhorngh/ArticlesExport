@@ -4,7 +4,7 @@ import org.openqa.selenium.WebElement;
 
 public class BloombergPage extends Page{
 
-	public BloombergPage(Site site,WindowState window){
+	public BloombergPage(WindowState window, Site site){
 		super(site);
 		this.window = window;
 		this.SiteName = "Bloomberg";
@@ -21,15 +21,17 @@ public class BloombergPage extends Page{
 		WebElement ttl = null;
 		try{
 			ttl =  driver.findElement(By.xpath(s+"//*[@class='lede-text-only__highlight']"));
-			ok= true;
+			str = ttl.getText();
+			if(str.isEmpty())
+				ok= true;
 		}
 		catch(Exception e){
 		}
 		if(!ok){
 			try{
 				ttl =  driver.findElement(By.xpath(s+"//*[@class='lede-large-content__highlight']"));
-//				str = 
-				if(!ttl.getText().isEmpty())
+				str = ttl.getText();
+				if(str.isEmpty())
 					ok= true;
 			}
 			catch(Exception e){
@@ -38,7 +40,8 @@ public class BloombergPage extends Page{
 		if(!ok){
 			try{
 				ttl =  driver.findElement(By.xpath(s+"//*[@class='full-width-image-lede-text-above__hed']"));
-				if(!ttl.getText().isEmpty())
+				str = ttl.getText();
+				if(str.isEmpty())
 					ok= true;
 			}
 			catch(Exception e){
@@ -47,7 +50,8 @@ public class BloombergPage extends Page{
 		if(!ok){
 			try{
 				ttl =  driver.findElement(By.xpath(s+"//*[@class='lede-vertical-image-text-right__hed']"));
-				if(!ttl.getText().isEmpty())
+				str = ttl.getText();
+				if(str.isEmpty())
 					ok= true;
 			}
 			catch(Exception e){
@@ -56,7 +60,8 @@ public class BloombergPage extends Page{
 		if(!ok){
 			try{
 				ttl =  driver.findElement(By.xpath("//*[@class='video-metadata__title']"));
-				if(!ttl.getText().isEmpty())
+				str = ttl.getText();
+				if(str.isEmpty())
 					ok= true;
 			}
 			catch(Exception e){
@@ -66,7 +71,8 @@ public class BloombergPage extends Page{
 		if(!ok){
 			try{
 				ttl =  driver.findElement(By.xpath(s+"//*[@class='lede-text-only__hed']"));
-				if(!ttl.getText().isEmpty())
+				str = ttl.getText();
+				if(str.isEmpty())
 					ok= true;
 			}
 			catch(Exception e){
@@ -75,7 +81,8 @@ public class BloombergPage extends Page{
 		if(!ok){
 			try{
 				ttl =  driver.findElement(By.xpath(s+"//*[@class='article-title copy-width']"));
-				if(!ttl.getText().isEmpty())
+				str = ttl.getText();
+				if(str.isEmpty())
 					ok= true;
 			}
 			catch(Exception e){
@@ -84,7 +91,8 @@ public class BloombergPage extends Page{
 		if(!ok){
 			try{
 				ttl =  driver.findElement(By.xpath("//*[@class='article-title copy-width']"));
-				if(!ttl.getText().isEmpty())
+				str = ttl.getText();
+				if(str.isEmpty())
 					ok= true;
 			}
 			catch(Exception e){
@@ -93,14 +101,15 @@ public class BloombergPage extends Page{
 		if(!ok){
 			try{
 				ttl =  driver.findElement(By.xpath(s+"//*[@class='not-quite-full-width-image-lede-text-above__hed']"));
-				if(!ttl.getText().isEmpty())
+				str = ttl.getText();
+				if(str.isEmpty())
 					ok= true;
 			}
 			catch(Exception e){
 			}
 		}
 
-		return ttl.getText();		
+		return str;	
 	}
 
 	@Override
@@ -179,7 +188,7 @@ public class BloombergPage extends Page{
 			catch(Exception e){}
 		}
 
-		
+
 		//		
 		return subs;
 	}

@@ -17,7 +17,7 @@ public class BBC extends Site{
 		this.url="http://www.bbc.com/news";
 		this.window = WindowState.Invisible;
 		this.DateRange = false;
-		this.page = new BBCPage(window);
+		this.page = new BBCPage(window, this);
 	}
 
 
@@ -55,65 +55,79 @@ public class BBC extends Site{
 
 
 
+	/* 
+	 * (non-Javadoc)
+	 * @see Site#resultsPage(java.util.List)
+	 * long result page.
+	 */
+	
 	@Override
 	public void resultsPage(List<String> urls) {
-		
+
 
 		WebElement searchcontent = driver.findElement(By.className("search-content"));
 
-		for(int i=10; i<this.numOfArticles; i=i+10){
-			clickLoadMore();
-		}
-
+	
 		ArrayList<WebElement> results  = (ArrayList<WebElement>) 
 				searchcontent.findElements(By.xpath(".//*[@class='search-results results']/li"));
 
-		
+
 		String link="", title="" , date="";
 		int i=0;
-		int  checks = 0;
+		int checks = 0;
+		int res =0;
 		boolean addLink=false;
 		try{
 			while(urls.size() < numOfArticles){
 				link=""; title=""; date="";
+				addLink=false;
+
+				checks++;
+				if(checks == maxSearch)
+					return;
 
 				if(i<results.size()){
-					WebElement head = results.get(i)
-							.findElement(By.xpath(".//*[@itemprop='headline']/a"));
+					String type ="";
+					try{
+						WebElement head = results.get(i)
+								.findElement(By.xpath(".//*[@itemprop='headline']/a"));
 
-					title = head.getText();
-					link = head.getAttribute("href");
+						title = head.getText();
+						link = head.getAttribute("href");
 
-					WebElement dt = results.get(i)
-							.findElement(By.xpath(".//*[@class='display-date']"));
+						WebElement dt = results.get(i)
+								.findElement(By.xpath(".//*[@class='display-date']"));
+ 
+						date = dt.getText();
+						String[] arr = date.split(" ");
+						String month = ""+monthToInt(arr[1]);
+						date = arr[0]+"."+month+"."+arr[2];
 
-					date = dt.getText();
-					String[] arr = date.split(" ");
-					String month = ""+monthToInt(arr[1]);
-					date = arr[0]+"."+month+"."+arr[2];
-
-					System.out.println(link);
-					System.out.println(title);
+						System.out.println(link);
+						System.out.println(title);
 
 
-					WebElement tp  = results.get(i).findElement(By.tagName("article"));
-					String type = tp.getAttribute("class");
+						WebElement tp  = results.get(i).findElement(By.tagName("article"));
+						type = tp.getAttribute("class");
+					}catch(Exception e){e.printStackTrace();}
 
 					if((!type.contains("video"))&&(!url.contains("live"))) {
 						try{
+							String s = this.toDate;
 							addLink = stateHandle(link, title, date);
+							if(!s.equals(this.toDate))
+								i=0;
 						}catch(Exception e){e.printStackTrace();addLink=false;}
 					}
 					else addLink=false;
+
 					if(addLink){
 						urls.add(link);
 						removeDuplicate(urls);
 						mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
-						addLink=false;
 					}
 					i++;
 				}
-				checks++;
 
 				if(i>=results.size()){
 					int size= results.size();
@@ -121,12 +135,20 @@ public class BBC extends Site{
 					results  = (ArrayList<WebElement>) 
 							searchcontent.findElements(By.xpath(".//*[@class='search-results results']/li"));		
 
-					if(size == results.size()) 
-						break;
+					if(size == results.size()) {
+						sleep(2000);
+						res++;
+					}
+					else res = 0;
+					if(res >= 10){
+						String s = this.toDate;
+						updateToDate(true);
+						if(s.equals(this.toDate))
+							break;
+						res = 0;
+						i=0;
+					}
 				}
-
-				if(checks == maxSearch)
-					return;
 			}
 		}catch(Exception e){ e.printStackTrace();return;}
 	}
@@ -134,7 +156,6 @@ public class BBC extends Site{
 
 	private void clickLoadMore() {
 		try {
-
 			WebElement more = driver.findElement(By.xpath("//*[@class='pagination']/a"));
 
 			moveTo2(driver, more);

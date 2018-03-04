@@ -15,7 +15,7 @@ public class CNN extends Site{
 		this.url="http://edition.cnn.com/";
 		this.window = WindowState.Invisible;
 		this.DateRange = false;
-		this.page = new CNNPage(window);
+		this.page = new CNNPage(window , this);
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class CNN extends Site{
 		if(this.state == SearchState.comment)
 			return false;
 
-		driver = startWebDriver(url);
+		driver = startWebDriver(url); 
 		//		driver.get(url);
 
 		try{
@@ -64,15 +64,22 @@ public class CNN extends Site{
 		return true;
 	}
 
+
+	/* 
+	 * (non-Javadoc)
+	 * @see Site#resultsPage(java.util.List)
+	 * results in separated pages.
+	 */
+
 	@Override
 	public void resultsPage(List<String> urls) {
-		//		cnn-search__results-list
 
-		List<WebElement> resutls = driver.findElements(By.xpath("//*[@class='cnn-search__results-list']/div"));
+		List<WebElement> results = driver.findElements(By.xpath("//*[@class='cnn-search__results-list']/div"));
 
+		this.firstPage = driver.getCurrentUrl();
 
-		System.out.println(resutls.size());
-		if(resutls == null || resutls.size() == 0){
+		System.out.println(results.size());
+		if(results == null || results.size() == 0){
 			System.err.println("no results");
 			return;
 		}
@@ -80,27 +87,29 @@ public class CNN extends Site{
 
 		String link="", title="", date="";
 		int i=0;
-		int  checks = 0;
+		int checks = 0;
+		int next = 0;
+		int res= 0;
 		boolean addLink=false;
 		try{
 			while(urls.size() < numOfArticles){
 				addLink=false;
 				link=""; title=""; date="";
+				checks++;
+				if(checks == maxSearch)
+					return;
+
 
 				try{
-
-					WebElement ttl = resutls.get(i).findElement(By.xpath(".//*[@class='cnn-search__result-headline']/*"));
+					WebElement ttl = results.get(i).findElement(By.xpath(".//*[@class='cnn-search__result-headline']/*"));
 					link = ttl.getAttribute("href");
 
-					System.out.println(link);
-
 					title = ttl.getText();
+
+					System.out.println(link);
 					System.out.println(title);
 
-
-
-
-					WebElement dt = resutls.get(i).findElement(By.className("cnn-search__result-publish-date"));
+					WebElement dt = results.get(i).findElement(By.className("cnn-search__result-publish-date"));
 					date = dt.getText();
 					String arr[] = date.split(" ");
 					date = arr[1].substring(0, arr[1].length()-1)+"."+monthToInt(arr[0])+"."+arr[2];
@@ -108,7 +117,15 @@ public class CNN extends Site{
 				}catch(Exception e){e.printStackTrace();}
 
 				try{
+					String s = toDate;
 					addLink = stateHandle(link, title, date);
+					if(!s.equals(toDate)){
+						driver.get(firstPage);
+						results = driver.findElements(By.xpath("//*[@class='cnn-search__results-list']/div"));
+						i=0;
+
+					}
+
 				}catch(Exception e){e.printStackTrace();addLink=false;}
 
 				if(addLink){
@@ -119,33 +136,71 @@ public class CNN extends Site{
 				addLink=false;
 
 				i++;
-				checks++;
 
-				if(i>=resutls.size()){
+				if(i>=results.size()){
+
+
+					try {
+
+						WebElement pagination = driver.findElement(By.xpath("//*[@class='pagination-arrow pagination-arrow-right cnnSearchPageLink text-active']"));
+						moveTo(driver, pagination);
+						sleep(1000);
+
+						pagination.click();
+
+						sleep(1000);
+
+						next  =0;
+					}catch(Exception e) {
+						e.printStackTrace();sleep(3000);
+
+						next++;
+						sleep(2000);
+
+						if(next >= 10){
+							String s = this.toDate;
+							updateToDate(true);
+							if(s.equals(this.toDate))
+								break;
+							next = 0;
+							driver.get(firstPage);
+						}}
+					results = driver.findElements(By.xpath("//*[@class='cnn-search__results-list']/div"));
 					i=0;
-					for(int o=0; o<5; o++) {
-						try {
 
-							WebElement pagination = driver.findElement(By.xpath("//*[@class='pagination-arrow pagination-arrow-right cnnSearchPageLink text-active']"));
-							moveTo(driver, pagination);
-							sleep(1000);
-
-							pagination.click();
-
-							sleep(1000);
-
+					if(results.size() == 0){
+						res++;
+						sleep(2000);
+					}else res=0;
+					if(res >= 10){
+						String s = this.toDate;
+						updateToDate(true);
+						if(s.equals(this.toDate))
 							break;
-						}
-						catch(Exception e) {e.printStackTrace();sleep(3000);}
+						res = 0;
+						driver.get(firstPage);
 					}
-					resutls = driver.findElements(By.xpath("//*[@class='cnn-search__results-list']/div"));
 				}
-				if(checks == maxSearch)
-					return;
 			}
 		}
 		catch(Exception e){e.printStackTrace();}
 	}
+
+
+	//	@Override
+	//	public void firstPage(){
+	//
+	//		String curl= driver.getCurrentUrl();
+	//		String[] arr =curl.split("&");
+	//		if(arr.length == 5){
+	//
+	//			arr[2] = arr[2].substring(0, arr[2].indexOf("=")+1)
+	//					+"1";
+	//
+	//			curl = arr[0]+arr[1] + arr[2] + arr[4];
+	//		}
+	//		driver.get(curl);
+	//	}
 
 
 

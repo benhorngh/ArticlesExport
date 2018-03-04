@@ -17,22 +17,18 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class Main {
 
-	/*TODO
-	 * rename file
-	 * time but not content
-	 */
 
 	static final String fileName = "excelFile";
 	static final String commentFolder = "comments";
 	static String folderName ="output";
 
 	public static void main(String[] args) {
-		// replaced with GUI
+		// replaced with GUI 
 
 
 		String textToSearch = "טראמפ";
-		String textToSearchEnglish = "teca";
-		String textToCompare = "שוטר";
+		String textToSearchEnglish = "teva";
+		String textToCompare = "";
 		String textToCompareEnglish = "";
 		SearchState stat= SearchState.regular; 
 		int numOfArticles = 100;
@@ -59,9 +55,10 @@ public class Main {
 		String endDate="1.1.2018";
 
 		boolean toFile = true;
+		boolean fair = false;
 
 		starter(textToSearch,textToSearchEnglish,textToCompare,textToCompareEnglish
-				,stat,startDate,endDate,numOfArticles, players, toFile);
+				,stat,startDate,endDate,numOfArticles, players, toFile, fair);
 	}
 
 	/**
@@ -86,31 +83,27 @@ public class Main {
 			,int numOfArticles
 			,boolean[] players
 			,boolean toTxt
+			,boolean fairSplit
 			){
 
 
 
 
-		//		if(!endDate.isEmpty()){
-		//			endDate= endDate.replace(endDate.charAt(endDate.length()-5)+"", '.'+"");
-		//		}
-		//		if(!startDate.isEmpty()){
-		//			startDate =startDate.replaceAll(startDate.charAt(startDate.length()-5)+"", '.'+"");
-		//		}
+		Site.fairSplit = fairSplit;
 
-		
+
 		if(folderName.equals("output")){
-		boolean ok =false;
-		int i=1;
-		while(!ok){
-			File directory = new File(folderName+"-"+i);
-			if (! directory.exists()){
-				directory.mkdir();
-				ok=true;
-				folderName = folderName+"-"+i;
+			boolean ok =false;
+			int i=1;
+			while(!ok){
+				File directory = new File(folderName+"-"+i);
+				if (! directory.exists()){
+					directory.mkdir();
+					ok=true;
+					folderName = folderName+"-"+i;
+				}
+				i++;
 			}
-			i++;
-		}
 		}
 
 
@@ -120,6 +113,14 @@ public class Main {
 
 
 
+		boolean ok =false;
+
+		for(int i=0; i<players.length; i++)
+			ok = ok || players[i];
+		if(!ok){
+			mainScreen.addToLog("error: no site selected.");
+			return;
+		}
 
 
 
@@ -180,7 +181,9 @@ public class Main {
 
 
 		if(endDate.isEmpty() &&  (!startDate.isEmpty())){
-			endDate = "1.1.2019";
+			if(fairSplit)
+				endDate = "1.1.2018";
+			else endDate = Funcs.todayString();
 		}
 
 		if(startDate.isEmpty() && (!endDate.isEmpty())){
@@ -209,6 +212,7 @@ public class Main {
 		System.out.println("end d: "+endDate);
 		System.out.println("noa: "+numOfArticles);
 		System.out.println("totxt: "+toTxt);
+		System.out.println("fair splt: "+fairSplit);
 		System.out.print("players: ");
 		if(players[0]) System.out.print("Ynet ");
 		if(players[1]) System.out.print("TheMarker ");
@@ -270,14 +274,13 @@ public class Main {
 
 		/*
 		 * !!warnning!!
-		 * use only for strong comuter. uncheded deeply.
+		 * use only in strong computer. high CPU usege. unchecked deeply.
 		 * !!warnning!!
 		 */
 		boolean useThreads = false;
 
 
 		startWriters();
-
 
 		File directory;
 		directory = new File(folderName+"/"+fileName+".xlsx");

@@ -25,7 +25,7 @@ public class Yahoo extends Site{
 		this.url="https://www.yahoo.com";
 		this.window = WindowState.visible;
 		this.DateRange = false;
-		this.page = new GlobesPage(window);
+//		this.page = new GlobesPage(window);
 	}
 	
 	@Override

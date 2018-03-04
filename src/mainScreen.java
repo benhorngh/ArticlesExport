@@ -52,6 +52,7 @@ public class mainScreen {
 	private JCheckBox chckbxBbc;
 	private JCheckBox chckbxUsatoday;
 	private JPanel panel_2;
+	private JCheckBox chckbxFairSplit;
 
 
 
@@ -212,6 +213,10 @@ public class mainScreen {
 		txtend.setText("");
 		panel_1.add(txtend, "3, 12, 2, 1, fill, default");
 		txtend.setColumns(10);
+		
+		chckbxFairSplit = new JCheckBox("fair split");
+		chckbxFairSplit.setBackground(Color.WHITE);
+		panel_1.add(chckbxFairSplit, "4, 14");
 
 
 		JPanel panel = new JPanel();
@@ -414,7 +419,8 @@ public class mainScreen {
 								,chckbxBbc.isSelected()
 								,chckbxUsatoday.isSelected()
 						};
-
+						
+						boolean fs = chckbxFairSplit.isSelected();
 
 						System.out.println("tts: "+tts);
 						//						System.out.println("ttse: "+ttse);
@@ -424,10 +430,9 @@ public class mainScreen {
 						System.out.println("sdt: "+sdt);
 						System.out.println("edt: "+edt);
 						System.out.println(Arrays.toString(sites));
+					
 
-
-						//						Main.starter(tts, ttse, ttc, ttce, state, sdt, edt, noa, sites);
-						Main.starter(tts, tts, ttc, ttc, state, sdt, edt, noa, sites, totxt);
+						Main.starter(tts, tts, ttc, ttc, state, sdt, edt, noa, sites, totxt, fs);
 					}
 				};
 				thread.start();

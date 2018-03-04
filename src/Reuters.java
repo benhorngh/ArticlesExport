@@ -17,13 +17,13 @@ public class Reuters extends Site {
 		this.url="https://www.reuters.com/";
 		this.window = WindowState.Invisible;
 		this.DateRange = false;
-		this.page = new ReutersPage(window);
+		this.page = new ReutersPage(window ,this);
 	}
 
 	@Override
 	public boolean search() {
 
-		if(this.state == SearchState.comment)
+		if(this.state == SearchState.comment) 
 			return false;
 
 		driver = startWebDriver(url);
@@ -52,35 +52,46 @@ public class Reuters extends Site {
 		return true;
 	}
 
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see Site#resultsPage(java.util.List)
+	 * long result page.
+	 */
+	
 	@Override
 	public void resultsPage(List<String> urls) {
 
 
-		for(int i=10; i<this.numOfArticles; i=i+10){
-			clickLoadMore();
-		}
-
+		
 		String link="", title="", date="";
 		int i=0;
-		int  checks = 0;
+		int checks = 0;
 		boolean addLink=false;
 		ArrayList<WebElement> results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result-indiv']"));
-		System.out.println(results.size());
+		int res=0;
 		try{
 			WebElement head = null;
 			while(urls.size() < numOfArticles){
 				link=""; title=""; date="";
+				addLink=false;
+
+				checks++;
+				if(checks == maxSearch)
+					return;
 
 
 				if(i < results.size()){
-					head = results.get(i)
-							.findElement(By.className("search-result-title")).findElement(By.tagName("a"));
+					try{
+						head = results.get(i)
+								.findElement(By.className("search-result-title")).findElement(By.tagName("a"));
 
-					title = head.getText();
-					link = head.getAttribute("href");
+						title = head.getText();
+						link = head.getAttribute("href");
 
-					System.out.println(link);
-					System.out.println(title);
+						System.out.println(link);
+						System.out.println(title);
+					}catch(Exception e){}
 
 
 					try {//September 27, 2017 12:23pm EDT
@@ -99,7 +110,11 @@ public class Reuters extends Site {
 
 
 					try{
+						String s = this.toDate;
 						addLink = stateHandle(link, title, date);
+						if(!s.equals(this.toDate))
+							i=0;
+						
 					}catch(Exception e){e.printStackTrace();addLink=false;}
 
 					if(addLink){
@@ -107,21 +122,33 @@ public class Reuters extends Site {
 						removeDuplicate(urls);
 						mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
 
-						addLink=false;
 					}
 					i++;
-					checks++;
+
 				}
 				if(i>=results.size()){
 					int tmp = results.size();
+
 					clickLoadMore();
 					results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result-indiv']"));
-					if(tmp == results.size()) 
-						break;
+
+					if(tmp == results.size()) {
+						res++;
+						sleep(2000);
+					}
+					else res = 0;
+
+					if(res >= 10){
+						String s = this.toDate;
+						updateToDate(true);
+						if(s.equals(this.toDate))
+							break;
+						res = 0;
+						i=0;
+					}
 				}
 
-				if(checks == maxSearch)
-					return;
+
 			}
 		}catch(Exception e){e.printStackTrace();return;}
 
@@ -129,7 +156,6 @@ public class Reuters extends Site {
 
 	private void clickLoadMore() {
 		for(int i=0; i<4; i++){
-
 			try{
 				WebElement loadMore = null;
 				loadMore = driver.findElement(By.xpath("//*[@class='search-result-more-txt']"));
@@ -137,7 +163,6 @@ public class Reuters extends Site {
 				sleep(3000);
 				loadMore = driver.findElement(By.xpath("//*[@class='search-result-more-txt']"));
 				loadMore.click();
-				System.out.println("click");
 				sleep(2000);
 				break;
 			}catch(Exception e){sleep(2000);}

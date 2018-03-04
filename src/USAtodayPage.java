@@ -8,8 +8,8 @@ import org.openqa.selenium.WebElement;
 
 public class USAtodayPage extends Page{
 
-	public USAtodayPage(WindowState window){
-		super();
+	public USAtodayPage(WindowState window, Site site){
+		super(site);
 		this.window = window;
 		this.SiteName = "USAtoday";
 	}

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.openqa.selenium.WebDriver;
@@ -19,7 +20,7 @@ public abstract class Page extends Funcs{
 
 	public Page() {
 	}
- 
+
 	public Page(Site site) {
 		this.site = site;
 	}
@@ -53,7 +54,18 @@ public abstract class Page extends Funcs{
 				}
 				catch(Exception e){e.printStackTrace();System.err.println("can't login");}
 			}
-			reports.add(urlHandler(url, false));
+			ArticlesRow ar = urlHandler(url, false);
+
+			if(ar != null){
+				Date arD = stringToDate(ar.date);
+				Date date = stringToDate(this.site.fromDate);
+
+				if(date != null && arD != null && date.after(arD)){
+					ArticlesRow.counter--;
+				}
+				else reports.add(ar);
+			}
+
 			System.out.println("finish URL");
 			mainScreen.addToLog("finish url ."+(i+1));
 
@@ -144,6 +156,10 @@ public abstract class Page extends Funcs{
 		}catch (Exception e){
 			e.printStackTrace();
 		}
+
+
+
+
 		return ar;
 	}
 

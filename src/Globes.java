@@ -19,8 +19,8 @@ public class Globes extends Site{
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url="http://www.globes.co.il/";
 		this.window = WindowState.Invisible;
-		this.DateRange = true;
-		this.page = new GlobesPage(window);
+		this.DateRange = true; 
+		this.page = new GlobesPage(window ,this);
 	}
 
 	@Override
@@ -77,7 +77,12 @@ public class Globes extends Site{
 	}
 
 
-
+	/*
+	 * (non-Javadoc)
+	 * @see Site#resultsPage(java.util.List)
+	 * long result page.
+	 */
+	
 
 	@Override
 	public void resultsPage(List<String> urls) {
@@ -96,17 +101,26 @@ public class Globes extends Site{
 
 		String link="", title="";
 		int i=0;
-		int  checks = 0;
+		int checks = 0;
+		int res =0;
 		boolean addLink=false;
 		try{
 			while(urls.size() < numOfArticles){
 				link=""; title="";
-				if(i<results.size()){
-					WebElement head = results.get(i)
-							.findElement(By.className("left_side")).findElement(By.tagName("a"));
 
-					title = head.getText();
-					link = head.getAttribute("href");
+				checks++;
+				if(checks == maxSearch)
+					return;
+
+
+				if(i<results.size()){
+					try{
+						WebElement head = results.get(i)
+								.findElement(By.className("left_side")).findElement(By.tagName("a"));
+
+						title = head.getText();
+						link = head.getAttribute("href");
+					}catch(Exception e){e.printStackTrace();}
 
 					System.out.println(link);
 					System.out.println(title);
@@ -119,7 +133,7 @@ public class Globes extends Site{
 							results  = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='results_list']//div[@class='item']"));		
 							i=0;
 						}
-							
+
 					}catch(Exception e){e.printStackTrace();addLink=false;}
 
 					if(addLink){
@@ -131,15 +145,30 @@ public class Globes extends Site{
 					}
 					i++;
 				}
-				checks++;
+
 
 				if(i>=results.size()){
 					clickLoadMore();
+					int size = results.size();
 					results  = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='results_list']//div[@class='item']"));		
+				
+					if(size == results.size()){
+						sleep(2000);
+						res++;
+					}else res = 0;
+					
+					if(res >= 10){
+						String s = this.toDate;
+						updateToDate(true);
+						if(s.equals(this.toDate))
+							break;
+						res = 0;
+						selectTime();
+						results  = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='results_list']//div[@class='item']"));		
+						i=0;
+					}
 				}
 
-				if(checks == maxSearch)
-					return;
 			}
 		}catch(Exception e){ e.printStackTrace();return;}
 

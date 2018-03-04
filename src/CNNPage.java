@@ -6,10 +6,11 @@ import org.openqa.selenium.WebElement;
 
 public class CNNPage extends Page{
 	
-	public CNNPage(WindowState window){
-		super();
+	public CNNPage(WindowState window, Site site){
+		super(site);
 		this.window = window;
 		this.SiteName = "CNN";
+		
 	}
 	
 

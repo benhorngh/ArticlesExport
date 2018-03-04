@@ -16,8 +16,8 @@ public class YnetPage extends Page  {
 	
 	
 	
-	public YnetPage(WindowState window){
-		super();
+	public YnetPage(WindowState window, Site site){
+		super(site);
 		this.SiteName = "Ynet";
 		this.window = WindowState.Invisible;
 	}

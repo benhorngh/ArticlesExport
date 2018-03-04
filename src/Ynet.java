@@ -22,7 +22,7 @@ public class Ynet extends  Site {
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url = "https://www.Ynet.co.il";
 		this.window = WindowState.Background;
-		this.page = new YnetPage(window);
+		this.page = new YnetPage(window ,this);
 		this.DateRange = false;
 	}
 
@@ -31,7 +31,7 @@ public class Ynet extends  Site {
 		super();
 		this.url = "https://www.Ynet.co.il";
 		this.window = WindowState.Background;
-		this.page = new YnetPage(window);
+		this.page = new YnetPage(window, this); 
 		this.DateRange = false;
 	}
 
@@ -75,114 +75,97 @@ public class Ynet extends  Site {
 
 	@Override
 	public void resultsPage(List<String> urls) {
-		//get results
-		//		driver.get(url);
 
 		sleep(3000);
-		//		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+
 		WebElement lis=null;
 		try {
 			lis = driver.findElement(By.cssSelector("#su_w_s_search_content_list"));
 		}catch (Exception e) {e.printStackTrace(); return;}
 
 		String date ="";
-		boolean getLink = true;
 		boolean addLink = false;
-		if(state==SearchState.regular) {
-			addLink = true;
-		}
-		if(state==SearchState.headline) {
-			getLink = false;
-		}
 
-		int count = 0;
-
+		int checks=0;
 		int i=0;
 		String link="";
-		String headLine= "";
+		String title= "";
 		int again=0;
+
 		while(urls.size()<numOfArticles){
-			link=""; headLine= "";
+			link=""; title= ""; date="";
 
-			if(again==7) i++;
+			checks++;
+			if(checks == maxSearch)
+				return;
 
-			WebElement res;
+			if(again >= 10){
+				String s = this.toDate;
+				updateToDate(true);
+				if(s.equals(this.toDate))
+					break;
+				again = 0;
+			}
+
+			WebElement res = null;
 
 			try { 
-				try{
-					res=lis.findElement(By.cssSelector("#search_result_id_"+i));
-					count= 0;
 
-				} catch(Exception e){sleep(2000);
-				try{
-					res=lis.findElement(By.cssSelector("#search_result_id_"+i));
-					count= 0;
-				} catch(Exception e1){sleep(2000);
-				try{
-					res=lis.findElement(By.cssSelector("#search_result_id_"+i));
-					count= 0;
-				} catch(Exception e2){sleep(2000);res=lis.findElement(By.cssSelector("#search_result_id_"+(i-1)));
-				}
-
+				res=lis.findElement(By.cssSelector("#search_result_id_"+i));;
 
 				moveTo2(driver, res);
-				count++;
 
-				if(count==15)
-					break;
 				sleep(2000); 
-				continue;
-				}
+
 
 				if(i>70 && i+2%10==0){
 					sleep(5000);
 				}
-				sleep(2500);
-				}
-
 
 				if((i+2)%10==0){
 					moveTo(driver, res);
-
 				}
-				headLine= res.findElement(By.className("su_results_t_name")).getText();
 
-			} catch (Exception e){ e.printStackTrace(); break;}
+				title= res.findElement(By.className("su_results_t_name")).getText();
+
+				again = 0;
+			} catch (Exception e){ e.printStackTrace(); again++; }
+
+			if(res == null){
+				again++; continue;
+			}else again = 0;
 
 			try{
-				//				Actions actions = new Actions(driver);
-				//				actions.moveToElement(res).click().perform();
 				moveTo2(driver, res);
 				sleep(2000);
 				try{
 					res.click();
-					again=0;
-				}catch(Exception e){again++; continue;}
-
+				}catch(Exception e){e.printStackTrace();}
 
 
 				sleep(2000);
-				WebElement cli = res.findElements(By.className("su_btn_link")).get(0);
+				WebElement cli = res.findElement(By.className("su_btn_link"));
 				link=cli.getAttribute("href");
 
+				System.out.println(title);
 				System.out.println(link);					
 			} catch (Exception e){ e.printStackTrace(); }
 
 
-			//*[@id='search_result_id_1']//*[@class='']
-			date = res.findElement(By.className("su_results_t_description"))
-					.findElement(By.tagName("h4"))
-					.getAttribute("title");
+			try{
+				date = res.findElement(By.className("su_results_t_description"))
+						.findElement(By.tagName("h4"))
+						.getAttribute("title");
 
-			String[] arr  = date.split(" ");
-			arr = arr[0].split("/");
-			date = arr[0]+"."+arr[1]+"."+arr[2];
+				String[] arr  = date.split(" ");
+				arr = arr[0].split("/");
+				date = arr[0]+"."+arr[1]+"."+arr[2];
+			}catch(Exception e){e.printStackTrace();}
 
 			try{
-				addLink = stateHandle(link, headLine, date);
-			}catch(Exception e){e.printStackTrace();addLink=false;}
+				addLink = stateHandle(link, title, date);
+			}catch(Exception e){e.printStackTrace();}
 
-			date="";
 
 			if(addLink){
 				urls.add(link);

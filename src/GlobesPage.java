@@ -6,14 +6,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 public class GlobesPage extends Page{
 
-	public GlobesPage(WindowState window){
-		super();
+	public GlobesPage(WindowState window, Site site){
+		super(site);
 		this.window = window;
 		this.SiteName = "Globes";
 	}

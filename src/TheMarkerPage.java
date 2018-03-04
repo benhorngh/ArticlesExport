@@ -1,14 +1,15 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 
 public class TheMarkerPage extends Page {
 
-	public TheMarkerPage(WindowState window){
-		super();
+	public TheMarkerPage(WindowState window, Site site){
+		super(site);
 		this.SiteName = "The Marker";
 		this.window = window;
 	}

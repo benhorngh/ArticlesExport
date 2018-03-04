@@ -21,7 +21,7 @@ public class Bloomberg extends Site{
 		this.url="https://www.bloomberg.com";
 		this.window = WindowState.Invisible;
 		this.DateRange = true;
-		this.page = new BloombergPage((Site)this, window);
+		this.page = new BloombergPage(window, this);
 	}
 
 
@@ -37,12 +37,11 @@ public class Bloomberg extends Site{
 
 
 
-
 	@Override
 	public boolean search() {
 
 		driver = startWebDriver(url);
-		sleep(2000);
+		sleep(2000); 
 		driver.get(url);
 
 
@@ -70,6 +69,17 @@ public class Bloomberg extends Site{
 		return true;
 	}
 
+
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see Site#resultsPage(java.util.List)
+	 * results in separated pages.
+	 */
+
+
+
 	@Override
 	public void resultsPage(List<String> urls) {
 
@@ -77,19 +87,24 @@ public class Bloomberg extends Site{
 
 		sleep(3000);
 
+		int res= 0;
 		String date="",link="", title="";
 		int i=0;
-		int  checks = 0;
+		int checks = 0;
 		boolean addLink=false;
 
-		System.out.println("srefrfeferf");
 		try{
 			ArrayList<WebElement> results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result']"));
 
 			while(urls.size() < numOfArticles){
+				date=""; link=""; title="";
+				addLink=false;
+				checks++;
+				if(checks == maxSearch)
+					return;
+
 
 				if(i >= results.size()){
-					date ="";link=""; title="";
 
 					try{
 						WebElement nextButton = driver.findElement(By.className("content-next-link"));
@@ -97,84 +112,97 @@ public class Bloomberg extends Site{
 						moveTo2(driver, nextButton);
 						nextButton.click();
 
-					}catch(Exception e){
-						e.printStackTrace();
+					}catch(NoSuchElementException e){
+
 						String pageurl = driver.getCurrentUrl();
 						int x = Integer.parseInt(pageurl.substring(pageurl.lastIndexOf("=")+1, pageurl.length()));
 						x++;
-						pageurl = pageurl.substring(0 , pageurl.length()-2) + x;
+						pageurl = pageurl.substring(0 ,pageurl.lastIndexOf("=")+1) + x;
+						System.err.println("no next" + x);
 						driver.get(pageurl);
+					}catch(Exception e){
+						e.printStackTrace();
 					}
 
 					sleep(3000);
 					results = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='search-result']"));
 
+					if(results.size() == 0)
+						res++;
+					else res = 0;
+
+					if(res >= 10){
+						String s = this.toDate;
+						updateToDate(true);
+						if(s.equals(this.toDate))
+							break;
+						changeTime(); i = results.size();
+						res = 0;
+					}
+
+
 					i=0;
 				}
 
-				try{
-					if(!results.get(i).findElement(By.tagName("article")).getAttribute("class") 
-							.equals("search-result-story type-video")&&
-							!results.get(i).findElement(By.tagName("article")).getAttribute("class") 
-							.equals("search-result-story type-audio")){
-						WebElement ttl = results.get(i).findElement(By.className("search-result-story__headline"));
-
-						WebElement titl = ttl.findElement(By.tagName("a"));
-						link = titl.getAttribute("href");
-
-						title = ttl.getText();
-
-						try{
-							WebElement dt = results.get(i).findElement(By.className("published-at"));
 
 
-							String[] arr = dt.getText().split(" ");
-							arr[0] = ""+ monthToInt(arr[0]);
-							arr[1] = arr[1].substring(0, arr[1].length()-1);
-							 date = arr[1]+"."+arr[0]+"."+arr[2];
 
-						}catch(Exception e){e.printStackTrace();}
-						
-						System.out.println(link);
-						System.out.println(title);
 
-						try{
-							String s = toDate;
-							addLink = stateHandle(link, title, date);
+				if(i<results.size()){
+					try{
+						if(!results.get(i).findElement(By.tagName("article")).getAttribute("class") 
+								.equals("search-result-story type-video")&&
+								!results.get(i).findElement(By.tagName("article")).getAttribute("class") 
+								.equals("search-result-story type-audio")){
 
-							if(!s.equals(toDate)){
-								changeTime(); i=results.size()+1;
+							WebElement ttl = results.get(i).findElement(By.className("search-result-story__headline"));
+							WebElement titl = ttl.findElement(By.tagName("a"));
+							link = titl.getAttribute("href");
+
+							title = ttl.getText();
+
+							try{
+								WebElement dt = results.get(i).findElement(By.className("published-at"));
+								String[] arr = dt.getText().split(" ");
+								arr[0] = ""+ monthToInt(arr[0]);
+								arr[1] = arr[1].substring(0, arr[1].length()-1);
+								date = arr[1]+"."+arr[0]+"."+arr[2];
+
+							}catch(Exception e){e.printStackTrace();}
+
+							System.out.println(link);
+							System.out.println(title);
+
+							try{
+								String s = toDate;
+								addLink = stateHandle(link, title, date);
+
+								if(!s.equals(toDate)){
+									changeTime(); i = results.size();
+								}
+
+							}catch(Exception e){e.printStackTrace();addLink=false;}
+
+							if(addLink){
+
+								urls.add(link);
+								removeDuplicate(urls);
+								mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
 							}
 
 
-						}catch(Exception e){e.printStackTrace();addLink=false;}
-					}
-				}catch(Exception e){e.printStackTrace();addLink=false;}
-
-				if(addLink){
-
-					urls.add(link);
-					removeDuplicate(urls);
-					mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
+						}
+					}catch(Exception e){e.printStackTrace();}	
+					i++;
 				}
-				addLink=false;
-
-				i++;
-				checks++;
-
-
-				if(checks == maxSearch)
-					return;
 			}
 
 		}catch(Exception e){e.printStackTrace();}
-
 	}
+	
 
 	private void changeTime(){
-
 		sleep(2000);
-
 		if(!this.toDate.isEmpty()){
 			try{
 				WebElement nextButton = driver.findElement(By.className("content-next-link"));
@@ -201,8 +229,6 @@ public class Bloomberg extends Site{
 
 			try{
 				int pindex =newUrl.lastIndexOf("=");
-				//				String p = newUrl.substring(pindex+1, newUrl.length());
-				//				p = ""+ (Integer.parseInt(p)-1);
 				newUrl = newUrl.substring(0, pindex+1);
 				newUrl = newUrl+"1";
 			}catch(Exception e){e.printStackTrace();}

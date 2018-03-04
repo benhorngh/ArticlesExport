@@ -1,11 +1,12 @@
 import java.util.ArrayList;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 public class ReutersPage extends Page {
 
-	public ReutersPage(WindowState window){
-		super();
+	public ReutersPage(WindowState window, Site site){
+		super(site);
 		this.window = window;
 		this.SiteName = "Reuters";
 	}
@@ -15,13 +16,27 @@ public class ReutersPage extends Page {
 	@Override
 	public String getTitle() {
 
-		String str="";
+		String str=""; 
 		boolean ok = false;
 		try{
 			WebElement head = driver.findElement(By.xpath(s+"//*[contains(@class,'ArticleHeader_headline')]"));
 			str = head.getText();
-			ok = true;
+
+			if(!str.isEmpty())
+				ok = true;
 		}catch(Exception e){}
+
+		if(!ok){
+			try{
+				WebElement head = driver.findElement(By.xpath("//*[@class='columnRight grid8']/h2"));
+				str = head.getText();
+
+				if(!str.isEmpty())
+					ok = true;
+			}catch(Exception e){}
+		}
+
+
 
 		return str;
 	}
@@ -40,17 +55,33 @@ public class ReutersPage extends Page {
 		try{
 			WebElement reporter = driver.findElement(By.xpath(s+"//*[contains(@class,'Attribution_container')]"));
 			str = reporter.getText();
-			ok=true;
+			if(!str.isEmpty())
+				ok=true;
 		}
 		catch(Exception e){}
 		if(!ok){
 			try{
 				WebElement reporter = driver.findElement(By.xpath(s+"//*[contains(@class,'BylineBar_byline')]"));
 				str = reporter.getText();
-				ok=true;
+				if(!str.isEmpty())
+					ok=true;
 			}
 			catch(Exception e){}
-			
+
+
+
+		}
+		if(!ok){
+			try{
+				WebElement reporter = driver.findElement(By.xpath("//*[@id='preamble']"));
+				str = reporter.getText();
+				if(!str.isEmpty())
+					ok=true;
+			}
+			catch(Exception e){}
+
+
+			//*[@id='preamble']
 		}
 		return str;
 	}
@@ -68,9 +99,28 @@ public class ReutersPage extends Page {
 			String day = arr[1].substring(0, arr[1].length()-1);
 			String year = arr[2];
 			str = day+"."+month+"."+year;
-			ok=true;
+			if(!str.isEmpty())
+				ok=true;
+
 		}
 		catch(Exception e){}
+
+		if(!ok){
+			try{
+				WebElement reporter = driver.findElement(By.xpath("//*[@class='timestamp']"));
+				str = reporter.getText();
+				String[] arr = str.split(" ");
+				int month = monthToInt(arr[0]);
+				String day = arr[1].substring(0, arr[1].length()-1);
+				String year = arr[2];
+				str = day+"."+month+"."+year;
+				ok=true;
+			}
+			catch(Exception e){}
+
+
+
+		}
 		return str;
 	}
 
@@ -83,9 +133,24 @@ public class ReutersPage extends Page {
 			for(int i=0; i<body.size(); i++){
 				str+=body.get(i).getText();
 			}
-			ok =true;
+			if(!str.isEmpty())
+				ok =true;
 		}
 		catch(Exception e){}
+
+		if(!ok){
+			try{
+				ArrayList<WebElement> body = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@id='postcontent']/p[@data-ektron-preserve='true']"));
+				for(int i=0; i<body.size(); i++){
+					str+=body.get(i).getText();
+				}
+				if(!str.isEmpty())
+					ok =true;
+			}
+			catch(Exception e){}
+		}
+
+		
 
 		return str;
 	}

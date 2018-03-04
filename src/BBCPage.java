@@ -5,8 +5,8 @@ import org.openqa.selenium.WebElement;
 
 public class BBCPage extends Page{
 
-	public BBCPage(WindowState window){
-		super();
+	public BBCPage(WindowState window, Site site){
+		super(site);
 		this.window = window;
 		this.SiteName = "BBC";
 	}

@@ -12,11 +12,11 @@ public class USAtoday extends Site{
 		this.url=" https://www.usatoday.com/";
 		this.window = WindowState.Invisible;
 		this.DateRange = false;
-		this.page = new USAtodayPage(window);
+		this.page = new USAtodayPage(window ,this);
 	}
 
 
-	@Override
+	@Override 
 	public boolean search() {
 
 		driver = startWebDriver(url);
@@ -58,12 +58,19 @@ public class USAtoday extends Site{
 		}catch(Exception e){e.printStackTrace(); return false;}
 		sleep(2000);
 
-		return true;
+		return true; 
 	}
+ 
+
+	
+	/*
+	 * (non-Javadoc)
+	 * @see Site#resultsPage(java.util.List)
+	 * long result page.
+	 */
 
 	@Override
 	public void resultsPage(List<String> urls) {
-
 
 		sleep(2000);
 		ArrayList<WebElement> results  = (ArrayList<WebElement>) 
@@ -71,32 +78,30 @@ public class USAtoday extends Site{
 
 		String link="", title="" , date="";
 		int i=0;
-		int tries= 0;
+		int res= 0;
 		int  checks = 0;
+		String type ="";
 		boolean addLink=false;
 		try{
 			while(urls.size() < numOfArticles){
-				link=""; title=""; date="";
+				link=""; title=""; date=""; type ="";
 				addLink=false;
+
+				checks++;
+				if(checks == maxSearch)
+					return;
 
 				if(i<results.size()){
 					WebElement a = null;
 					try{
-						a = results.get(i)
-								.findElement(By.tagName("a"));
-
-
+						a = results.get(i).findElement(By.tagName("a"));
 						link = a.getAttribute("href");
 
-						WebElement head = results.get(i)
-								.findElement(By.xpath(".//div[@class='front']/h3"));
-
-
+						WebElement head = results.get(i).findElement(By.xpath(".//div[@class='front']/h3"));
 						title = head.getText();
 
+						WebElement dt = results.get(i).findElement(By.xpath(".//*[@class='meta']/span"));
 
-						WebElement dt = results.get(i)
-								.findElement(By.xpath(".//*[@class='meta']/span"));
 
 						date = dt.getText();
 						String[] arr = date.split(" ");
@@ -107,10 +112,10 @@ public class USAtoday extends Site{
 						System.out.println(link);
 						System.out.println(title);
 
-					}catch(Exception e){i++; continue;}
+						type = results.get(i).getAttribute("class");
 
+					}catch(Exception e){e.printStackTrace();}
 
-					String type = results.get(i).getAttribute("class");
 
 					if((!type.contains("video"))
 							&&(!type.contains("gallery"))
@@ -119,7 +124,11 @@ public class USAtoday extends Site{
 							&&(!link.contains("americasmarkets"))
 							) {
 						try{
+							String s = this.toDate;
 							addLink = stateHandle(link, title, date);
+							if(!s.equals(this.toDate))
+								i=0;
+							
 						}catch(Exception e){e.printStackTrace();addLink=false;}
 					}
 					else addLink=false;
@@ -129,7 +138,6 @@ public class USAtoday extends Site{
 						mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
 					}
 					i++;
-					checks++;
 				}
 
 
@@ -138,24 +146,25 @@ public class USAtoday extends Site{
 					int tmp = results.size();
 
 					moveTo2(driver, results.get(results.size()-3));
-					moveTo(driver,results.get(results.size()-3));
 					sleep(2500);
+					
 					results  = (ArrayList<WebElement>) 
 							driver.findElements(By.xpath("//*[@class='clearfix search-results-list']/li"));
 
-
 					if(results.size()==tmp)
-						tries++;
-					else tries=0;
+						res++;
+					else res=0;
 
-					if(tries == 10)
-						break;
-
-
+					if(res >= 10){
+						String s = this.toDate;
+						updateToDate(true);
+						if(s.equals(this.toDate))
+							break;
+						res = 0;
+						i=0;
+					}
 				}
 
-				if(checks == maxSearch)
-					return;
 			}
 		}catch(Exception e){ e.printStackTrace();return;}
 
