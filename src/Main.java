@@ -31,15 +31,17 @@ public class Main {
 		String textToCompare = "";
 		String textToCompareEnglish = "";
 		SearchState stat= SearchState.regular; 
-		int numOfArticles = 100;
+		int numOfArticles = 1000;
 		boolean ynet = false;
 		boolean TM = false;
 		boolean blmbrg = false;
 		boolean rtrs = false;
-		boolean glbs = true;
+		boolean glbs = false;
 		boolean CNN = false;
 		boolean BBC = false;
 		boolean USAt = false;
+		boolean NYT = true;
+		boolean BusIn = true;
 		boolean[] players={
 				ynet
 				,TM
@@ -49,12 +51,14 @@ public class Main {
 				,CNN
 				,BBC
 				,USAt
+				,NYT
+				,BusIn
 		};
 
-		String startDate="1.1.2013"; 
+		String startDate="1.1.2008"; 
 		String endDate="1.1.2018";
 
-		boolean toFile = true;
+		boolean toFile = false;
 		boolean fair = false;
 
 		starter(textToSearch,textToSearchEnglish,textToCompare,textToCompareEnglish
@@ -222,6 +226,8 @@ public class Main {
 		if(players[5]) System.out.print("CNN ");
 		if(players[6]) System.out.print("BBC ");
 		if(players[7]) System.out.print("USAtoday ");
+		if(players[8]) System.out.print("NewYorkTimes ");
+		if(players[9]) System.out.print("BusinessInsider");
 		System.out.println();
 		System.out.println();
 
@@ -254,7 +260,7 @@ public class Main {
 	 */
 	private static Site[] init(String tts, String etts, String ttc, String ettc, 
 			SearchState stat, int noa, String sd,String ed){
-		Site[] sites = new Site[8];
+		Site[] sites = new Site[10];
 		sites[0]=new Ynet     (tts, ttc, noa, stat, sd,ed);
 		sites[1]=new TheMarker(tts, ttc, noa, stat, sd,ed);
 		sites[2]=new Bloomberg(etts, ettc, noa, stat, sd,ed);
@@ -263,13 +269,13 @@ public class Main {
 		sites[5]=new CNN(etts, ettc, noa, stat, sd,ed);
 		sites[6]=new BBC(etts, ettc, noa, stat, sd,ed);
 		sites[7]=new USAtoday(etts, ettc, noa, stat, sd,ed);
+		sites[8]=new NewYorkTimes(etts, ettc, noa, stat, sd,ed);
+		sites[9]=new BusinessInsider(etts, ettc, noa, stat, sd,ed);
 
 		return sites;
 	}
 
 	private static void play(Site[] sites, boolean[] players, boolean totxt) {
-
-
 
 
 		/*

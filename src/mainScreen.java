@@ -53,6 +53,8 @@ public class mainScreen {
 	private JCheckBox chckbxUsatoday;
 	private JPanel panel_2;
 	private JCheckBox chckbxFairSplit;
+	private JCheckBox chckbxNewYorkTimes;
+	private JCheckBox chckbxBusinessinsider;
 
 
 
@@ -87,7 +89,7 @@ public class mainScreen {
 
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setBounds(100, 100, 840, 485);
+		frame.setBounds(100, 100, 840, 537);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
@@ -229,7 +231,9 @@ public class mainScreen {
 				FormSpecs.GROWING_BUTTON_COLSPEC,
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),},
-				new RowSpec[] {
+			new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
@@ -293,8 +297,18 @@ public class mainScreen {
 
 		chckbxUsatoday = new JCheckBox("USAtoday");
 		chckbxUsatoday.setBackground(Color.WHITE);
+		chckbxUsatoday.setFocusable(false);
 		chckbxUsatoday.setToolTipText("no comments");
 		panel.add(chckbxUsatoday, "2, 16");
+		
+		chckbxNewYorkTimes = new JCheckBox("New York Times");
+		chckbxNewYorkTimes.setFocusable(false);
+		chckbxNewYorkTimes.setBackground(Color.WHITE);
+		panel.add(chckbxNewYorkTimes, "2, 18");
+		
+		chckbxBusinessinsider = new JCheckBox("BusinessInsider");
+		chckbxBusinessinsider.setBackground(Color.WHITE);
+		panel.add(chckbxBusinessinsider, "2, 20");
 
 
 		JTextPane jtp = new JTextPane();
@@ -418,9 +432,11 @@ public class mainScreen {
 								,chckbxCnn.isSelected()
 								,chckbxBbc.isSelected()
 								,chckbxUsatoday.isSelected()
+								,chckbxNewYorkTimes.isSelected()
+								,chckbxBusinessinsider.isSelected()
 						};
 						
-						boolean fs = chckbxFairSplit.isSelected();
+						boolean frsplt = chckbxFairSplit.isSelected();
 
 						System.out.println("tts: "+tts);
 						//						System.out.println("ttse: "+ttse);
@@ -432,7 +448,7 @@ public class mainScreen {
 						System.out.println(Arrays.toString(sites));
 					
 
-						Main.starter(tts, tts, ttc, ttc, state, sdt, edt, noa, sites, totxt, fs);
+						Main.starter(tts, tts, ttc, ttc, state, sdt, edt, noa, sites, totxt, frsplt);
 					}
 				};
 				thread.start();

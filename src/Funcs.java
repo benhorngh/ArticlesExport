@@ -384,6 +384,7 @@ public abstract class Funcs {
 			dt = formatter.parse(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
+			return null;
 		}
 
 		return dt;

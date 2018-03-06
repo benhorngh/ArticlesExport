@@ -100,42 +100,44 @@ public class CNN extends Site{
 					return;
 
 
-				try{
-					WebElement ttl = results.get(i).findElement(By.xpath(".//*[@class='cnn-search__result-headline']/*"));
-					link = ttl.getAttribute("href");
+				if(i<results.size()){
+					try{
+						WebElement ttl = results.get(i).findElement(By.xpath(".//*[@class='cnn-search__result-headline']/*"));
+						link = ttl.getAttribute("href");
 
-					title = ttl.getText();
+						title = ttl.getText();
 
-					System.out.println(link);
-					System.out.println(title);
+						System.out.println(link);
+						System.out.println(title);
 
-					WebElement dt = results.get(i).findElement(By.className("cnn-search__result-publish-date"));
-					date = dt.getText();
-					String arr[] = date.split(" ");
-					date = arr[1].substring(0, arr[1].length()-1)+"."+monthToInt(arr[0])+"."+arr[2];
+						WebElement dt = results.get(i).findElement(By.className("cnn-search__result-publish-date"));
+						date = dt.getText();
+						String arr[] = date.split(" ");
+						date = arr[1].substring(0, arr[1].length()-1)+"."+monthToInt(arr[0])+"."+arr[2];
 
-				}catch(Exception e){e.printStackTrace();}
+					}catch(Exception e){e.printStackTrace();}
 
-				try{
-					String s = toDate;
-					addLink = stateHandle(link, title, date);
-					if(!s.equals(toDate)){
-						driver.get(firstPage);
-						results = driver.findElements(By.xpath("//*[@class='cnn-search__results-list']/div"));
-						i=0;
+					try{
+						String s = toDate;
+						addLink = stateHandle(link, title, date);
+						if(!s.equals(toDate)){
+							driver.get(firstPage);
+							results = driver.findElements(By.xpath("//*[@class='cnn-search__results-list']/div"));
+							i=0;
 
+						}
+
+					}catch(Exception e){e.printStackTrace();addLink=false;}
+
+					if(addLink){
+						urls.add(link);
+						removeDuplicate(urls);
+						mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
 					}
+					addLink=false;
 
-				}catch(Exception e){e.printStackTrace();addLink=false;}
-
-				if(addLink){
-					urls.add(link);
-					removeDuplicate(urls);
-					mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
+					i++;
 				}
-				addLink=false;
-
-				i++;
 
 				if(i>=results.size()){
 
@@ -150,7 +152,7 @@ public class CNN extends Site{
 
 						sleep(1000);
 
-						next  =0;
+						next =0;
 					}catch(Exception e) {
 						e.printStackTrace();sleep(3000);
 
@@ -164,7 +166,13 @@ public class CNN extends Site{
 								break;
 							next = 0;
 							driver.get(firstPage);
-						}}
+						}
+						else{
+							System.out.println("try again");
+							continue;
+						}
+					}
+					
 					results = driver.findElements(By.xpath("//*[@class='cnn-search__results-list']/div"));
 					i=0;
 

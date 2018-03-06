@@ -26,7 +26,7 @@ public class TheMarker extends Site {
 
 	@Override
 	public boolean search() {
- 
+
 		driver = startWebDriver(url);
 		sleep(10000);
 		//search
@@ -74,11 +74,11 @@ public class TheMarker extends Site {
 
 	@Override
 	public void resultsPage(List<String> urls) {
-	
+
 		List<WebElement> results = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
 
 		this.firstPage = driver.getCurrentUrl();
-		
+
 		String link="", title="", date="";
 		int i=0;
 		int checks = 0;
@@ -109,24 +109,25 @@ public class TheMarker extends Site {
 					date = dt.getText();
 				}catch(Exception e){e.printStackTrace();}
 
-				try{
-					String s = toDate;
-					addLink = stateHandle(link, title, date);
-					if(!s.equals(toDate)){
-						driver.get(firstPage);
-						results = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
-						i=0;
-					}
-				}catch(Exception e){e.printStackTrace();addLink=false;}
-
 				if(!link.contains("LIVE")){
+					try{
+						String s = toDate;
+						addLink = stateHandle(link, title, date);
+						if(!s.equals(toDate)){
+							driver.get(firstPage);
+							results = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
+							i=0;
+						}
+					}catch(Exception e){e.printStackTrace();addLink=false;}
+				} else addLink = false;
 
-					if(addLink){
-						urls.add(link);
-						removeDuplicate(urls);
-						mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
-					}
+
+				if(addLink){
+					urls.add(link);
+					removeDuplicate(urls);
+					mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
 				}
+
 
 				i++;
 
@@ -142,14 +143,14 @@ public class TheMarker extends Site {
 					sleep(1000);
 
 				}catch(Exception e){e.printStackTrace();}
-				
+
 				results = driver.findElements(By.xpath("//*[contains(@class, 'tmTeaser generalTeaser')]"));
-				
+
 				if(results.size() ==0){
 					sleep(2000);
 					res++;
 				}else res =0;
-				
+
 				if(res >= 10){
 					String s = this.toDate;
 					updateToDate(true);
@@ -158,7 +159,7 @@ public class TheMarker extends Site {
 					res = 0;
 					driver.get(firstPage);
 				}
-			
+
 			}
 
 		}
@@ -166,6 +167,6 @@ public class TheMarker extends Site {
 
 	}
 
-	
+
 
 }

@@ -26,7 +26,7 @@ public abstract class Site extends Funcs implements Runnable {
 	SearchState state;
 	static boolean fairSplit = false;
 
-	 int maxSearch = 500000;
+	 int maxSearch = 5000000;
 
 	List<ArticlesRow> articles;
 
@@ -54,7 +54,7 @@ public abstract class Site extends Funcs implements Runnable {
 		this.textToCompare = textToCompare;
 		this.numOfArticles = numOfArticles; 
 		
-		maxSearch = numOfArticles*50;
+		maxSearch = numOfArticles*1000;
 		
 		this.state = state;
 		this.fromDate = startAt;
@@ -142,12 +142,13 @@ public abstract class Site extends Funcs implements Runnable {
 
 		if((link == null)||(link.isEmpty())) return false;
 
+		
 		if(!this.fromDate.isEmpty()){
 			taken = stateWithDate(link, title, date);
 			return taken;
 		}
 
-		taken = stateWithDate(link, title, date);
+		taken = stateWithoutDate(link, title);
 		return taken;
 	}
 
@@ -158,26 +159,33 @@ public abstract class Site extends Funcs implements Runnable {
 	 * state handler with date range.
 	 * @param link
 	 * @param title
-	 * @param Adate
+	 * @param Adate article date
 	 * @return
 	 */
 	private boolean stateWithDate(String link, String title, String Adate){ 
 		updateToDate(false);
-
+		
 		Date fromD = stringToDate(this.fromDate);
 		Date toD = stringToDate(this.toDate);
 
 		if(Adate!=null && !Adate.isEmpty()){  //if can access date from result page
 			Date urlD = stringToDate(Adate);
 
+//			System.out.println(Adate);
+//			System.out.println(dateToString(urlD));
+			
+			
 			if(urlD == null) stateWithDate(link, title, "");
 
-			if(urlD.after(toD) || urlD.before(fromD)){
+			if(urlD.before(toD) && urlD.after(fromD)){
+				System.out.println("date okey");
+				return stateWithoutDate(link, title);
+			}
+			
+			else {
 				System.err.println("next");
 				return false;
 			}
-			
-			else return stateWithoutDate(link, title);
 		}
 
 		//need access to article for the date
@@ -284,8 +292,10 @@ public abstract class Site extends Funcs implements Runnable {
 				String[] arr= toDate.split("\\.");
 				String[] arr2= fromDate.split("\\.");
 				int year = Integer.parseInt(arr[2]);
-				mainScreen.addToLog("year "+ year + "completed.");
 				year --;
+				
+				mainScreen.addToLog("year "+ year + " completed.");
+				
 				toDate = arr[0]+"."+arr[1]+"."+year;
 				i++;
 				
