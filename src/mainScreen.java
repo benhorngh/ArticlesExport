@@ -1,4 +1,5 @@
 import java.awt.Choice;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
@@ -13,7 +14,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
@@ -55,6 +55,7 @@ public class mainScreen {
 	private JCheckBox chckbxFairSplit;
 	private JCheckBox chckbxNewYorkTimes;
 	private JCheckBox chckbxBusinessinsider;
+	private JCheckBox chckbxAlternet;
 
 
 
@@ -251,6 +252,8 @@ public class mainScreen {
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,}));
 
 		chckbxYnet = new JCheckBox("Ynet");
@@ -309,6 +312,10 @@ public class mainScreen {
 		chckbxBusinessinsider = new JCheckBox("BusinessInsider");
 		chckbxBusinessinsider.setBackground(Color.WHITE);
 		panel.add(chckbxBusinessinsider, "2, 20");
+		
+		chckbxAlternet = new JCheckBox("Alternet");
+		chckbxAlternet.setBackground(Color.WHITE);
+		panel.add(chckbxAlternet, "2, 22");
 
 
 		JTextPane jtp = new JTextPane();
@@ -357,7 +364,6 @@ public class mainScreen {
 		// Add item listener
 		choice.addItemListener(new ItemListener(){
 
-			@SuppressWarnings("deprecation")
 			public void itemStateChanged(ItemEvent arg0) {
 				if(choice.getSelectedItem().equals("Regular")){
 					textField_2.setEditable(false);
@@ -434,6 +440,7 @@ public class mainScreen {
 								,chckbxUsatoday.isSelected()
 								,chckbxNewYorkTimes.isSelected()
 								,chckbxBusinessinsider.isSelected()
+								,chckbxAlternet.isSelected()
 						};
 						
 						boolean frsplt = chckbxFairSplit.isSelected();
@@ -478,6 +485,4 @@ public class mainScreen {
 
 
 
-	private static void addPopup(Component component, final JPopupMenu popup) {
-	}
 }

@@ -82,7 +82,7 @@ public class Globes extends Site{
 	 * @see Site#resultsPage(java.util.List)
 	 * long result page.
 	 */
-	
+
 
 	@Override
 	public void resultsPage(List<String> urls) {
@@ -93,20 +93,22 @@ public class Globes extends Site{
 
 
 
-		for(int i=10; i<this.numOfArticles; i=i+10){
+		for(int i=0; i<10; i++){
 			clickLoadMore();
 		}
 
+		this.firstPage = driver.getCurrentUrl();
+
 		ArrayList<WebElement> results  = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='results_list']//div[@class='item']"));
 
-		String link="", title="";
+		String link="",date="", title="";
 		int i=0;
 		int checks = 0;
 		int res =0;
 		boolean addLink=false;
 		try{
 			while(urls.size() < numOfArticles){
-				link=""; title="";
+				link=""; title=""; date="";
 
 				checks++;
 				if(checks == maxSearch)
@@ -120,6 +122,14 @@ public class Globes extends Site{
 
 						title = head.getText();
 						link = head.getAttribute("href");
+
+						//01/01/2018 18:37
+						WebElement dt = results.get(i).findElement(By.xpath(".//*[@class='date']//*[@class='bold']"));
+						date = dt.getText();
+						String[] arr = date.split(" ")[0].split("/");
+						date = arr[0]+"."+arr[1]+"."+arr[2];
+
+
 					}catch(Exception e){e.printStackTrace();}
 
 					System.out.println(link);
@@ -127,7 +137,7 @@ public class Globes extends Site{
 
 					try{
 						String s = toDate;
-						addLink = stateHandle(link, title, "");
+						addLink = stateHandle(link, title, date);
 						if(!s.equals(toDate)){
 							selectTime();
 							results  = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='results_list']//div[@class='item']"));		
@@ -148,15 +158,16 @@ public class Globes extends Site{
 
 
 				if(i>=results.size()){
-					clickLoadMore();
+					nextPage();
+					i = 0;
 					int size = results.size();
 					results  = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='results_list']//div[@class='item']"));		
-				
-					if(size == results.size()){
+
+					if(0 == results.size()){
 						sleep(2000);
 						res++;
 					}else res = 0;
-					
+
 					if(res >= 10){
 						String s = this.toDate;
 						updateToDate(true);
@@ -165,7 +176,7 @@ public class Globes extends Site{
 						res = 0;
 						selectTime();
 						results  = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='results_list']//div[@class='item']"));		
-						i=0;
+						driver.get(this.firstPage);
 					}
 				}
 
@@ -175,6 +186,29 @@ public class Globes extends Site{
 
 	}
 
+
+	private void nextPage() {
+		try{
+			System.out.println("here");
+			String page = driver.getCurrentUrl();
+
+			int ind = page.indexOf("page=");
+			ind = ind + 5;
+			String strt = page.substring(0,ind);
+			page = page.substring(ind, page.length());
+			ind = page.indexOf("&");
+			String end = page.substring(ind, page.length());
+			page = page.substring(0, ind);
+			int pg = Integer.parseInt(page);
+			pg++;
+
+			String npage = strt + pg + end;
+
+			driver.get(npage);
+			sleep(1500);
+		}catch(Exception e){e.printStackTrace();};
+
+	}
 
 	private void selectTime() {
 

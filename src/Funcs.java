@@ -68,10 +68,7 @@ public abstract class Funcs {
 		options.addArguments("--mute-audio");
 
 		driver = new ChromeDriver(options);
-		try{
-			//			driver.manage().window().setPosition(new Point(-2000, 0));
-		}
-		catch(Exception e){System.err.println(e);}
+		sleep(1000);
 
 
 		if(url.isEmpty() || url.equals(""))
@@ -98,7 +95,7 @@ public abstract class Funcs {
 				options.addArguments("--start-maximized");
 				options.addArguments("--mute-audio");
 				driver = new ChromeDriver(options);
-
+				sleep(1000);
 				if(url.isEmpty() || url.equals(""))
 					return driver;
 				driver.get(url);
@@ -126,6 +123,7 @@ public abstract class Funcs {
 		options.addArguments("--start-maximized");
 		options.addArguments("--mute-audio");
 		driver = new ChromeDriver(options);
+		sleep(1000);
 		try{
 			driver.manage().window().setPosition(new Point(-2000, 0));
 		}

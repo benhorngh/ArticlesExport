@@ -27,11 +27,11 @@ public class Main {
 
 
 		String textToSearch = "טראמפ";
-		String textToSearchEnglish = "teva";
+		String textToSearchEnglish = "economy";
 		String textToCompare = "";
 		String textToCompareEnglish = "";
 		SearchState stat= SearchState.regular; 
-		int numOfArticles = 1000;
+		int numOfArticles = 50;
 		boolean ynet = false;
 		boolean TM = false;
 		boolean blmbrg = false;
@@ -40,8 +40,9 @@ public class Main {
 		boolean CNN = false;
 		boolean BBC = false;
 		boolean USAt = false;
-		boolean NYT = true;
-		boolean BusIn = true;
+		boolean NYT = false;
+		boolean BusIn = false;
+		boolean Altrnt = true;
 		boolean[] players={
 				ynet
 				,TM
@@ -53,6 +54,7 @@ public class Main {
 				,USAt
 				,NYT
 				,BusIn
+				,Altrnt
 		};
 
 		String startDate="1.1.2008"; 
@@ -60,6 +62,8 @@ public class Main {
 
 		boolean toFile = false;
 		boolean fair = false;
+		
+		System.setProperty("webdriver.chrome.logfile", "chromedriver.log");
 
 		starter(textToSearch,textToSearchEnglish,textToCompare,textToCompareEnglish
 				,stat,startDate,endDate,numOfArticles, players, toFile, fair);
@@ -91,10 +95,7 @@ public class Main {
 			){
 
 
-
-
 		Site.fairSplit = fairSplit;
-
 
 		if(folderName.equals("output")){
 			boolean ok =false;
@@ -227,14 +228,13 @@ public class Main {
 		if(players[6]) System.out.print("BBC ");
 		if(players[7]) System.out.print("USAtoday ");
 		if(players[8]) System.out.print("NewYorkTimes ");
-		if(players[9]) System.out.print("BusinessInsider");
+		if(players[9]) System.out.print("BusinessInsider ");
+		if(players[10]) System.out.print("Alternet ");
 		System.out.println();
 		System.out.println();
 
 		Site[] sites = init(textToSearch,textToSearchEnglish, textToCompare, textToCompareEnglish,
 				stat, numOfArticles, startDate,endDate);
-		//		boolean[] players = {ynet, TM, blmbrg, rtrs, glbs};
-		//Ynet , TheMarker, Bloomberg, Reuters, Globes .
 
 		try{
 			play(sites, players, toTxt);
@@ -260,7 +260,7 @@ public class Main {
 	 */
 	private static Site[] init(String tts, String etts, String ttc, String ettc, 
 			SearchState stat, int noa, String sd,String ed){
-		Site[] sites = new Site[10];
+		Site[] sites = new Site[11];
 		sites[0]=new Ynet     (tts, ttc, noa, stat, sd,ed);
 		sites[1]=new TheMarker(tts, ttc, noa, stat, sd,ed);
 		sites[2]=new Bloomberg(etts, ettc, noa, stat, sd,ed);
@@ -271,6 +271,7 @@ public class Main {
 		sites[7]=new USAtoday(etts, ettc, noa, stat, sd,ed);
 		sites[8]=new NewYorkTimes(etts, ettc, noa, stat, sd,ed);
 		sites[9]=new BusinessInsider(etts, ettc, noa, stat, sd,ed);
+		sites[10]=new Alternet(etts, ettc, noa, stat, sd,ed);
 
 		return sites;
 	}

@@ -40,6 +40,16 @@ public class BusinessInsider extends Site{
 		return true;
 	}
 
+	
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see Site#resultsPage(java.util.List)
+	 * results in separated pages.
+	 */
+
+	
 	@Override
 	public void resultsPage(List<String> urls) {
 

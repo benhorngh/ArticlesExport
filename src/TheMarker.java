@@ -109,9 +109,11 @@ public class TheMarker extends Site {
 					date = dt.getText();
 				}catch(Exception e){e.printStackTrace();}
 
-				if(!link.contains("LIVE")){
+				if(!link.contains("LIVE") && !title.isEmpty()){
 					try{
 						String s = toDate;
+						
+						System.out.println(date);
 						addLink = stateHandle(link, title, date);
 						if(!s.equals(toDate)){
 							driver.get(firstPage);

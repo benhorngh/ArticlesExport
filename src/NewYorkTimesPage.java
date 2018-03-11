@@ -66,9 +66,17 @@ public class NewYorkTimesPage extends Page{
 			}catch(Exception e){}
 		}
 		
-		
-		
+		if(!ok){
+			try{
+				WebElement ttl = driver.findElement(By.xpath("//*[@class='story-meta']//*[contains(@class,'story-heading')]"));
+				str = ttl.getText();
+				if(!str.isEmpty())
+					ok  = true;
 
+			}catch(Exception e){}
+		}
+		
+		
 		return str;
 	} 
 
@@ -279,7 +287,25 @@ public class NewYorkTimesPage extends Page{
 
 			}catch(Exception e){}
 		}
-		//class="header-current-day"
+
+
+		if(!ok){
+			try{
+				WebElement dt = driver.findElement(By.xpath("//*[@class='story-meta']//time"));
+				str = dt.getText();
+				String[] arr = str.split(" ");
+				//March 11, 2016
+				
+				arr[0] = ""+ monthToInt(arr[0]);
+				arr[1] = arr[1].substring(0,arr[1].length()-1);
+				
+				str = arr[1]+"."+arr[0]+"."+arr[2];
+				
+				if(!str.isEmpty())
+					ok = true;
+
+			}catch(Exception e){}
+		}
 		
 		
 		return str;
@@ -375,6 +401,21 @@ public class NewYorkTimesPage extends Page{
 
 			}catch(Exception e){}
 		}
+		
+		if(!ok){
+			try{
+				ArrayList<WebElement> bdy = (ArrayList <WebElement>)
+						driver.findElements(By.xpath("//*[@class='entry-content']//*[@class='story-body-text']"));
+
+				for(int i=0; i<bdy.size(); i++)
+					str += bdy.get(i).getText();
+				
+				if(!str.isEmpty())
+					ok  =true;
+
+			}catch(Exception e){}
+		}
+		
 		
 
 		return str;
