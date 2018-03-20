@@ -56,6 +56,9 @@ public class mainScreen {
 	private JCheckBox chckbxNewYorkTimes;
 	private JCheckBox chckbxBusinessinsider;
 	private JCheckBox chckbxAlternet;
+	private JCheckBox chckbxDailymain;
+	private JCheckBox chckbxInternationalBusinessTimes;
+	private JCheckBox chckbxFoxNews;
 
 
 
@@ -90,7 +93,7 @@ public class mainScreen {
 
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setBounds(100, 100, 840, 537);
+		frame.setBounds(100, 100, 840, 617);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
@@ -101,7 +104,7 @@ public class mainScreen {
 				ColumnSpec.decode("min(70dlu;default):grow"),},
 			new RowSpec[] {
 				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),
+				RowSpec.decode("max(240dlu;default)"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
@@ -131,7 +134,9 @@ public class mainScreen {
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),}));
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("min:grow"),}));
 
 		JTextPane txtpnTextToSearch_1 = new JTextPane();
 		txtpnTextToSearch_1.setDisabledTextColor(Color.BLACK);
@@ -224,7 +229,7 @@ public class mainScreen {
 
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
-		frame.getContentPane().add(panel, "6, 2, fill, fill");
+		frame.getContentPane().add(panel, "6, 2, fill, top");
 		panel.setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("max(90px;default)"),
@@ -233,6 +238,12 @@ public class mainScreen {
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),},
 			new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
@@ -307,16 +318,33 @@ public class mainScreen {
 		chckbxNewYorkTimes = new JCheckBox("New York Times");
 		chckbxNewYorkTimes.setFocusable(false);
 		chckbxNewYorkTimes.setBackground(Color.WHITE);
+		chckbxNewYorkTimes.setToolTipText("no comments");
 		panel.add(chckbxNewYorkTimes, "2, 18");
 		
 		chckbxBusinessinsider = new JCheckBox("BusinessInsider");
 		chckbxBusinessinsider.setBackground(Color.WHITE);
+		chckbxBusinessinsider.setToolTipText("no comments");
 		panel.add(chckbxBusinessinsider, "2, 20");
 		
 		chckbxAlternet = new JCheckBox("Alternet");
 		chckbxAlternet.setBackground(Color.WHITE);
 		panel.add(chckbxAlternet, "2, 22");
-
+		
+		chckbxDailymain = new JCheckBox("Dailymain");
+		chckbxDailymain.setBackground(Color.WHITE);
+		panel.add(chckbxDailymain, "2, 24");
+		
+		
+		chckbxFoxNews = new JCheckBox("Fox News");
+		chckbxFoxNews.setBackground(Color.WHITE);
+		panel.add(chckbxFoxNews, "2, 26");
+		
+		chckbxInternationalBusinessTimes = new JCheckBox("International Business Times");
+		chckbxInternationalBusinessTimes.setBackground(Color.WHITE);
+		chckbxInternationalBusinessTimes.setToolTipText("no comments");
+		panel.add(chckbxInternationalBusinessTimes, "2, 28");
+		
+		
 
 		JTextPane jtp = new JTextPane();
 		frame.getContentPane().add(jtp, "2, 4");
@@ -441,6 +469,9 @@ public class mainScreen {
 								,chckbxNewYorkTimes.isSelected()
 								,chckbxBusinessinsider.isSelected()
 								,chckbxAlternet.isSelected()
+								,chckbxDailymain.isSelected()
+								,chckbxFoxNews.isSelected()
+								,chckbxInternationalBusinessTimes.isSelected()
 						};
 						
 						boolean frsplt = chckbxFairSplit.isSelected();
@@ -482,7 +513,5 @@ public class mainScreen {
 				btnStart.setEnabled(true);	
 		}
 	}
-
-
 
 }

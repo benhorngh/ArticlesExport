@@ -426,7 +426,7 @@ public class AlternetPage extends Page{
 		if(serial.indexOf(".") == -1)
 			org = true;
 		if(bdy.isEmpty()) return null;
-		CommentRow cr = new CommentRow("Alternet", name, dt, react, bdy, serial, org);
+		CommentRow cr = new CommentRow(this.SiteName, name, dt, react, bdy, serial, org);
 		return cr;
 
 	}

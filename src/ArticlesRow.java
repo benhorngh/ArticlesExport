@@ -58,7 +58,8 @@ public class ArticlesRow {
 	 */
 	public void WriteToFile() {
 		XSSFSheet sheet = Main.workbook.getSheet("Articles");
-		numOfWords=body.split(" ").length;
+		if(body!=null)
+			numOfWords=body.split(" ").length;
 		String[] row = {num+"", site, URL, date, reporter, numOfWords+"", headLine, subHeadLine, body,"","", getCommentsString(),"","","","",""};
 		Funcs.StringArrToLastRow(row, sheet);
 	}

@@ -94,7 +94,7 @@ public abstract class Page extends Funcs{
 		ArticlesRow ar = new ArticlesRow();
 		try{
 
-			String headline="", subheadline="",publishDate="",reporter="";
+			String headline="", subheadline="",publishDate="",reporter="",body="";
 			sleep(2000);
 
 			//headline
@@ -125,16 +125,26 @@ public abstract class Page extends Funcs{
 			catch(Exception e){System.err.println("cant get reporter");}
 
 
-			String article="";
+			 
 			//body
 			try{
-
-				article = getBody();
+				body = getBody();
 			}
 			catch(Exception e){System.err.println("cant get body");}
 
+			if(headline == null)
+				headline = "";
+			if(subheadline == null)
+				subheadline = "";
+			if(publishDate == null)
+				publishDate = "";
+			if(reporter == null)
+				reporter = "";
+			if(body == null)
+				body = "";
+			
 
-			ar.body = article;
+			ar.body = body;
 			ar.site = SiteName;
 			ar.URL = url;
 			ar.date =publishDate;
@@ -156,8 +166,6 @@ public abstract class Page extends Funcs{
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-
-
 
 
 		return ar;

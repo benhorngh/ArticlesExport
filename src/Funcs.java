@@ -233,6 +233,10 @@ public abstract class Funcs {
 		int i=0;
 		Cell cell;
 		for(i=0; i<arr.length; i++){
+			if(arr[i].length()>32000){
+				System.err.println("EXPAND ERROR");
+				arr[i] = arr[i].substring(0, 32000);
+			}
 			cell = row.createCell(i);
 			try {
 				cell.setCellValue(arr[i]);

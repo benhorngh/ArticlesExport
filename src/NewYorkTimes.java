@@ -110,7 +110,7 @@ public class NewYorkTimes extends Site{
 
 
 
-					if(!link.contains("video")) {
+					if(!link.contains("video") && !link.contains("legacy.com")) {
 						try{
 							String s = this.toDate;
 							addLink = stateHandle(link, title, date);

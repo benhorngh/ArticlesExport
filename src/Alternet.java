@@ -96,7 +96,7 @@ public class Alternet extends Site{
 
 					date = arr[1]+"."+arr[0]+"."+arr[2];
 				}catch(Exception e){
-					date = todayString();}
+					}
 
 				//c
 				if(!link.contains("comics") && !link.contains("rss") && !link.contains("progressive-wire")){

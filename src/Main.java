@@ -27,11 +27,11 @@ public class Main {
 
 
 		String textToSearch = "טראמפ";
-		String textToSearchEnglish = "economy";
+		String textToSearchEnglish = "teva";
 		String textToCompare = "";
 		String textToCompareEnglish = "";
 		SearchState stat= SearchState.regular; 
-		int numOfArticles = 50;
+		int numOfArticles = 10000;
 		boolean ynet = false;
 		boolean TM = false;
 		boolean blmbrg = false;
@@ -40,9 +40,12 @@ public class Main {
 		boolean CNN = false;
 		boolean BBC = false;
 		boolean USAt = false;
-		boolean NYT = false;
-		boolean BusIn = false;
+		boolean NYT = true;
+		boolean BusIn = true;
 		boolean Altrnt = true;
+		boolean dlyml = true;
+		boolean fox = true;
+		boolean IBT = true;
 		boolean[] players={
 				ynet
 				,TM
@@ -55,14 +58,17 @@ public class Main {
 				,NYT
 				,BusIn
 				,Altrnt
+				,dlyml
+				,fox
+				,IBT
 		};
 
-		String startDate="1.1.2008"; 
+		String startDate="1.1.2006"; 
 		String endDate="1.1.2018";
 
 		boolean toFile = false;
 		boolean fair = false;
-		
+
 		System.setProperty("webdriver.chrome.logfile", "chromedriver.log");
 
 		starter(textToSearch,textToSearchEnglish,textToCompare,textToCompareEnglish
@@ -97,24 +103,7 @@ public class Main {
 
 		Site.fairSplit = fairSplit;
 
-		if(folderName.equals("output")){
-			boolean ok =false;
-			int i=1;
-			while(!ok){
-				File directory = new File(folderName+"-"+i);
-				if (! directory.exists()){
-					directory.mkdir();
-					ok=true;
-					folderName = folderName+"-"+i;
-				}
-				i++;
-			}
-		}
 
-
-		File commentsFold = new File(folderName+"/comments");
-		if (! commentsFold.exists())
-			commentsFold.mkdir();
 
 
 
@@ -206,6 +195,35 @@ public class Main {
 		//		System.out.println("e "+endDate);
 		//		
 
+		ok =false;
+		int i=1;
+
+		File directory = new File(folderName);
+		if (! directory.exists()){
+			directory.mkdir();
+			ok=true;
+		}
+		i++;
+
+		while(!ok){
+			directory = new File(folderName+"-"+i);
+			if (! directory.exists()){
+				directory.mkdir();
+				ok=true;
+				folderName = folderName+"-"+i;
+			}
+			i++;
+		}
+
+
+
+		File commentsFold = new File(folderName+"/comments");
+		if (! commentsFold.exists())
+			commentsFold.mkdir();
+
+
+
+
 
 		mainScreen.addToLog("starting..");
 
@@ -230,6 +248,7 @@ public class Main {
 		if(players[8]) System.out.print("NewYorkTimes ");
 		if(players[9]) System.out.print("BusinessInsider ");
 		if(players[10]) System.out.print("Alternet ");
+		if(players[11]) System.out.print("DailyMail ");
 		System.out.println();
 		System.out.println();
 
@@ -247,20 +266,11 @@ public class Main {
 
 
 	/**
-	 * 
-	 * @param tts -text to the search field
-	 * @param etts -text to the search field in english (for websites in english.)
-	 * @param ttc  -text to search inside the article
-	 * @param ettc -text to search inside the article in english (for websites in english.)
-	 * @param stat -state of search. regular, search in title, body or in the comments. 
-	 * @param noa -number of needed reports
-	 * @param sd starting date
-	 * @param ed ending date
 	 * @return initialized Sites array.
 	 */
 	private static Site[] init(String tts, String etts, String ttc, String ettc, 
 			SearchState stat, int noa, String sd,String ed){
-		Site[] sites = new Site[11];
+		Site[] sites = new Site[14];
 		sites[0]=new Ynet     (tts, ttc, noa, stat, sd,ed);
 		sites[1]=new TheMarker(tts, ttc, noa, stat, sd,ed);
 		sites[2]=new Bloomberg(etts, ettc, noa, stat, sd,ed);
@@ -272,12 +282,14 @@ public class Main {
 		sites[8]=new NewYorkTimes(etts, ettc, noa, stat, sd,ed);
 		sites[9]=new BusinessInsider(etts, ettc, noa, stat, sd,ed);
 		sites[10]=new Alternet(etts, ettc, noa, stat, sd,ed);
+		sites[11]=new Dailymail(etts, ettc, noa, stat, sd,ed);
+		sites[12]=new FoxNews(etts, ettc, noa, stat, sd,ed);
+		sites[13]=new IBtimes(etts, ettc, noa, stat, sd,ed);
 
 		return sites;
 	}
 
 	private static void play(Site[] sites, boolean[] players, boolean totxt) {
-
 
 		/*
 		 * !!warnning!!
@@ -340,7 +352,7 @@ public class Main {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			System.err.println("the end has come. join!");
+			System.err.println("join!");
 			try{
 				for(int i=0; i<threads.length; i++){
 					threads[i].join();
@@ -356,11 +368,7 @@ public class Main {
 		}
 
 		closeWriters();
-
-
 		closeAllChrome();
-
-
 	}
 
 	private static void closeAllChrome() {
@@ -371,7 +379,6 @@ public class Main {
 			exec("taskkill /im chromedriver.exe /f");
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch(Exception e) {e.printStackTrace();}

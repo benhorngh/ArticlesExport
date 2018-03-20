@@ -98,7 +98,7 @@ public class BusinessInsider extends Site{
 
 					date = arr[1]+"."+arr[0]+"."+arr[2];
 				}catch(Exception e){
-					date = todayString();}
+					}
 
 				try{
 					String s = toDate;

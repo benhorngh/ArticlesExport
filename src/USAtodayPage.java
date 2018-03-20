@@ -234,37 +234,38 @@ public class USAtodayPage extends Page{
 
 	@Override
 	public ArrayList<CommentRow> commentSecction() {
-
-		ArrayList<CommentRow> cmmts = new ArrayList<CommentRow>();
-
-		if(true)
-			return cmmts;
-
-		try{
-			WebElement sec = null;
-			try{
-				sec = driver.findElement(By.xpath("//*[@data-share-method='comments']"));
-
-			}catch(NoSuchElementException e){
-				sec = driver.findElement(By.xpath("//*[@class='utility-bar']//div[contains(@class,'bar-module-comments')]"));
-			}
-			moveTo2(driver, sec);
-			sleep(1500);
-			sec.click();
-
-			WebElement frame = driver.findElement(By.xpath("//*[@title='Facebook Social Plugin']"));
-
-			driver.switchTo().frame(frame.getAttribute("name"));
-
-		}catch(Exception e){e.printStackTrace();}
-		//title="Facebook Social Plugin"
-
-
-
-
-
-
-		return cmmts;
+		return null;
+//
+//		ArrayList<CommentRow> cmmts = new ArrayList<CommentRow>();
+//
+//		if(true)
+//			return cmmts;
+//
+//		try{
+//			WebElement sec = null;
+//			try{
+//				sec = driver.findElement(By.xpath("//*[@data-share-method='comments']"));
+//
+//			}catch(NoSuchElementException e){
+//				sec = driver.findElement(By.xpath("//*[@class='utility-bar']//div[contains(@class,'bar-module-comments')]"));
+//			}
+//			moveTo2(driver, sec);
+//			sleep(1500);
+//			sec.click();
+//
+//			WebElement frame = driver.findElement(By.xpath("//*[@title='Facebook Social Plugin']"));
+//
+//			driver.switchTo().frame(frame.getAttribute("name"));
+//
+//		}catch(Exception e){e.printStackTrace();}
+//		//title="Facebook Social Plugin"
+//
+//
+//
+//
+//
+//
+//		return cmmts;
 	}
 
 	@Override
