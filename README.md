@@ -9,6 +9,23 @@ The Excel file contains 2 sheets.
 sheets 1 - Articles - Each article is taken apart into title, subheading, date, name of the writer and so on.
 sheets 2 - Comments - Each comment on each article is numbered and divided into name, title, body , etc.
 
+see @site list.xlsx
+site list:
+Ynet
+The Marker
+Globes
+Bloomberg
+Reuters
+CNN
+BBC
+USAtoday
+New York Times
+Business Insider
+Alternet
+Daily Mail
+Fox News
+International Business Times
+
 
 Ben Horn
 benhorenn@gmail.com
