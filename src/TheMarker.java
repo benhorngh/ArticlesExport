@@ -82,6 +82,7 @@ public class TheMarker extends Site {
 		String link="", title="", date="";
 		int i=0;
 		int checks = 0;
+		int startover = 0;
 		boolean addLink=false;
 		int res=0;
 		while(urls.size() < numOfArticles){
@@ -160,6 +161,13 @@ public class TheMarker extends Site {
 						break;
 					res = 0;
 					driver.get(firstPage);
+				}
+				
+				startover++;
+				if(startover%10 == 0){
+					try{
+						driver = startOver(driver);
+					}catch(Exception e){e.printStackTrace();}
 				}
 
 			}

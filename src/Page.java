@@ -40,38 +40,63 @@ public abstract class Page extends Funcs{
 		List<ArticlesRow> reports = new ArrayList<ArticlesRow>();
 		for(int i=0; i<urls.size(); i++){
 			url=urls.get(i);
+
+
+			sleep(1000);
+
 			try{
-				driver.navigate().to(url);
-			}
-			catch(WebDriverException e){
+
+				driver.get(url);
+			}catch(WebDriverException e){
+				e.printStackTrace();
 				System.out.println("Invaild url "+url);
+
+				driver = startOver(driver);
 				continue;
 			}
-			if(i==0){
+
+			if((i+1)%10 == 0){
 				try{
-					signIn();
-					driver.navigate().refresh();
-				}
-				catch(Exception e){e.printStackTrace();System.err.println("can't login");}
-			}
+					System.out.println("START OVER***");
+					driver =startOver(driver);
+				}catch(Exception e){e.printStackTrace();}
+			}sleep(2000);
+
+
+
+			//			if(i==0){
+			//				try{
+			//					signIn();
+			//					driver.navigate().refresh();
+			//				}
+			//				catch(Exception e){e.printStackTrace();System.err.println("can't login");}
+			//			}
 			ArticlesRow ar = urlHandler(url, false);
 
 			if(ar != null){
-				Date arD = stringToDate(ar.date);
-				Date date = stringToDate(this.site.fromDate);
+				try{
+					Date arD = stringToDate(ar.date);
 
-				if(date != null && arD != null && date.after(arD)){
-					ArticlesRow.counter--;
-				}
-				else reports.add(ar);
+					Date datefrom = stringToDate(this.site.fromDate);
+					Date dateto = stringToDate(this.site.toDate);
+
+//					if(datefrom != null && dateto!= null && arD != null && datefrom.after(arD) && dateto.before(arD)){
+					if((datefrom != null &&  arD != null && datefrom.after(arD) )|| (dateto != null &&  arD != null && dateto.before(arD))){
+						ArticlesRow.counter--;
+					}
+					else reports.add(ar);
+				}catch(Exception e){ArticlesRow.counter--; ar = null;}
 			}
 
 			System.out.println("finish URL");
 			mainScreen.addToLog("finish url ."+(i+1));
 
 		}
-		driver.close();
-		driver.quit();
+		try{
+			driver = killDriver(driver);
+		}catch(Exception e){}
+		//		driver.close();
+		//		driver.quit();
 		System.err.println("finish "+SiteName);
 
 		mainScreen.addToLog("finish "+SiteName);
@@ -125,7 +150,7 @@ public abstract class Page extends Funcs{
 			catch(Exception e){System.err.println("cant get reporter");}
 
 
-			 
+
 			//body
 			try{
 				body = getBody();
@@ -142,7 +167,7 @@ public abstract class Page extends Funcs{
 				reporter = "";
 			if(body == null)
 				body = "";
-			
+
 
 			ar.body = body;
 			ar.site = SiteName;

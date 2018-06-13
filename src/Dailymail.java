@@ -23,16 +23,19 @@ public class Dailymail extends Site{
 	public boolean search() {
 
 		driver = startWebDriver(url);
-		
+		driver.get(url);
+		sleep(1500);
 		try{
 			WebElement field = driver.findElement(By.xpath("//input[@class='text-input']"));
 			moveTo(driver, field);
-			field.click();
+//			field.click();
+			clickInvisible(driver, field);
 			field.clear();
 			field.sendKeys(this.textToSearch);
 			
 			WebElement go = driver.findElement(By.xpath("//button[@type='submit']"));
-			go.click();
+//			go.click();
+			clickInvisible(driver, go);
 			
 		}catch(Exception e){e.printStackTrace();  return false;}
 		
@@ -64,6 +67,7 @@ public class Dailymail extends Site{
 		String link="", title="", date="";
 		int i=0;
 		int checks = 0;
+		int startover = 1;
 		int count = 0;
 		boolean addLink=false;
 		int tries=0;
@@ -179,6 +183,12 @@ public class Dailymail extends Site{
 					driver.get(firstPage);
 				}
 
+				startover++;
+				if(startover%10 == 0){
+					try{
+						driver = startOver(driver);
+					}catch(Exception e){e.printStackTrace();}
+				}
 			}
 
 		}

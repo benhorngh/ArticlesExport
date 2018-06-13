@@ -19,7 +19,7 @@ public class Bloomberg extends Site{
 	public Bloomberg(String tts, String ttc, int noa, SearchState stat, String sd, String ed) {
 		super(tts, ttc, noa, stat, sd,ed);
 		this.url="https://www.bloomberg.com";
-		this.window = WindowState.Invisible;
+		this.window = WindowState.visible;
 		this.DateRange = true;
 		this.page = new BloombergPage(window, this);
 	}
@@ -49,16 +49,20 @@ public class Bloomberg extends Site{
 			closeAd(driver);
 			sleep(2000);
 
-			WebElement search = driver.findElement(By.xpath("//*[@class='bb-nav-search__icon']"));
+			WebElement search = driver.findElement(By.xpath("//*[contains(@class,'search')]"));
+			search.click();
+//			clickInvisible(driver , search);
+			sleep(2000);
 
-			clickInvisible(driver , search);
-
-			WebElement input = driver.findElement(By.xpath("//*[@class='bb-nav-search__input']"));
-			input.click();
-			input.clear();
+			WebElement input = driver.findElement(By.xpath("//*[contains(@class,'input')]"));
+//			input.click();
+			clickInvisible(driver, input);
+//			input.clear();
 			input.sendKeys(textToSearch);
+			sendKeysInvisible(driver, input, textToSearch);
 			sleep(2000);
 			input.sendKeys(Keys.RETURN);
+//			sendKeysInvisible(driver, input, Keys.RETURN);
 		}
 		catch (NullPointerException e) {e.printStackTrace(); return false;}
 		catch (NoSuchFrameException e) {e.printStackTrace(); return false ;}
@@ -245,6 +249,7 @@ public class Bloomberg extends Site{
 	 * close the annoying ad about register.
 	 */
 	public void closeAd(WebDriver driver){
+		if(true) return;
 		boolean closed = false;
 		int tryies = 0;
 		while(!closed){

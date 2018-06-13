@@ -25,7 +25,8 @@ public class BBC extends Site{
 	public boolean search() {
 
 		driver = startWebDriver(url);
-		driver.get(url);
+//		sleep(2000);
+//		driver.get(url);
 		sleep(10000);
 
 		try {
@@ -141,6 +142,9 @@ public class BBC extends Site{
 					}
 					else res = 0;
 					if(res >= 10){
+						System.out.println(driver.getCurrentUrl());
+//						sleep(1000000);
+						System.out.println("NOMORE?");
 						String s = this.toDate;
 						updateToDate(true);
 						if(s.equals(this.toDate))
@@ -162,9 +166,10 @@ public class BBC extends Site{
 
 			sleep(1000);
 			more.click();
+//			clickInvisible(driver, more);
 			sleep(1000);
 
-		}catch(Exception e) {e.printStackTrace();}
+		}catch(Exception e) {e.printStackTrace();clickInvisible(driver, driver.findElement(By.xpath("//*[@class='pagination']/a")));}
 
 	}
 

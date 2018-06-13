@@ -104,6 +104,7 @@ public class Globes extends Site{
 		String link="",date="", title="";
 		int i=0;
 		int checks = 0;
+		int startover = 1;
 		int res =0;
 		boolean addLink=false;
 		try{
@@ -177,6 +178,14 @@ public class Globes extends Site{
 						selectTime();
 						results  = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@class='results_list']//div[@class='item']"));		
 						driver.get(this.firstPage);
+					}
+					
+					
+					startover++;
+					if(startover%10 == 0){
+						try{
+							driver = startOver(driver);
+						}catch(Exception e){e.printStackTrace();}
 					}
 				}
 

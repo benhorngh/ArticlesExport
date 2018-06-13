@@ -18,6 +18,9 @@ public class CNN extends Site{
 		this.page = new CNNPage(window , this);
 	}
 
+
+
+
 	@Override
 	public boolean search() {
 
@@ -25,7 +28,7 @@ public class CNN extends Site{
 			return false;
 
 		driver = startWebDriver(url); 
-		//		driver.get(url);
+		//				driver.get(url);
 
 		try{
 			WebElement opens = driver.findElement(By.xpath("//*[@id='search-button']"));
@@ -90,12 +93,14 @@ public class CNN extends Site{
 		int checks = 0;
 		int next = 0;
 		int res= 0;
+		int startover = 1;
 		boolean addLink=false;
 		try{
 			while(urls.size() < numOfArticles){
 				addLink=false;
 				link=""; title=""; date="";
 				checks++;
+
 				if(checks == maxSearch)
 					return;
 
@@ -154,25 +159,29 @@ public class CNN extends Site{
 
 						next =0;
 					}catch(Exception e) {
-						e.printStackTrace();sleep(3000);
+						sleep(3000);
 
 						next++;
 						sleep(2000);
 
-						if(next >= 10){
-							String s = this.toDate;
-							updateToDate(true);
-							if(s.equals(this.toDate))
-								break;
-							next = 0;
-							driver.get(firstPage);
-						}
-						else{
-							System.out.println("try again");
-							continue;
-						}
+						String uurll = driver.getCurrentUrl();
+						driver = killDriver(driver);
+						driver = startWebDriver(nextPage(uurll));
+						//						driver.get(nextPage(driver.getCurrentUrl()));
+						//						if(next >= 10){
+						//							String s = this.toDate;
+						//							updateToDate(true);
+						//							if(s.equals(this.toDate))
+						//								break;
+						//							next = 0;
+						//							driver.get(firstPage);
+						//						}
+						//						else{
+						//							System.out.println("try again");
+						//							continue;
+						//						}
 					}
-					
+
 					results = driver.findElements(By.xpath("//*[@class='cnn-search__results-list']/div"));
 					i=0;
 
@@ -187,6 +196,15 @@ public class CNN extends Site{
 							break;
 						res = 0;
 						driver.get(firstPage);
+					}
+
+
+
+					startover++;
+					if(startover%10 == 0){
+						try{
+							driver = startOver(driver);
+						}catch(Exception e){e.printStackTrace();}
 					}
 				}
 			}
@@ -209,6 +227,46 @@ public class CNN extends Site{
 	//		}
 	//		driver.get(curl);
 	//	}
+
+
+	public String nextPage(String page){
+		String np = "";
+		try{
+			//			https://edition.cnn.com/search/?size=10&q=israel&page=101&from=1000&type=article
+
+			String arr[] = page.split("&");
+			//			String from  = arr[arr.length-2];
+			String pagenum = arr[arr.length-3];
+			int i=0;
+			for(i=0; i<arr.length; i++){
+				if(arr[i].toLowerCase().contains("size"))
+					pagenum = arr[i];
+			}
+
+			int s = 0;
+
+			s = Integer.parseInt(pagenum.substring(pagenum.indexOf("=")+1, pagenum.length()));
+			int from =  s*10;
+			s++;
+
+			if(i == arr.length-3)
+				arr[arr.length-2] = "from="+from;
+
+			if(i != arr.length)
+				arr[i] = "page="+ s;
+
+			//			https://edition.cnn.com/search/?q=interest%20money&size=10&type=article
+
+			for(int j=0; j<arr.length-1; j++)
+				np += arr[j] + "&";
+
+			np+= arr[arr.length-1];
+
+		}catch(Exception e){e.printStackTrace();}
+		System.out.println(page);
+		System.out.println(np);
+		return np;
+	}
 
 
 

@@ -56,13 +56,14 @@ public class IBtimes extends Site{
 
 
 
-		List<WebElement> results = driver.findElements(By.xpath("//li[@class='search-result']"));
+		List<WebElement> results = driver.findElements(By.xpath("//*[contains(@class,'search-result')]"));
 
 		this.firstPage = driver.getCurrentUrl();
 
 		String link="", title="", date="";
 		int i=0;
 		int checks = 0;
+		int startover = 0;
 		int count = 0;
 		boolean addLink=false;
 		int tries=0;
@@ -117,7 +118,7 @@ public class IBtimes extends Site{
 						if(!s.equals(toDate)){
 							driver.get(firstPage);
 							sleep(1000);
-							results = driver.findElements(By.xpath("//li[@class='search-result']"));
+							results = driver.findElements(By.xpath("//*[contains(@class,'search-result')]"));
 							i=0;
 						}
 					}catch(Exception e){e.printStackTrace();addLink=false;}
@@ -158,7 +159,7 @@ public class IBtimes extends Site{
 					}
 				}
 				i=0;
-				results = driver.findElements(By.xpath("//li[@class='search-result']"));
+				results = driver.findElements(By.xpath("//*[contains(@class,'search-result')]"));
 
 				if(results.size() ==0){
 					sleep(2000);
@@ -174,6 +175,12 @@ public class IBtimes extends Site{
 					driver.get(firstPage);
 				}
 
+				startover++;
+				if(startover%10 == 0){
+					try{
+						driver = startOver(driver);
+					}catch(Exception e){e.printStackTrace();}
+				}
 			}
 
 		}

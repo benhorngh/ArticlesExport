@@ -61,6 +61,7 @@ public class FoxNews extends Site{
 		String link="", title="", date="";
 		int i=0;
 		int checks = 0;
+		int startover = 1;
 		int count = 0;
 		boolean addLink=false;
 		int tries=0;
@@ -101,7 +102,7 @@ public class FoxNews extends Site{
 					}
 
 				//c
-				if(!link.contains("video.fox")){
+				if((!link.contains("video.fox"))&&(!link.contains("slideshow"))){
 					try{
 						String s = toDate;
 						addLink = stateHandle(link, title, date);
@@ -165,6 +166,13 @@ public class FoxNews extends Site{
 					driver.get(firstPage);
 				}
 
+				
+				startover++;
+				if(startover%10 == 0){
+					try{
+						driver = startOver(driver);
+					}catch(Exception e){e.printStackTrace();}
+				}
 			}
 
 		}

@@ -11,7 +11,7 @@ public class ReutersPage extends Page {
 		this.SiteName = "Reuters";
 	}
 
-	private final String s = "//*[@class='ArticlePage_container_2aGp_']/div[1]";
+	private final String s = "//*[contains(@class,'inner-container')]";
 
 	@Override
 	public String getTitle() {
@@ -35,7 +35,15 @@ public class ReutersPage extends Page {
 					ok = true;
 			}catch(Exception e){}
 		}
+		if(!ok){
+			try{
+				WebElement head = driver.findElement(By.xpath(s+"//*[contains(@class,'headline')]"));
+				str = head.getText();
 
+				if(!str.isEmpty())
+					ok = true;
+			}catch(Exception e){}
+		}
 
 
 		return str;
@@ -67,9 +75,15 @@ public class ReutersPage extends Page {
 					ok=true;
 			}
 			catch(Exception e){}
-
-
-
+		}
+		if(!ok){
+			try{
+				WebElement reporter = driver.findElement(By.xpath(s+"//*[contains(@class,'byline')]//*[contains(@class,'byline')]"));
+				str = reporter.getText();
+				if(!str.isEmpty())
+					ok=true;
+			}
+			catch(Exception e){}
 		}
 		if(!ok){
 			try{
@@ -79,9 +93,15 @@ public class ReutersPage extends Page {
 					ok=true;
 			}
 			catch(Exception e){}
-
-
-			//*[@id='preamble']
+		}
+		if(!ok){
+			try{
+				WebElement reporter = driver.findElement(By.xpath(s+"//*[contains(@class,'byline')]"));
+				str = reporter.getText();
+				if(!str.isEmpty())
+					ok=true;
+			}
+			catch(Exception e){}
 		}
 		return str;
 	}
@@ -117,10 +137,22 @@ public class ReutersPage extends Page {
 				ok=true;
 			}
 			catch(Exception e){}
-
-
-
 		}
+		if(!ok){
+			try{
+				WebElement reporter = driver.findElement(By.xpath("//*[contains(@class,'inner-container')]//*[contains(@class,'date_V9eGk')]"));
+				str = reporter.getText();
+				String[] arr = str.split(" ");
+				int month = monthToInt(arr[0]);
+				String day = arr[1].substring(0, arr[1].length()-1);
+				String year = arr[2];
+				str = day+"."+month+"."+year;
+				ok=true;
+			}
+			catch(Exception e){}
+		}
+		
+		
 		return str;
 	}
 
@@ -129,7 +161,18 @@ public class ReutersPage extends Page {
 		String str = "";
 		boolean ok = false;
 		try{
-			ArrayList<WebElement> body = (ArrayList<WebElement>) driver.findElements(By.xpath(s+"//*[@class='StandardArticleBody_body_1gnLA']/p"));
+			ArrayList<WebElement> body = (ArrayList<WebElement>) driver.findElements(By.xpath(s+"//*[conatins(@class,'StandardArticleBody_body')]/p"));
+			for(int i=0; i<body.size(); i++){
+				str+=body.get(i).getText();
+			}
+			if(!str.isEmpty())
+				ok =true;
+		}
+		catch(Exception e){}
+		
+		try{
+			WebElement arti = driver.findElement(By.xpath("//*[contains(@class,'inner-container')]"));
+			ArrayList<WebElement> body = (ArrayList<WebElement>) arti.findElements(By.xpath(".//*[contains(@class,'body_1gnLA')]/p"));
 			for(int i=0; i<body.size(); i++){
 				str+=body.get(i).getText();
 			}
@@ -149,8 +192,19 @@ public class ReutersPage extends Page {
 			}
 			catch(Exception e){}
 		}
+		if(!ok){
+			try{
+				ArrayList<WebElement> body = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[contains(@class',body_1gnLA')]"));
+				for(int i=0; i<body.size(); i++){
+					str+=body.get(i).getText();
+				}
+				if(!str.isEmpty())
+					ok =true;
+			}
+			catch(Exception e){}
+		}
 
-		
+
 
 		return str;
 	}

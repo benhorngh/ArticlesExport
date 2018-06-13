@@ -31,10 +31,10 @@ public class mainScreen {
 	private JTextField textField_2;
 	private JTextField textField_4;
 	private Choice choice ;
-	private JSpinner spinner;
+	private JTextField spinner;
 	private JCheckBox chckbxYnet ;
 	private JCheckBox chckbxTheMarker;
-	private JCheckBox chckbxBloomberg;
+//	private JCheckBox chckbxBloomberg;
 	private JCheckBox chckbxReuters;
 	private JCheckBox chckbxGlobes;
 	private JTextPane txtpnStartDate;
@@ -189,7 +189,7 @@ public class mainScreen {
 		txtpnNumberOfReports.setText("Number of reports");
 		panel_1.add(txtpnNumberOfReports, "2, 6, center, center");
 
-		spinner = new JSpinner();
+		spinner = new JTextField();
 		panel_1.add(spinner, "3, 6, 2, 1");
 
 		txtpnStartDate = new JTextPane();
@@ -224,7 +224,7 @@ public class mainScreen {
 		
 		chckbxFairSplit = new JCheckBox("fair split");
 		chckbxFairSplit.setBackground(Color.WHITE);
-		panel_1.add(chckbxFairSplit, "4, 14");
+//		panel_1.add(chckbxFairSplit, "4, 14");
 
 
 		JPanel panel = new JPanel();
@@ -292,10 +292,10 @@ public class mainScreen {
 
 
 
-		chckbxBloomberg = new JCheckBox("Bloomberg");
-		chckbxBloomberg.setFocusable(false);
-		chckbxBloomberg.setBackground(Color.WHITE);
-		panel.add(chckbxBloomberg, "2, 10");
+//		chckbxBloomberg = new JCheckBox("Bloomberg");
+//		chckbxBloomberg.setFocusable(false);
+//		chckbxBloomberg.setBackground(Color.WHITE);
+//		panel.add(chckbxBloomberg, "2, 10");
 
 		chckbxCnn = new JCheckBox("CNN");
 		chckbxCnn.setBackground(Color.WHITE);
@@ -319,7 +319,7 @@ public class mainScreen {
 		chckbxNewYorkTimes.setFocusable(false);
 		chckbxNewYorkTimes.setBackground(Color.WHITE);
 		chckbxNewYorkTimes.setToolTipText("no comments");
-		panel.add(chckbxNewYorkTimes, "2, 18");
+//		panel.add(chckbxNewYorkTimes, "2, 18");
 		
 		chckbxBusinessinsider = new JCheckBox("BusinessInsider");
 		chckbxBusinessinsider.setBackground(Color.WHITE);
@@ -330,8 +330,9 @@ public class mainScreen {
 		chckbxAlternet.setBackground(Color.WHITE);
 		panel.add(chckbxAlternet, "2, 22");
 		
-		chckbxDailymain = new JCheckBox("Dailymain");
+		chckbxDailymain = new JCheckBox("Dailymail");
 		chckbxDailymain.setBackground(Color.WHITE);
+		
 		panel.add(chckbxDailymain, "2, 24");
 		
 		
@@ -342,7 +343,7 @@ public class mainScreen {
 		chckbxInternationalBusinessTimes = new JCheckBox("International Business Times");
 		chckbxInternationalBusinessTimes.setBackground(Color.WHITE);
 		chckbxInternationalBusinessTimes.setToolTipText("no comments");
-		panel.add(chckbxInternationalBusinessTimes, "2, 28");
+		panel.add(chckbxInternationalBusinessTimes, "2, 18");
 		
 		
 
@@ -443,7 +444,13 @@ public class mainScreen {
 
 						String selected = choice.getSelectedItem();
 
-						int noa = (Integer) spinner.getValue();
+						String nn = spinner.getText();
+						int noa = 0;
+						try{
+							noa = Integer.parseInt(nn);
+						}catch(Exception e){addToLog("error: invaild number of reports"); return;}
+						
+						
 						SearchState state = SearchState.regular;
 						if(selected.equals("Regular"))
 							state = SearchState.regular;
@@ -460,7 +467,7 @@ public class mainScreen {
 
 						boolean[] sites = {chckbxYnet.isSelected()
 								,chckbxTheMarker.isSelected()
-								,chckbxBloomberg.isSelected()
+								,false//,chckbxBloomberg.isSelected()
 								,chckbxReuters.isSelected()
 								,chckbxGlobes.isSelected()
 								,chckbxCnn.isSelected()
@@ -509,7 +516,7 @@ public class mainScreen {
 			if(message.contains("Done"))
 				btnStart.setEnabled(true);	
 
-			if(message.contains("error"))
+			if(message.toLowerCase().contains("error"))
 				btnStart.setEnabled(true);	
 		}
 	}

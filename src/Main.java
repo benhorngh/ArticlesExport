@@ -31,21 +31,21 @@ public class Main {
 		String textToCompare = "";
 		String textToCompareEnglish = "";
 		SearchState stat= SearchState.regular; 
-		int numOfArticles = 10000;
+		int numOfArticles = 100;
 		boolean ynet = false;
 		boolean TM = false;
-		boolean blmbrg = false;
+		boolean blmbrg = true;
 		boolean rtrs = false;
 		boolean glbs = false;
 		boolean CNN = false;
 		boolean BBC = false;
 		boolean USAt = false;
-		boolean NYT = true;
-		boolean BusIn = true;
-		boolean Altrnt = true;
-		boolean dlyml = true;
-		boolean fox = true;
-		boolean IBT = true;
+		boolean NYT = false;
+		boolean BusIn = false;
+		boolean Altrnt = false;
+		boolean dlyml = false;
+		boolean fox = false;
+		boolean IBT = false;
 		boolean[] players={
 				ynet
 				,TM
@@ -63,8 +63,8 @@ public class Main {
 				,IBT
 		};
 
-		String startDate="1.1.2006"; 
-		String endDate="1.1.2018";
+		String startDate=""; 
+		String endDate="";
 
 		boolean toFile = false;
 		boolean fair = false;
@@ -197,7 +197,6 @@ public class Main {
 
 		ok =false;
 		int i=1;
-
 		File directory = new File(folderName);
 		if (! directory.exists()){
 			directory.mkdir();

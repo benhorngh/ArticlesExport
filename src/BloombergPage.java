@@ -108,6 +108,18 @@ public class BloombergPage extends Page{
 			catch(Exception e){
 			}
 		}
+		if(!ok){
+			try{
+				ttl =  driver.findElement(By.xpath(s+"//h1[contains(@class,'lede-text')]"));
+				str = ttl.getText();
+				if(str.isEmpty())
+					ok= true;
+			}
+			catch(Exception e){
+			}
+		}
+		
+		
 
 		return str;	
 	}
@@ -187,9 +199,17 @@ public class BloombergPage extends Page{
 			}
 			catch(Exception e){}
 		}
+		if(!ok){
+			try{
+				WebElement sub = driver.findElement(By.xpath(s+"//div[contains(@class,'lede-text-below__dek')]"));
+				subs = sub.getText();
+				if(!subs.isEmpty()){
+					ok=true;
+				}
+			}
+			catch(Exception e){}
+		}
 
-
-		//		
 		return subs;
 	}
 
@@ -237,7 +257,17 @@ public class BloombergPage extends Page{
 				if(!author.getText().isEmpty())
 					ok = true;
 			}catch(Exception e){}
-		}	
+		}
+		if(!ok){
+			try{
+				author =  driver.findElement(By.xpath("//div[contains(@class,'byline')]"));
+				if(!author.getText().isEmpty())
+					ok = true;
+			}catch(Exception e){}
+		}
+		
+		
+		
 		return author.getText();
 	}
 
@@ -258,20 +288,34 @@ public class BloombergPage extends Page{
 	@Override
 	public String getBody() {
 		String body="";
+		boolean ok = false;
 
 		ArrayList<WebElement> pgr =  (ArrayList<WebElement>) driver.findElements(By.xpath(s+"//*[@class='body-copy']/p"));
 		String tmp = "";
 		for(int i=0; i<pgr.size(); i++){
 			tmp  = pgr.get(i).getText();
 			body += tmp;
-
 		}
-		if(body.isEmpty()){
+		if(!body.isEmpty()){
+			ok = true;
+			
+		}
 
+		if(!ok){
+			 pgr =  (ArrayList<WebElement>) driver.findElements(By.xpath(s+"//*[contains(@class,'body-copy')]/p"));
+			 tmp = "";
+			for(int i=0; i<pgr.size(); i++){
+				tmp  = pgr.get(i).getText();
+				body += tmp;
+			}
+			if(!body.isEmpty()){
+				ok = true;
+			}
+		}
+		if(!ok){
 			WebElement bd =  driver.findElement(By.xpath("//*[@class='copy-block copy-width']"));
 			body = bd.getText();
 		}
-
 
 		return body;
 	}
@@ -427,21 +471,28 @@ public class BloombergPage extends Page{
 				Bloomberg b = (Bloomberg) this.site;
 				b.closeAd(driver);
 				sleep(2000);
-
+				
+				
 				try{
-					WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
+					WebElement si = driver.findElement(By.xpath("//*[contains(@class,'sign-in')]"));
 					si.click();
-				}catch(Exception e){
-					try{
-						sleep(1000);
-						WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
-						si.click();
-					}catch(Exception e1){
-						sleep(1000);
-						WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
-						si.click();
-					}
-				}
+				}catch(Exception e){e.printStackTrace();}
+				
+				
+//				try{
+//					WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
+//					si.click();
+//				}catch(Exception e){
+//					try{
+//						sleep(1000);
+//						WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
+//						si.click();
+//					}catch(Exception e1){
+//						sleep(1000);
+//						WebElement si = driver.findElement(By.className("bb-nav-touts__link"));
+//						si.click();
+//					}
+//				}
 
 
 				sleep(3000);
@@ -453,6 +504,11 @@ public class BloombergPage extends Page{
 				mailbox.clear();
 				mailbox.click();
 				mailbox.sendKeys(mail);
+				
+				WebElement sub = driver.findElement(By.xpath("//button[@type='submit']"));
+				sub.click();
+				
+				sleep(1000);
 
 				WebElement pass = driver.findElement(By.className("form-element__password"));
 				pass.clear();
@@ -460,7 +516,7 @@ public class BloombergPage extends Page{
 				pass.sendKeys(password);
 
 				sleep(3000);
-				WebElement button = driver.findElement(By.className("login-register__submit"));
+				WebElement button = driver.findElement(By.xpath("//button[@type='submit']"));
 				button.click();
 
 				sleep(3000);

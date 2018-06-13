@@ -57,6 +57,7 @@ public class Alternet extends Site{
 
 		String link="", title="", date="";
 		int i=0;
+		int startover = 1;
 		int checks = 0;
 		int count = 0;
 		boolean addLink=false;
@@ -122,6 +123,8 @@ public class Alternet extends Site{
 
 			}
 			if(i >=results.size()){
+				
+				
 				i=0;
 				try{
 					WebElement nextButton = driver.findElement(By.xpath("//*[@class='pager-next']"));
@@ -161,6 +164,15 @@ public class Alternet extends Site{
 						break;
 					tries = 0;
 					driver.get(firstPage);
+				}
+				
+				
+				
+				startover++;
+				if(startover%10 == 0){
+					try{
+						driver = startOver(driver);
+					}catch(Exception e){e.printStackTrace();}
 				}
 
 			}

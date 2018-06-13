@@ -61,6 +61,7 @@ public class BusinessInsider extends Site{
 		int i=0;
 		int checks = 0;
 		int count = 0;
+		int startover = 0; 
 		boolean addLink=false;
 		int tries=0;
 		while(urls.size() < numOfArticles){
@@ -111,7 +112,7 @@ public class BusinessInsider extends Site{
 					}
 				}catch(Exception e){e.printStackTrace();addLink=false;}
 
-				if(addLink){
+				if(addLink && !link.contains("markets")){
 					urls.add(link);
 					removeDuplicate(urls);
 					mainScreen.addToLog(urls.size()+"/"+this.numOfArticles);
@@ -160,6 +161,14 @@ public class BusinessInsider extends Site{
 						break;
 					tries = 0;
 					driver.get(firstPage);
+				}
+				
+				
+				startover++;
+				if(startover%10 == 0){
+					try{
+						startOver(driver);
+					}catch(Exception e){e.printStackTrace();}
 				}
 
 			}

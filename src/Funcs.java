@@ -78,6 +78,40 @@ public abstract class Funcs {
 	}
 
 
+	WebDriver startOver(WebDriver driver){
+		String url = "www.google.com";
+		try{
+			url = driver.getCurrentUrl();
+		}catch(Exception e){}
+		driver = killDriver(driver);
+
+		sleep(2000);
+		driver = startWebDriver(url);
+		sleep(2000);
+
+		return driver;
+	}
+	public static WebDriver killDriver(WebDriver driver){
+		System.out.println("turn off");
+		try{
+			driver.close();
+			driver.quit();
+		}catch(Exception e){}
+
+		try {
+			Runtime.
+			getRuntime().
+			exec("taskkill /im chromedriver.exe /f");
+		} catch (IOException e) {}
+
+		try{
+			Thread.currentThread().sleep(2000);
+		}catch(Exception e){}
+		driver = null;
+		return driver;
+	}
+
+
 
 	/**
 	 * this function open and start new invisible WebDriver
@@ -280,13 +314,13 @@ public abstract class Funcs {
 	 */
 	public static int monthToInt(String month){
 		String monthStr = "";
-//		int c ='\0';
-//		for(int i=0;i<month.length(); i++){
-//			c= month.charAt(i);
-//			if(c>=97 && c<=122)
-//				c=c-32;
-//			monthStr =monthStr + (char) c;
-//		}
+		//		int c ='\0';
+		//		for(int i=0;i<month.length(); i++){
+		//			c= month.charAt(i);
+		//			if(c>=97 && c<=122)
+		//				c=c-32;
+		//			monthStr =monthStr + (char) c;
+		//		}
 		monthStr = month.toLowerCase();
 		if (monthStr.contains("jan"))
 			return 1;

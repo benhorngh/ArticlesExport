@@ -7,7 +7,7 @@
 	<groupId>org.springframework</groupId>
 	<artifactId>reports</artifactId>
 	<packaging>jar</packaging>
-	<version>3.3</version>
+	<version>4.0</version>
 	<build>
 	 <sourceDirectory>${basedir}/src</sourceDirectory>
 		<plugins>

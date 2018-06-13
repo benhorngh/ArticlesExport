@@ -80,6 +80,7 @@ public class USAtoday extends Site{
 		int i=0;
 		int res= 0;
 		int  checks = 0;
+		int tries = 0;
 		String type ="";
 		boolean addLink=false;
 		try{
@@ -94,7 +95,7 @@ public class USAtoday extends Site{
 				if(i<results.size()){
 					WebElement a = null;
 					try{
-						a = results.get(i).findElement(By.tagName("a"));
+						a = results.get(i).findElement(By.xpath(".//a"));
 						link = a.getAttribute("href");
 
 						WebElement head = results.get(i).findElement(By.xpath(".//div[@class='front']/h3"));
@@ -114,7 +115,7 @@ public class USAtoday extends Site{
 
 						type = results.get(i).getAttribute("class");
 
-					}catch(Exception e){e.printStackTrace();}
+					}catch(Exception e){e.printStackTrace();tries++; if(tries==10) break;}
 
 
 					if((!type.contains("video"))

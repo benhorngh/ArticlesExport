@@ -1,18 +1,97 @@
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 public class CNNPage extends Page{
-	
+
 	public CNNPage(WindowState window, Site site){
 		super(site);
 		this.window = window;
 		this.SiteName = "CNN";
-		
+
 	}
-	
+
+
+	@Override
+	public List<ArticlesRow> linksToList(List<String> urls){
+		String url="";
+		mainScreen.addToLog("Start open URLs");
+		driver = startWebDriver("http://google.com");
+		List<ArticlesRow> reports = new ArrayList<ArticlesRow>();
+		for(int i=0; i<urls.size(); i++){
+			url=urls.get(i);
+
+
+			try{
+				driver= killDriver(driver);
+				sleep(5000);
+				driver = startWebDriver(url);
+				
+			}catch(WebDriverException e){
+				e.printStackTrace();
+				System.out.println("Invaild url "+url);
+//				continue;
+				
+				try{
+				
+				driver= killDriver(driver);
+				sleep(5000);
+				driver = startWebDriver(url);
+				}catch(Exception e3){sleep(8000);e3.printStackTrace();System.out.println("Invaild url "+url);}
+				
+			}catch(Exception e){sleep(8000);e.printStackTrace();System.out.println("Invaild url "+url);}
+
+//			if((i+1)%10 == 0){
+//				try{
+//					System.out.println("START OVER***");
+//					driver =startOver(driver);
+//				}catch(Exception e){e.printStackTrace();}
+//			}sleep(2000);
+
+
+
+			//			if(i==0){
+			//				try{
+			//					signIn();
+			//					driver.navigate().refresh();
+			//				}
+			//				catch(Exception e){e.printStackTrace();System.err.println("can't login");}
+			//			}
+			ArticlesRow ar = urlHandler(url, false);
+
+			if(ar != null){
+				try{
+					Date arD = stringToDate(ar.date);
+
+					Date date = stringToDate(this.site.fromDate);
+
+					if(date != null && arD != null && date.after(arD)){
+						ArticlesRow.counter--;
+					}
+					else reports.add(ar);
+				}catch(Exception e){ArticlesRow.counter--; ar = null;}
+			}
+
+			System.out.println("finish URL");
+			mainScreen.addToLog("finish url ."+(i+1));
+
+		}
+		try{
+			driver = killDriver(driver);
+		}catch(Exception e){}
+		//		driver.close();
+		//		driver.quit();
+		System.err.println("finish "+SiteName);
+
+		mainScreen.addToLog("finish "+SiteName);
+
+		return reports;
+	}
+
 
 	@Override
 	public String getTitle() {
@@ -41,7 +120,7 @@ public class CNNPage extends Page{
 			catch(Exception e){
 			}
 		}
-		
+
 		if(!ok){
 			try{
 				ttl =  driver.findElement(By.xpath("//*[contains(@class,'Article__title')]"));
@@ -52,7 +131,7 @@ public class CNNPage extends Page{
 			catch(Exception e){
 			}
 		}
-		
+
 		if(!ok){
 			try{
 				ttl =  driver.findElement(By.xpath("//*[@class='PageHead__title']"));
@@ -64,16 +143,16 @@ public class CNNPage extends Page{
 			}
 		}
 		return title;
-		
-		
-		
+
+
+
 	}
 
 
 
 	@Override
 	public String getSubTitle() {
-		
+
 		String subtitle="";
 		boolean ok = false;
 		WebElement sub = null;
@@ -142,8 +221,8 @@ public class CNNPage extends Page{
 			catch(Exception e){
 			}
 		}
-		
-		
+
+
 
 		return reporter;
 	}
@@ -194,7 +273,7 @@ public class CNNPage extends Page{
 					ok= true;
 				date = dt.getText();
 				String[] arr= date.split(" ");
-				
+
 				String day = arr[arr.length-3];
 				day = day.substring(0, day.length()-3);
 				date = day+"."+monthToInt(arr[arr.length-2])+"."+arr[arr.length-1];
@@ -208,20 +287,20 @@ public class CNNPage extends Page{
 				if(!dt.getText().isEmpty())
 					ok= true;
 				date = dt.getText();
-				
+
 				String[] arr = date.split(" ");
 				String day = arr[arr.length-3];
 				day = day.substring(0, day.length()-2);
 				String month = ""+monthToInt(arr[arr.length-2]);
 				date = day+"."+month+"."+arr[arr.length-1];
 			}
-			
+
 			catch(Exception e){
 			}
 		}
-		
-		
-		
+
+
+
 		return date;
 
 	}
@@ -277,7 +356,7 @@ public class CNNPage extends Page{
 			catch(Exception e){
 			}
 		}
-		
+
 		if(!ok){
 			try{
 				bd =  driver.findElements(By.xpath("//*[@class='Article__body']/div"));
@@ -306,10 +385,10 @@ public class CNNPage extends Page{
 			catch(Exception e){
 			}
 		}
-		
-		
-		
-		
+
+
+
+
 		return body;
 	}
 

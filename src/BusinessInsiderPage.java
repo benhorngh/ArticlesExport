@@ -28,6 +28,14 @@ public class BusinessInsiderPage extends Page{
 				ok = true;
 
 		}catch(Exception e){}
+		try{
+			WebElement ttl = driver.findElement(By.xpath("//*[contains(@class,'post-headline')]"));
+			str = ttl.getText();
+
+			if(!str.isEmpty())
+				ok = true;
+
+		}catch(Exception e){}
 
 		if(!ok){
 			try{
